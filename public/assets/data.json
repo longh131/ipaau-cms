@@ -1,0 +1,212 @@
+{
+    "result": {
+        "components": [
+            {
+                "componentName": "basicContent",
+                "componentData": {
+                    "ctaLink": [],
+                    "ctaLinkAlignment": "",
+                    "id": 3193,
+                    "key": "d1f11ee7-bf84-4de9-a50b-75f32e6acfaa",
+                    "desktopBackgroundImage": null,
+                    "mobileBackgroundImage": null,
+                    "backgroundVariant": null,
+                    "backgroundColor": "#888686",
+                    "backgroundGradientType": "Full",
+                    "title": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius mi lectus, vel pellentesque est molestie sed. Donec euismod pulvinar augue, vel ultricies risus bibendum ac. Ut faucibus ut enim eget ornare. In eu molestie nibh. Morbi placerat luctus ante, eget posuere ligula pretium at. Suspendisse consectetur eget nisl non tempor. Vivamus faucibus justo quis pulvinar volutpat. Quisque in elit tincidunt, finibus magna eu, convallis justo. Sed vitae malesuada dolor. Nunc luctus, mauris ut imperdiet gravida, magna ex ultrices justo, eu ullamcorper lectus augue iaculis odio. Nam non aliquet urna. Duis malesuada posuere gravida. In elit dui, gravida nec posuere eu, convallis eget sapien. Vivamus mollis nulla nec nisl mollis ultrices. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam eu quam eget nisl ornare fringilla vel et arcu.</p>",
+                    "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius mi lectus, vel pellentesque est molestie sed. Donec euismod pulvinar augue, vel ultricies risus bibendum ac. Ut faucibus ut enim eget ornare. </p>"
+                }
+            }
+        ],
+        "navigation": {
+            "siteLogo": {
+                "src": "https://local.cua.sitback.com.au/media/akmbnpkb/download.jpg?rmode=max&width=275&height=183",
+                "altText": "",
+                "target": null
+            },
+            "siteLogoMobile": {
+                "src": "https://local.cua.sitback.com.au/media/akmbnpkb/download.jpg?rmode=max&width=275&height=183",
+                "altText": "",
+                "target": null
+            },
+            "mobileStickyNavigationItems": [
+                {
+                    "isCurrentPage": false,
+                    "label": "Online Banking",
+                    "url": "https://local.cua.sitback.com.au/banking/",
+                    "target": null,
+                    "image": null,
+                    "children": null
+                }
+            ],
+            "items": [
+                {
+                    "isCurrentPage": false,
+                    "label": "About Us",
+                    "url": "/about-us/",
+                    "target": null,
+                    "image": null,
+                    "children": []
+                },
+                {
+                    "isCurrentPage": false,
+                    "label": "Banking",
+                    "url": "/banking/",
+                    "target": null,
+                    "image": null,
+                    "children": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Banking Accounts",
+                            "url": "/banking/banking-accounts/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                }
+            ]
+        },
+        "footer": {
+            "disablePrimaryFooter": false,
+            "footerNavigationSections": [
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Sitemap",
+                            "url": "/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Broker",
+                            "url": "https://local.cua.sitback.com.au/about-us/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Financial Hardship",
+                            "url": "https://local.cua.sitback.com.au/banking/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Important Information",
+                            "url": "https://local.cua.sitback.com.au/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "FAQs",
+                            "url": "https://local.cua.sitback.com.au/banking/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Home",
+                            "url": "https://local.cua.sitback.com.au/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": [
+                        {
+                            "isCurrentPage": false,
+                            "label": "Contact Us",
+                            "url": "https://local.cua.sitback.com.au/",
+                            "target": null,
+                            "image": null,
+                            "children": null
+                        }
+                    ]
+                },
+                {
+                    "title": "",
+                    "footerNavigationItems": []
+                }
+            ],
+            "footerDisclaimerText": "<p>This information does not take your personal objectives, financial situation or needs into account. You should consider its appropriateness to your circumstances before acting on it. Read the relevant Terms and Conditions, Fees and Charges, Target Market Determinations and/or Product Disclosure Statements before deciding.</p>",
+            "footerButton": null,
+            "disableUtilityFooter": false,
+            "footerLogo": [],
+            "copyrightText": "<p>Copyright 2024 Gateway Bank Ltd| ABN 47 087 650 093 AFSL / Australian Credit Licence Number 238293</p>",
+            "description": "<p>BSB 676-000</p>",
+            "socialMediaLinks": null
+        },
+        "breadcrumbs": null,
+        "id": 3191,
+        "pageTitle": "Home",
+        "pageDescription": "Home page",
+        "pageKeywords": "home",
+        "canonicalUrl": "",
+        "pageSiteName": "",
+        "ogTitle": "",
+        "ogDescription": "",
+        "ogKeywords": "home",
+        "ogType": "",
+        "ogImage": {
+            "src": null,
+            "altText": null,
+            "target": null
+        },
+        "usePageHeading": false,
+        "tags": [
+            "Content page"
+        ],
+        "noIndex": false,
+        "noFollow": false,
+        "headerScripts": "",
+        "bodyClosingScripts": "",
+        "globalHeaderScripts": "",
+        "globalBodyClosingScripts": "",
+        "alias": "",
+        "hideMegamenu": false,
+        "includeInMegaMenu": true,
+        "enablePageAlert": false,
+        "pageAlertType": "",
+        "pageAlertTitle": "",
+        "pageAlertDescription": "",
+        "navigationAccentColour": "Primary"
+    }
+}
