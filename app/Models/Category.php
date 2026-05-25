@@ -18,6 +18,23 @@ class Category extends Model
         'sort_order',
     ];
 
+    public static function getTypeOptions(): array
+    {
+        return [
+            'article' => '文章',
+            'page' => '单页',
+            'link' => '链接',
+            'product' => '产品/服务',
+            'case' => '案例',
+            'gallery' => '图片画廊',
+            'event' => '活动',
+            'member' => '会员',
+            'download' => '下载',
+            'faq' => '常见问题',
+            'form' => '表单',
+        ];
+    }
+
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class);

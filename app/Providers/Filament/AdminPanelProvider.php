@@ -2,6 +2,12 @@
 
 namespace App\Providers\Filament;
 
+use Illuminate\Support\Facades\Schema;
+use App\Models\Setting;
+use App\Filament\Resources\ArticleResource;
+use App\Filament\Resources\CategoryResource;
+use App\Filament\Resources\MemberResource;
+use App\Filament\Resources\PageResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->resources($this->getResources())
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
@@ -56,5 +62,37 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+    }
+
+    protected function getResources(): array
+    {
+        $defaultTypes = ['article', 'page', 'link', 'member'];
+        
+        if (!Schema::hasTable('settings')) {
+            $enabledTypes = $defaultTypes;
+        } else {
+            $enabledTypes = Setting::get('enabled_content_types', $defaultTypes);
+        }
+
+        $resources = collect($enabledTypes)
+            ->map(fn ($type) => match ($type) {
+                'article' => ArticleResource::class,
+                'page' => PageResource::class,
+                'product' => \App\Filament\Resources\ProductResource::class,
+                'case' => \App\Filament\Resources\CaseResource::class,
+                'gallery' => \App\Filament\Resources\GalleryResource::class,
+                'event' => \App\Filament\Resources\EventResource::class,
+                'member' => MemberResource::class,
+                'download' => \App\Filament\Resources\DownloadResource::class,
+                'faq' => \App\Filament\Resources\FaqResource::class,
+                'form' => \App\Filament\Resources\FormResource::class,
+                default => null,
+            })
+            ->filter()
+            ->toArray();
+
+        array_unshift($resources, CategoryResource::class);
+
+        return $resources;
     }
 }

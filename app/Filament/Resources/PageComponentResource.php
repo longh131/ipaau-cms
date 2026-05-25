@@ -15,7 +15,7 @@ class PageComponentResource extends Resource
 {
     protected static ?string $model = PageComponent::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::ViewColumns;
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::RectangleStack;
 
     protected static ?string $navigationLabel = '页面组件';
 

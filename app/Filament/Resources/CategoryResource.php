@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use Illuminate\Support\Facades\Schema as SchemaFacade;
 use App\Models\Category;
+use App\Models\Setting;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -23,6 +25,19 @@ class CategoryResource extends Resource
     protected static ?string $modelLabel = '栏目';
 
     protected static ?string $pluralModelLabel = '栏目';
+
+    protected static function getEnabledTypeOptions(): array
+    {
+        $allTypes = Category::getTypeOptions();
+
+        if (!SchemaFacade::hasTable('settings')) {
+            return $allTypes;
+        }
+
+        $enabledTypes = Setting::get('enabled_content_types', ['article', 'page', 'link', 'member']);
+
+        return array_filter($allTypes, fn ($key) => in_array($key, $enabledTypes), ARRAY_FILTER_USE_KEY);
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -46,12 +61,7 @@ class CategoryResource extends Resource
                     ->nullable(),
                 Forms\Components\Select::make('type')
                     ->label('类型')
-                    ->options([
-                        'news' => '新闻资讯',
-                        'publication' => '期刊出版',
-                        'guide' => '指南手册',
-                        'member' => '会员服务',
-                    ])
+                    ->options(static::getEnabledTypeOptions())
                     ->required(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
@@ -72,13 +82,7 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->label('类型')
                     ->formatStateUsing(function ($state) {
-                        $types = [
-                            'news' => '新闻资讯',
-                            'publication' => '期刊出版',
-                            'guide' => '指南手册',
-                            'member' => '会员服务',
-                        ];
-                        return $types[$state] ?? $state;
+                        return Category::getTypeOptions()[$state] ?? $state;
                     }),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('排序'),
@@ -89,12 +93,7 @@ class CategoryResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('类型')
-                    ->options([
-                        'news' => '新闻资讯',
-                        'publication' => '期刊出版',
-                        'guide' => '指南手册',
-                        'member' => '会员服务',
-                    ]),
+                    ->options(static::getEnabledTypeOptions()),
             ])
             ->actions([
                 Actions\EditAction::make()

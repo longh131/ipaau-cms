@@ -15,7 +15,7 @@ class FormSubmissionResource extends Resource
 {
     protected static ?string $model = FormSubmission::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::ClipboardDocumentCheck;
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::DocumentCheck;
 
     protected static ?string $navigationLabel = '表单提交';
 
