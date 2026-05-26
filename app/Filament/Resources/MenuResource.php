@@ -20,6 +20,8 @@ class MenuResource extends Resource
 
     protected static ?string $pluralModelLabel = '菜单';
 
+    
+
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema

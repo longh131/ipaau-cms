@@ -1,12 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\MemberController;
+use App\Http\Controllers\FrontendController;
 
-Route::get('/', [PageController::class, 'home']);
-Route::get('/page/{slug}', [PageController::class, 'show']);
-Route::get('/category/{slug}', [ArticleController::class, 'category']);
-Route::get('/article/{slug}', [ArticleController::class, 'show']);
-Route::get('/member/{id}', [MemberController::class, 'show']);
+Route::get('/', [FrontendController::class, 'home']);
+Route::get('/page/{slug}', [FrontendController::class, 'render'])->name('page.show');
+Route::get('/category/{slug}', [FrontendController::class, 'render'])->name('category.show');
+Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});

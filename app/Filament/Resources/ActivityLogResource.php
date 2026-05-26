@@ -19,6 +19,8 @@ class ActivityLogResource extends Resource
 
     protected static ?string $pluralModelLabel = '操作日志';
 
+    
+
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema

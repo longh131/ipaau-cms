@@ -8,6 +8,12 @@ use App\Filament\Resources\ArticleResource;
 use App\Filament\Resources\CategoryResource;
 use App\Filament\Resources\MemberResource;
 use App\Filament\Resources\PageResource;
+use App\Filament\Resources\MediaResource;
+use App\Filament\Resources\MenuResource;
+use App\Filament\Resources\MenuItemResource;
+use App\Filament\Resources\UserResource;
+use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\ActivityLogResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -93,6 +99,15 @@ class AdminPanelProvider extends PanelProvider
 
         array_unshift($resources, CategoryResource::class);
 
-        return $resources;
+        $systemResources = [
+            MediaResource::class,
+            MenuResource::class,
+            MenuItemResource::class,
+            RoleResource::class,
+            UserResource::class,
+            ActivityLogResource::class,
+        ];
+
+        return array_merge($resources, $systemResources);
     }
 }

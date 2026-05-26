@@ -1,3 +1,15 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Models\Media;
+use App\Filament\Resources\MediaResource\Pages;
+use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+
 class MediaResource extends Resource
 {
     protected static ?string $model = Media::class;
@@ -7,6 +19,8 @@ class MediaResource extends Resource
     protected static ?string $modelLabel = '媒体文件';
 
     protected static ?string $pluralModelLabel = '媒体文件';
+
+    
 
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
