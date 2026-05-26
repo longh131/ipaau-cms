@@ -71,6 +71,9 @@ class UserResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('仅显示启用的'),
             ])
+            ->headerActions([
+                Actions\CreateAction::make(),
+            ])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),

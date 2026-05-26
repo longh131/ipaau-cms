@@ -65,6 +65,9 @@ class MenuResource extends Resource
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ])
+            ->headerActions([
+                Actions\CreateAction::make(),
+            ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
                     Actions\DeleteBulkAction::make(),

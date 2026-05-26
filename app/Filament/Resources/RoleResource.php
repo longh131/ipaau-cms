@@ -51,6 +51,9 @@ class RoleResource extends Resource
                     ->label('创建时间')
                     ->dateTime(),
             ])
+            ->headerActions([
+                Actions\CreateAction::make(),
+            ])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),

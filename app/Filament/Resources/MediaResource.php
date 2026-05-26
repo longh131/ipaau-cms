@@ -20,23 +20,21 @@ class MediaResource extends Resource
 
     protected static ?string $pluralModelLabel = '媒体文件';
 
-    
-
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema
             ->components([
-                Forms\Components\FileUpload::make('path')
+                Forms\Components\FileUpload::make('file_path')
                     ->label('文件')
                     ->required()
                     ->columnSpanFull()
+                    ->disk('public')
                     ->directory('media')
-                    ->preserveFilenames(),
-                Forms\Components\TextInput::make('name')
-                    ->label('名称'),
-                Forms\Components\TextInput::make('type')
-                    ->label('类型')
-                    ->disabled(),
+                    ->storeFileNamesIn('name'),
+                Forms\Components\TextInput::make('alt_text')
+                    ->label('Alt 文本'),
+                Forms\Components\Textarea::make('description')
+                    ->label('描述'),
             ]);
     }
 
@@ -44,26 +42,22 @@ class MediaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('path')
+                Tables\Columns\ImageColumn::make('file_path')
                     ->label('预览')
-                    ->size(40),
+                    ->size(40)
+                    ->disk('public'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('文件名'),
-                Tables\Columns\TextColumn::make('type')
-                    ->label('类型'),
-                Tables\Columns\TextColumn::make('formatted_size')
-                    ->label('大小'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('上传时间')
                     ->dateTime(),
             ])
-            ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('仅显示启用的'),
-            ])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Actions\CreateAction::make(),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([
