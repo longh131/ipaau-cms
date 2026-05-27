@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 
 class PendingArticlesWidget extends BaseWidget
 {
+    protected int|string|array $columnSpan = 'full';
+    
     protected function getStats(): array
     {
         $pendingCount = Article::whereNull('published_at')->count();

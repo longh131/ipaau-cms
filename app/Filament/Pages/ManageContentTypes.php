@@ -11,11 +11,13 @@ use Filament\Support\Icons\Heroicon;
 
 class ManageContentTypes extends Page
 {
-    protected static ?string $title = '内容类型管理';
+    protected static ?string $title = '类型管理';
 
-    protected static ?string $navigationLabel = '内容类型管理';
+    protected static ?string $navigationLabel = '类型管理';
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Cog6Tooth;
+    
+    protected static ?int $navigationSort = 2;
 
     protected string $view = 'filament.pages.manage-content-types';
 

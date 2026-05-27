@@ -18,6 +18,8 @@ class PageResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::DocumentText;
 
     protected static ?string $navigationLabel = '页面管理';
+    
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $modelLabel = '页面';
 

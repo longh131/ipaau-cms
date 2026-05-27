@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class MenuResource extends Resource
 {
@@ -16,12 +17,13 @@ class MenuResource extends Resource
 
     protected static ?string $navigationLabel = '菜单管理';
 
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::ListBullet;
+    
+    protected static ?int $navigationSort = 10;
+
     protected static ?string $modelLabel = '菜单';
 
     protected static ?string $pluralModelLabel = '菜单';
-
-    
-
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema

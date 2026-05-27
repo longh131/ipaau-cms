@@ -7,6 +7,7 @@ use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
+use Filament\Support\Icons\Heroicon;
 
 class Settings extends Page implements HasForms
 {
@@ -16,7 +17,9 @@ class Settings extends Page implements HasForms
 
     protected static ?string $navigationLabel = '系统设置';
 
-    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-cog';
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Cog;
+    
+    protected static ?int $navigationSort = 3;
 
     protected string $view = 'filament.pages.settings';
 

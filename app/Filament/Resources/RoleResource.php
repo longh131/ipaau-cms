@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class RoleResource extends Resource
 {
@@ -16,12 +17,13 @@ class RoleResource extends Resource
 
     protected static ?string $navigationLabel = '角色管理';
 
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::ShieldCheck;
+    
+    protected static ?int $navigationSort = 11;
+
     protected static ?string $modelLabel = '角色';
 
     protected static ?string $pluralModelLabel = '角色';
-
-    
-
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema

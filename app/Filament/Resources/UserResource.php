@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class UserResource extends Resource
 {
@@ -16,12 +17,13 @@ class UserResource extends Resource
 
     protected static ?string $navigationLabel = '用户管理';
 
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Users;
+    
+    protected static ?int $navigationSort = 12;
+
     protected static ?string $modelLabel = '用户';
 
     protected static ?string $pluralModelLabel = '用户';
-
-    
-
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema

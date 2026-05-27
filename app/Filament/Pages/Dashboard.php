@@ -16,6 +16,8 @@ class Dashboard extends BaseDashboard
     protected static ?string $navigationLabel = '仪表盘';
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Home;
+    
+    protected static ?int $navigationSort = 1;
 
     public function getHeaderWidgets(): array
     {

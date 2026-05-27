@@ -21,6 +21,8 @@ class CategoryResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Folder;
 
     protected static ?string $navigationLabel = '栏目管理';
+    
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $modelLabel = '栏目';
 

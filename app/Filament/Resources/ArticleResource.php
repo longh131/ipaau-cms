@@ -20,6 +20,8 @@ class ArticleResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::DocumentText;
 
     protected static ?string $navigationLabel = '文章管理';
+    
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $modelLabel = '文章';
 

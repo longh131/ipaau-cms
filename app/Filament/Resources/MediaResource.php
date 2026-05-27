@@ -9,12 +9,17 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class MediaResource extends Resource
 {
     protected static ?string $model = Media::class;
 
     protected static ?string $navigationLabel = '媒体库';
+
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Photo;
+    
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $modelLabel = '媒体文件';
 

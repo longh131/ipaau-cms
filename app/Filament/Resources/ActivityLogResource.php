@@ -8,6 +8,7 @@ use Filament\Actions;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class ActivityLogResource extends Resource
 {
@@ -15,12 +16,13 @@ class ActivityLogResource extends Resource
 
     protected static ?string $navigationLabel = '操作日志';
 
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Clock;
+    
+    protected static ?int $navigationSort = 13;
+
     protected static ?string $modelLabel = '日志';
 
     protected static ?string $pluralModelLabel = '操作日志';
-
-    
-
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema
