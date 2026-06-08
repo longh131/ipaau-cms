@@ -12,19 +12,19 @@
     @endphp
     
     @if ($depth > 0)
-        <span style="margin-left: {{ $depth * 20 }}px; display: inline-block;"></span>
+        <span style="margin-left: {{ ($depth - 1) * 20 }}px; display: inline-block;"></span>
+        <span class="text-gray-400">├──</span>
     @endif
     
     @if ($hasChildren)
         <button 
             type="button" 
-            class="category-toggle p-1 hover:bg-gray-100 rounded transition-colors"
+            class="category-toggle px-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
             data-id="{{ $getRecord()->id }}"
             title="展开/折叠子栏目"
+            onclick="toggleCategory(event, this)"
         >
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+            <span class="text-gray-600 font-bold text-sm">▼</span>
         </button>
     @else
         <span class="w-6"></span>
@@ -35,29 +35,26 @@
     </span>
 </div>
 
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.category-toggle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const parentId = this.getAttribute('data-id');
-                    const icon = this.querySelector('svg');
-                    
-                    document.querySelectorAll('.category-item').forEach(item => {
-                        const itemParentId = item.getAttribute('data-parent-id');
-                        if (itemParentId == parentId) {
-                            const row = item.closest('tr');
-                            if (row.style.display === 'none') {
-                                row.style.display = '';
-                                icon.style.transform = 'rotate(0deg)';
-                            } else {
-                                row.style.display = 'none';
-                                icon.style.transform = 'rotate(-90deg)';
-                            }
-                        }
-                    });
-                });
-            });
+<script>
+    function toggleCategory(event, button) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const parentId = button.getAttribute('data-id');
+        const icon = button.querySelector('span');
+        
+        document.querySelectorAll('.category-item').forEach(item => {
+            const itemParentId = item.getAttribute('data-parent-id');
+            if (itemParentId == parentId) {
+                const row = item.closest('tr');
+                if (row.style.display === 'none') {
+                    row.style.display = '';
+                    icon.textContent = '▼';
+                } else {
+                    row.style.display = 'none';
+                    icon.textContent = '▶';
+                }
+            }
         });
-    </script>
-@endpush
+    }
+</script>
