@@ -92,11 +92,18 @@ class CategoryResource extends Resource
                     ->dateTime(),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->orderByRaw('
-                    CASE WHEN parent_id = 0 THEN id ELSE parent_id END,
-                    parent_id != 0,
-                    sort_order
-                ');
+                $categories = Category::getSortedTree();
+                $sortedIds = [];
+                foreach ($categories as $category) {
+                    $sortedIds[] = $category->id;
+                    foreach ($category->children as $child) {
+                        $sortedIds[] = $child->id;
+                    }
+                }
+                if (!empty($sortedIds)) {
+                    return $query->whereIn('id', $sortedIds)->orderByRaw('FIELD(id, ' . implode(',', $sortedIds) . ')');
+                }
+                return $query;
             })
             ->filters([
                 Tables\Filters\SelectFilter::make('type')

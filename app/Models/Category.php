@@ -47,7 +47,17 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')->orderBy('sort_order');
+    }
+
+    public static function getSortedTree()
+    {
+        return self::where('parent_id', 0)
+            ->orderBy('sort_order')
+            ->with(['children' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->get();
     }
 
     public function allChildren()
