@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCase extends CreateRecord
 {
     protected static string $resource = CaseResource::class;
+    
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('create');
+    }
 }

@@ -55,12 +55,12 @@ class CategoryResource extends Resource
                 Forms\Components\Select::make('parent_id')
                     ->label('上级栏目')
                     ->options(function () {
-                        return Category::where('parent_id', 0)
+                        return [0 => '无（作为顶级栏目）'] + Category::where('parent_id', 0)
                             ->orderBy('sort_order')
-                            ->pluck('name', 'id');
+                            ->pluck('name', 'id')
+                            ->toArray();
                     })
-                    ->default(0)
-                    ->nullable(),
+                    ->default(0),
                 Forms\Components\Select::make('type')
                     ->label('类型')
                     ->options(static::getEnabledTypeOptions())
@@ -75,12 +75,11 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('名称'),
+                Tables\Columns\ViewColumn::make('name')
+                    ->label('名称')
+                    ->view('filament.resources.category.columns.tree-name'),
                 Tables\Columns\TextColumn::make('slug')
                     ->label('别名'),
-                Tables\Columns\TextColumn::make('parent.name')
-                    ->label('上级栏目'),
                 Tables\Columns\TextColumn::make('type')
                     ->label('类型')
                     ->formatStateUsing(function ($state) {
@@ -92,6 +91,13 @@ class CategoryResource extends Resource
                     ->label('创建时间')
                     ->dateTime(),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->leftJoin('categories as p', 'categories.parent_id', '=', 'p.id')
+                    ->orderByRaw('IFNULL(p.sort_order, 9999)')
+                    ->orderBy('categories.sort_order')
+                    ->orderBy('categories.id')
+                    ->select('categories.*');
+            })
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('类型')
