@@ -92,11 +92,11 @@ class CategoryResource extends Resource
                     ->dateTime(),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->leftJoin('categories as p', 'categories.parent_id', '=', 'p.id')
-                    ->orderByRaw('IFNULL(p.sort_order, 9999)')
-                    ->orderBy('categories.sort_order')
-                    ->orderBy('categories.id')
-                    ->select('categories.*');
+                return $query->orderByRaw('
+                    CASE WHEN parent_id = 0 THEN id ELSE parent_id END,
+                    parent_id != 0,
+                    sort_order
+                ');
             })
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
