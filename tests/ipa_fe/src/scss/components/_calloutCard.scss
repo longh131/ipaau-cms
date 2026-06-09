@@ -1,0 +1,10 @@
+@layer components {
+  [data-type="calloutCard"] {
+    p {
+      @apply text-sm;
+    }
+    strong p {
+      @apply text-lg;
+    }
+  }
+}

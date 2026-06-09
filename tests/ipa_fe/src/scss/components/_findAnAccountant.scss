@@ -1,0 +1,9 @@
+[data-type="findAnAccountant"] {
+  form {
+    max-width: 470px;
+  }
+
+  [data-type="section-title"] {
+    @apply text-display-sm lg:text-display-md;
+  }
+}

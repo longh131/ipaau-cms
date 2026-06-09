@@ -1,0 +1,76 @@
+@use 'colors' as *;
+
+@layer components {
+  .footer-main {
+    color: $color-text;
+
+    #footer-logo {
+      a {
+        height: auto;
+      }
+      picture,
+      img {
+        width: 160px;
+        height: auto;
+      }
+    }
+
+    .footer-social-media-links {
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      margin: 1em 0;
+      a {
+        display: inline-block;
+        img {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+
+    .footer-nav-item {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      padding: 0;
+      margin: 0;
+      color: $color-text;
+      transition: all 0.5s;
+      &:hover {
+        text-underline-offset: 4px;
+      }
+    }
+
+    .footer-nav-item-title {
+      font-weight: 600;
+      color: $color-dark-blue;
+    }
+
+    .lock-icon {
+      width: 12px;
+      height: 14px;
+    }
+
+    .footer-nav-ul {
+      margin-top: 0.5em;
+      gap: 0.5em;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .footer-copyright-text {
+      border-top: 1px solid $color-med-gray;
+      color: $color-text;
+      font-size: 16px;
+      padding: 2em 1em;
+    }
+  }
+
+  #footer-disclaimer {
+    color: $color-text;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 1em 0;
+  }
+}

@@ -1,0 +1,71 @@
+@layer components {
+  .calendar {
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-80 p-4 elevation-4 overflow-hidden rounded-xl bg-white;
+
+    &--nav {
+      @apply relative;
+    }
+
+    &--days {
+      @apply text-md font-inter text-black;
+
+      button,
+      span {
+
+        &.day {
+          @apply p-2 rounded-full w-[calc(100%/7)] cursor-pointer hover:bg-grey-subtle hover:underline;
+        }
+
+        &.muted {
+          @apply text-grey;
+        }
+
+        &.disabled {
+          @apply text-grey opacity-50 cursor-not-allowed pointer-events-none;
+        }
+
+        &.label {
+          @apply inline-block text-xs text-grey w-[calc(100%/7)] mb-2 text-center;
+        }
+
+        &.between {
+          @apply rounded-none;
+        }
+
+        &.start {
+          @apply rounded-r-none
+        }
+
+        &.end {
+          @apply rounded-l-none;
+        }
+
+        &.start.end {
+          @apply rounded-full;
+        }
+
+        &.start, &.between, &.end {
+          @apply bg-grey-subtle text-black;
+        }
+
+        &.start, &.end {
+          &::before {
+            @apply absolute top-0 bottom-0 left-0 w-full bg-navy-subtle content-[''] block rounded-full z-0;
+          }
+        }
+
+        &.between:nth-child(7n):after, &.start:nth-child(7n):after {
+          @apply absolute top-0 bottom-0 left-full bg-grey-subtle w-5 content-[''];
+        }
+
+        &.between:nth-child(7n + 1):after, &.end:nth-child(7n + 1):after {
+          @apply absolute top-0 bottom-0 right-full bg-grey-subtle w-5 content-[''];
+        }
+
+        &.start.end:after {
+          @apply hidden;
+        }
+      }
+    }
+  }
+}

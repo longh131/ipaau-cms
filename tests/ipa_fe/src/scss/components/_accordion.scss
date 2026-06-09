@@ -1,0 +1,9 @@
+@use 'colors' as *;
+
+@layer components {
+  [data-type="accordion"] {
+    &.centered .container {
+      max-width: 978px;
+    }
+  }
+}

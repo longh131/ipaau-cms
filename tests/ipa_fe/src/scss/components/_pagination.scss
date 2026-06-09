@@ -1,0 +1,30 @@
+@layer components {
+  [data-type='searchResult'] {
+    [aria-label='pagination'] {
+      @apply max-lg:w-full;
+
+      ul {
+        @apply flex gap-x-3 items-center justify-center lg:justify-end max-lg:flex-wrap max-lg:gap-y-3 max-lg:w-full max-lg:justify-center  ;
+
+        li {
+          @apply md:flex;
+
+          a {
+            @apply border border-primary-border min-h-12 min-w-12 text-sm text-link transition-all duration-300 rounded-lg flex items-center justify-center;
+            @apply justify-center font-medium hover:border-secondary-border hover:text-white hover:bg-link-hover text-center m-0 max-lg:min-w-12;
+
+            &[aria-current] {
+              @apply hover:text-white pointer-events-none bg-secondary text-white;
+            }
+          }
+
+          &.disabled {
+            a {
+              @apply text-grey cursor-not-allowed pointer-events-none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

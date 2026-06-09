@@ -1,0 +1,33 @@
+@layer base {
+    .contrast-color {
+    /* Lifted almost entirely from https://lea.verou.me/blog/2024/contrast-color/ */
+    --contrast-color: var(--color, light-dark(var(--color-light), var(--color-dark)));
+    /* Fallback */
+    color: #fff;
+    text-shadow: 0 0 .05em #000, 0 0 .05em #000, 0 0 .05em #000, 0 0 .05em #000;
+    position: relative;
+
+    @supports (color: oklch(from red l c h)) {
+        --l: clamp(0, (l / var(--l-threshold) - 1) * -infinity, 1);
+        color: oklch(from var(--contrast-color) var(--l) 0 h);
+        text-shadow: none;
+
+    }
+
+    @supports (color: contrast-color(red)) {
+        color: contrast-color(var(--color));
+        text-shadow: none;
+    }
+    }
+
+    :focus-visible {
+    @apply outline-neutral-800 ring-0;
+    outline-offset: 3px;
+    outline: 2px dashed #0d2c6c;
+    }
+
+    // .element {
+    //   --color: <background colour for element>
+    //   @apply color-contrast
+    // }
+}

@@ -1,0 +1,10 @@
+/*
+  This scss file contains elements that are only required for client viewing. And are not required on the server rendered versions.
+
+  This would be things like animations and interactions that you only need once you're using a browser.
+
+  There is another file `./App.scss` that deals with all-page scss rules.
+*/
+body {
+  overflow-x: hidden;
+}

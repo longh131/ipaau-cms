@@ -1,0 +1,13 @@
+@layer components {
+  body:not([id="tinymce"]) {
+    @apply min-h-screen text-primary;
+
+    #root {
+      @apply min-h-screen;
+    }
+  }
+
+  main {
+    contain: content;
+  }
+}

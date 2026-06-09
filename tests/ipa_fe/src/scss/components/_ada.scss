@@ -1,0 +1,237 @@
+@layer components {
+
+  #portal-ada {
+    @apply fixed bottom-0 max-md:left-0 h-0 right-0 z-[1000] flex items-end justify-start has-[.ada-active]:max-md:top-0 has-[.ada-active]:h-auto;
+  }
+
+  .ipa-ada-wrapper {
+    @apply ml-auto w-full h-full elevation-4 relative bg-cover bg-center bg-no-repeat transition-all duration-300 rounded-t-lg overflow-hidden bg-white lg:max-w-96 lg:min-w-96;
+
+    [api-url] {
+      @apply bg-white block h-full;
+
+
+      @media screen and (min-width: 768px) {
+        height: calc(97ch - 105px) !important;
+        max-height: calc(97ch - 105px) !important;
+      }
+    }
+    h3 {
+      @apply text-display-sm lg:text-display-md font-apex-book text-secondary
+    }
+
+    .static-question {
+      @apply font-din text-warm-plum rounded-full border border-warm-plum hover:bg-warm-plum hover:text-white cursor-pointer transition-all duration-300 font-medium inline-block bg-white elevation-4 mt-0 mb-2 mx-2;
+    }
+
+    .chatBubbleText {
+      @apply text-left;
+    }
+
+    .questionRow,
+    .answerRow {
+      @apply mb-2 flex !px-2 !mx-0;
+
+      .chatBubble {
+        @apply bg-transparent !px-0 !m-0 border-none shadow-none;
+      }
+
+      .chatBubbleText {
+        @apply font-medium !p-3 inline-block max-w-80 py-2 rounded-lg elevation-4 font-din;
+      }
+    }
+
+    .questionRow {
+      @apply justify-end ;
+
+      .chatBubble {
+        @apply text-right !bg-transparent;
+      }
+
+      .chatBubbleText {
+        @apply text-white bg-secondary;
+
+        p {
+          @apply last:mb-0;
+        }
+      }
+    }
+
+    .answerRow {
+      @apply justify-start ;
+
+      .chatBubble {
+
+        .chatBubbleText {
+          @apply text-primary bg-white;
+        }
+
+        p {
+          @apply last:mb-0;
+        }
+      }
+    }
+
+    [data-type="ada-header"] {
+      @apply  grid grid-cols-[auto_1fr_auto] items-center gap-y-2 p-4 pb-6 sticky top-0;
+      clip-path: url(#invertshallowconvex-path);
+      background-color: oklch(from theme('colors.white') l c h / .8);
+
+
+      > div {
+        @apply text-display-sm font-apex-book text-secondary text-center col-start-2;
+      }
+      > button {
+        @apply text-warm-plum w-12 h-12 flex items-center justify-center col-start-3;
+      }
+
+      ~ [api-url] > div {
+        /* the padding and margin are to send the content under the header, with 1/2rem spacing at the top */
+        @apply bg-[image:var(--ada-bg-image)] pt-[108px] max-md:h-full -mt-[100px] bg-cover bg-center bg-no-repeat pb-2;
+      }
+    }
+
+    .section-bg {
+      background-color: transparent !important;
+    }
+
+    .avatar {
+      @apply hidden;
+    }
+
+    #betty-wrapper {
+      @apply h-auto !pb-0 !mt-0 grid grid-rows-[calc(100%-195px)_105px];
+      // @apply h-[calc(90ch-105px)] !pb-0 !Zmt-0;
+      overflow: auto !important;
+    }
+
+    .referencesDiv {
+      @apply text-warm-plum text-label-sm !bg-white mt-2 rounded-lg elevation-4;
+
+      .referenceCard {
+        @apply bg-white !border-none;
+
+        .referenceLinkContainer {
+          @apply bg-white !border-none;
+        }
+
+        a {
+          @apply text-link hover:text-link-hover hover:underline text-md focus-visible:text-link-focused focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent;
+
+          &::before {
+            content: '•';
+            @apply inline-block mr-2 text-current;
+          }
+        }
+      }
+    }
+
+    .chatButtons {
+      @apply bg-white mt-4 rounded-full elevation-6 !px-4 !py-0  !gap-0 items-center !w-min;
+
+      &::before {
+        content: 'Helpful?';
+        @apply font-din text-secondary text-left;
+      }
+      button {
+        @apply w-12 h-12;
+
+        &:hover {
+          @apply underline !bg-white;
+
+          > svg {
+            @apply text-warm-plum scale-110;
+          }
+        }
+
+        > svg {
+          @apply w-6 h-6 text-primary origin-center transition-all duration-300;
+        }
+      }
+    }
+
+    #side-menu-and-betty {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: auto !important;
+
+      @media screen and (min-width: 768px) {
+        height: calc(70ch - 105px) !important;
+        max-height: calc(70ch - 105px) !important;
+      }
+    }
+
+    #header-wrapper {
+      padding-top: 0 !important;
+    }
+
+    #header-wrapper,
+    #print-frame,
+    #chat-wrapper {
+      @apply row-start-1 row-end-1 max-h-[calc(100%-95px)] overflow-y-auto touch-pan-y relative transform-gpu overscroll-y-contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #chat-wrapper {
+      #chat-content {
+        overflow-y: auto !important;
+      }
+    }
+
+    #bottom-wrapper {
+      @apply bg-white h-[95px] !pb-0 !mt-0 row-start-2 row-end-2 rounded-t-lg overflow-hidden;
+
+      #input-group {
+        @apply grid grid-cols-[minmax(0,max-content)_1fr_minmax(0,max-content)] pt-4 gap-2;
+
+        #input {
+          @apply col-start-2 col-span-1 row-start-1 row-end-1 mx-auto rounded-full border border-grey-subtle shadow-none px-3 max-h-10 placeholder-shown:overflow-hidden;
+        }
+
+        #btnSend {
+          @apply col-start-3 col-span-1 row-start-1 row-end-1 bg-primary-border rounded-full mr-2;
+          right: unset !important;
+          box-shadow: none !important;
+          border: none !important;
+          padding-inline: 20px;
+          padding-block: 10px;
+          width: unset !important;
+          height: unset !important;
+
+
+          svg {
+            @apply w-6 h-6 text-white -rotate-[45deg] origin-center transition-all duration-300;
+          }
+
+          &:focus-visible,
+          &:hover {
+            svg {
+              @apply text-primary scale-110 rotate-0;
+            }
+          }
+        }
+
+        #downloadChat {
+          @apply col-start-1 col-span-1 row-start-1 row-end-1 text-primary;
+          right: unset !important;
+          box-shadow: none !important;
+          border: none !important;
+          background-color: transparent !important;
+
+          svg {
+            @apply w-6 h-6;
+          }
+
+          &:focus-visible,
+          &:hover {
+            svg {
+              @apply text-warm-plum scale-110;
+            }
+          }
+        }
+      }
+    }
+
+
+  }
+}

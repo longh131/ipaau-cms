@@ -1,0 +1,25 @@
+@layer components {
+  // add elements in here to allow for the purge.css to remove the classes if not required
+  // e.g. a component is not included anywhere on the site
+
+  [data-type='subPageBanner'].split-full .img-shape-acorn{
+    mask: url("/src/assets/masks/acorn.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    aspect-ratio: 1491.082 / 1572.087;
+    background-image: var(--cta-bg-mobile, var(--cta-bg-desktop));
+    background-size: cover;
+    background-position: center;
+    width: calc(100% - 6em);
+
+    @screen sm{
+      width: calc(100% - 14em);
+    }
+
+    @screen lg{
+      width: 100%;
+      background-image: var(--cta-bg-desktop, var(--cta-bg-mobile));
+    }
+  }
+}

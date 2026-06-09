@@ -1,0 +1,82 @@
+@layer components {
+  [data-type='mobile-navigation-wrapper'] {
+    @apply absolute
+            max-xl:left-0
+            w-full
+            top-[100%]
+            flex
+            peer-[.inactive]/menutrigger:max-h-0
+            transition-all
+            z-50
+            duration-500
+            overflow-hidden
+            flex-nowrap
+            xl:hidden;
+
+    [data-type='button-decorator'] {
+      display: none;
+    }
+
+    > div {
+      @apply w-full;
+    }
+
+    [data-level='0'] {
+      [data-type='menu-wrapper-0'] {
+        @apply flex justify-between h-full items-center transition-all duration-500;
+
+        > a {
+          @apply grow;
+        }
+      }
+    }
+
+    [data-type='mobile-navigation'] {
+      [data-type='megamenu-panel'] {
+        [data-type='menu-wrapper-1'] {
+          @apply flex justify-between items-center;
+        }
+
+        [data-type='menu-decorator'] {
+          a {
+            @apply p-0;
+          }
+        }
+      }
+
+      [data-type='megamenu-level-2'] {
+        @apply w-full pl-8 max-h-0 transition-all duration-500;
+
+        &.active {
+          @apply max-h-none;
+        }
+      }
+
+      [data-level='0'] {
+        [data-type='megamenu-panel'] {
+          @apply transition-all duration-500;
+        }
+
+        &.inactive {
+          .item-level-0-icon {
+            @apply scale-y-100;
+          }
+
+          [data-type='megamenu-panel'] {
+            @apply max-h-0  overflow-hidden;
+          }
+        }
+
+        &.active {
+          .item-level-0-icon {
+            @apply -scale-y-100;
+          }
+
+          [data-type='megamenu-panel'] {
+            @apply max-h-none overflow-hidden;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+$gradientColors: (
+  'blue': linear-gradient(90deg, oklch(0.5471 0.127 240.8) 0%, oklch(0.7728 0.1209 221.88) 100%),
+  'purple': linear-gradient(90deg, oklch(0.4991 0.1741 329.89) 0%, oklch(0.6184 0.1734 345.67) 100%),
+  'orange': linear-gradient(90deg, oklch(0.6651 0.1915 40.22) 0%, oklch(0.7822 0.172155 67.583) 100%),
+  'pink': linear-gradient(90deg, oklch(0.6651 0.1915 40.22) 0%, oklch(0.5931 0.2034 342.15) 100%),
+  'blue-reverse': linear-gradient(270deg, oklch(0.5471 0.127 240.8) 0%, oklch(0.7728 0.1209 221.88) 100%),
+  'purple-reverse': linear-gradient(270deg, oklch(0.4991 0.1741 329.89) 0%, oklch(0.6184 0.1734 345.67) 100%),
+  'orange-reverse': linear-gradient(270deg, oklch(0.6651 0.1915 40.22) 0%, oklch(0.7822 0.172155 67.583) 100%),
+  'pink-reverse': linear-gradient(270deg, oklch(0.6651 0.1915 40.22) 0%, oklch(0.5931 0.2034 342.15) 100%),
+);
+
+@layer utilities {
+  @each $color, $gradient in $gradientColors {
+    .text-gradient-#{$color} {
+      background: $gradient;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .bg-gradient-#{$color} {
+      background: $gradient;
+    }
+  }
+
+  .megamenu-gradient {
+    @apply bg-navy-subtle;
+
+    @media screen and (min-width: 1280px) {
+      background: linear-gradient(90deg, oklch(0.9612 0 0) 0%, oklch(0.9612 0 0) 75%, oklch(0.3152 0.1176 262.41) 75%, oklch(0.3152 0.1176 262.41) 100%) !important;
+    }
+
+    @media screen and (min-width: 2700px) {
+      background: linear-gradient(90deg, oklch(0.9612 0 0) 0%, oklch(0.9612 0 0) 66%, oklch(0.3152 0.1176 262.41) 66%, oklch(0.3152 0.1176 262.41) 100%) !important;
+    }
+  }
+}

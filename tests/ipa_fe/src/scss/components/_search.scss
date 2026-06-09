@@ -1,0 +1,42 @@
+@layer components {
+  .search-checkbox {
+    @apply mr-2 w-4 h-4 accent-link border border-primary-border rounded bg-transparent transition-all duration-300;
+    @apply hover:border-secondary;
+    @apply hover:checked:text-white hover:checked:bg-secondary;
+    @apply focus:checked:text-white focus:checked:bg-secondary;
+    @apply checked:bg-secondary checked:text-white checked:border-secondary;
+    @apply indeterminate:bg-secondary indeterminate:text-white indeterminate:border-secondary;
+    @apply hover:indeterminate:bg-secondary hover:indeterminate:text-white hover:indeterminate:border-secondary;
+  }
+
+  .search-label {
+    @apply flex items-center cursor-pointer border-b border-b-primary-border py-3 pl-6 hover:underline;
+  }
+
+  [aria-label="Search filters"] {
+    &::before {
+      @apply fixed hidden bottom-0 left-0 right-0 content-[''] -z-[1];
+      background-color: oklch(from theme('colors.secondary') l c h / .5);
+    }
+
+    &[data-open="true"] {
+      &::before {
+        @apply top-0 max-lg:block;
+      }
+    }
+  }
+
+  [data-type="filter-buttons"] {
+    &::before {
+      @apply content-[''] block w-full opacity-30 absolute left-0 right-0 -top-[55px] h-[75px] -z-[1] pointer-events-none;
+      background: linear-gradient(0deg,rgba(8, 8, 8, 1) 0%, rgba(8, 8, 8, 0) 100%);
+
+    }
+    @screen lg {
+      &::before {
+        @apply hidden
+
+      }
+    }
+  }
+}

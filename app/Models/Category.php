@@ -16,6 +16,11 @@ class Category extends Model
         'parent_id',
         'type',
         'sort_order',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public static function getTypeOptions(): array

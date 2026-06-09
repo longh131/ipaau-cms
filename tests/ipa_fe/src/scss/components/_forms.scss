@@ -1,0 +1,24 @@
+@layer components {
+  .form-section {
+
+    label {
+      @apply label-sm;
+    }
+
+    [type="text"],
+    [type="email"],
+    [type="tel"],
+    [type="number"],
+    [type="date"],
+    [type="time"],
+    [type="url"],
+    [type="search"],
+    [type="password"],
+    [type="textarea"] {
+      @apply w-full px-4 py-3 border border-primary-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent rounded-full;
+      &:user-invalid {
+        @apply border-error-border;
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "componentTitle": "What Our Members Say",
+  "autoPlay": true,
+  "pauseOnHover": true,
+  "jumpToId": "testimonials",
+  "testimonialItems": [
+    {
+      "quoteText": "The IPA has been instrumental in helping me grow my accounting practice. The resources and support they provide are invaluable.",
+      "authorName": "Sarah Johnson",
+      "authorTitle": "Senior Partner",
+      "authorCompany": "Johnson & Associates CPA",
+              "desktopProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Sarah Johnson profile photo"
+              },
+              "mobileProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Sarah Johnson profile photo"
+              },
+      "starRating": 5
+    },
+    {
+      "quoteText": "Being part of the IPA community has opened doors I never knew existed. The networking opportunities are fantastic.",
+      "authorName": "Michael Chen",
+      "authorTitle": "Managing Director",
+      "authorCompany": "Chen Financial Services",
+              "desktopProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Michael Chen profile photo"
+              },
+              "mobileProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Michael Chen profile photo"
+              },
+      "starRating": 5
+    },
+    {
+      "quoteText": "The professional development programs offered by IPA have significantly enhanced my skills and career prospects.",
+      "authorName": "Emily Rodriguez",
+      "authorTitle": "Tax Specialist",
+      "authorCompany": "Rodriguez Tax Solutions",
+              "desktopProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Emily Rodriguez profile photo"
+              },
+              "mobileProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "Emily Rodriguez profile photo"
+              },
+      "starRating": 5
+    },
+    {
+      "quoteText": "IPA's commitment to excellence and continuous learning has helped me stay ahead in this ever-changing industry.",
+      "authorName": "David Thompson",
+      "authorTitle": "Principal",
+      "authorCompany": "Thompson & Co. Accountants",
+              "desktopProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "David Thompson profile photo"
+              },
+              "mobileProfileImage": {
+                "src": "/img/testimonial-placeholder.svg",
+                "altText": "David Thompson profile photo"
+              },
+      "starRating": 5
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+@layer components {
+  /* Editor context styles - scoped to Umbraco RTE editor */
+  umb-rte-tinymce-editor,
+  [contenteditable='true'] {
+    table {
+      @apply my-6;
+      border-collapse: collapse;
+      width: 100%;
+
+      th {
+        @apply bg-secondary text-white py-3 font-bold px-3;
+        border: 1px solid theme('colors.secondary');
+      }
+
+      td {
+        @apply px-3 py-1;
+        border: 1px solid theme('colors.grey');
+      }
+
+      /* Propagate table-level border-color to cells */
+      &[style*="border-color"] {
+        tbody, thead, tfoot, tr, th, td {
+          border-color: inherit;
+        }
+      }
+
+      /* Support border-style attribute on table element */
+      @each $style in "solid", "dotted", "dashed", "double", "groove", "ridge", "inset", "outset", "none", "hidden" {
+        &[style*="#{$style}"] {
+          &, tbody, thead, tfoot, tr, th, td {
+            border-style: #{$style};
+          }
+        }
+      }
+    }
+  }
+
+  /* Override Tiptap editor styles for tables */
+  .tableWrapper table {
+    th, td {
+      border: 1px solid theme('colors.grey');
+    }
+
+    th {
+      @apply bg-secondary text-white py-3 font-bold px-3;
+      border: 1px solid theme('colors.secondary');
+    }
+
+    /* Propagate table-level border-color to cells */
+    &[style*="border-color"] {
+      tbody, thead, tfoot, tr, th, td {
+        border-color: inherit;
+      }
+    }
+
+    /* Border style variations for Tiptap editor - apply to all table elements */
+    @each $style in "solid", "dotted", "dashed", "double", "groove", "ridge", "inset", "outset", "none", "hidden" {
+      &[style*="#{$style}"] {
+        &, tbody, thead, tfoot, tr, th, td {
+          border-style: #{$style};
+        }
+      }
+    }
+  }
+
+  /* Frontend styles with wrapper selectors */
+  .umb-rte,
+  [data-rte='true'] {
+    table {
+      @apply my-6;
+      border-collapse: collapse;
+
+      th {
+        @apply bg-secondary text-white py-3 font-bold px-3;
+        border: 1px solid theme('colors.secondary');
+      }
+
+      td {
+        @apply px-3 py-1;
+        border: 1px solid theme('colors.grey');
+      }
+
+      /* Propagate table-level border-color to cells */
+      &[style*="border-color"] {
+        tbody, thead, tfoot, tr, th, td {
+          border-color: inherit;
+        }
+      }
+
+      @each $style in "dotted", "dashed", "double", "groove", "ridge", "inset", "outset", "none", "hidden" {
+        &[style*="#{$style}"] {
+          th, td {
+            border-style: #{$style};
+          }
+        }
+      }
+
+      &.features-table_product {
+        @apply shadow-xl md:w-3/4 mx-auto table-fixed md:table-auto;
+        th {
+          @apply border-y border-x-0 border-secondary py-6 text-left bg-secondary;
+        }
+        td {
+          @apply border-y border-x-0 border-secondary py-4 align-top text-primary;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+@layer components {
+  iframe {
+    @apply w-full opacity-0 transition-all duration-300 h-auto aspect-video;
+
+    &[src*='vimeo'],
+    &[src*='youtube'] {
+      @apply opacity-100;
+    }
+
+    &[data-processed='true'] {
+      @apply opacity-100;
+    }
+  }
+}

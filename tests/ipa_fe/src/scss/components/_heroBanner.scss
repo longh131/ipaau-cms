@@ -1,0 +1,58 @@
+@layer components {
+  [data-type="heroBanner"] {
+    .inner.justify-center .heroForeground {
+      text-align: center;
+    }
+    .heroForeground {
+      @apply mx-auto;
+      max-width: 978px;
+
+    }
+
+    .subtitle {
+      @apply text-warm-plum
+    }
+
+    .cardItem {
+      @media (min-width: 640px) {
+        width: 200px;
+      }
+
+      img {
+        width: 78px;
+      }
+    }
+
+    .inner.has-gradient {
+      @apply py-48;
+
+      .cua--gradient {
+        $padding: 8rem;
+        height: calc(100% - ($padding * 2));
+        top: $padding;
+      }
+    }
+
+    [data-type="footnote"] {
+      @apply bg-white;
+    }
+  }
+
+  [data-type="footnote"] {
+    max-width: 1234px;
+
+    picture {
+
+      &::after {
+        @apply absolute left-0 bottom-0 w-full h-full;
+        content: "";
+        background: linear-gradient(1.26deg, #2D2D2D 10.19%, rgba(45, 45, 45, 0) 99.09%);
+        height: calc(187 / 280 * 100%);
+      }
+
+      img {
+        @apply h-full w-full object-cover;
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+@use 'colors' as *;
+
+@layer components {
+  section[data-type='tabbedContent'] {
+    .tab {
+      &::after {
+        @apply block h-0.5 w-0 transition-all duration-200 bg-transparent content-[''] mt-1 col-span-2;
+      }
+
+      &.active::after {
+        @apply w-full bg-gradient-pink;
+      }
+    }
+
+    .img-shape-acorn{
+        mask: url("/src/assets/masks/acorn.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+        width: calc(100% - 6em);
+        margin: auto;
+
+        @screen sm{
+          width: calc(100% - 14em);
+        }
+
+        @screen lg{
+          width: 100%;
+        }
+    }
+
+    .img-wrapper{
+        position: relative;
+        aspect-ratio: 1491.082 / 1572.087;
+        background-image: var(--cta-bg-mobile, var(--cta-bg-desktop));
+        background-size: cover;
+        background-position: center;
+        @screen lg{
+          background-image: var(--cta-bg-desktop, var(--cta-bg-mobile));
+        }
+    }
+  }
+}

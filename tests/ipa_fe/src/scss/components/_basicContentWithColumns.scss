@@ -1,0 +1,15 @@
+@layer components {
+  [data-type="basicContentWithColumns"] [class*="lg:grid-cols-2"] [data-rte="true"] {
+    div:has(> img[width="24"][height="24"]) {
+      @apply relative pl-10;
+
+      img {
+        @apply absolute top-0 left-0;
+      }
+
+      &:not(:first-child) {
+        @apply mt-6;
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+@layer base {
+  /* Editor context styles - scoped to Umbraco RTE editor */
+  umb-rte-tinymce-editor,
+  [contenteditable='true'] {
+    ul,
+    ol {
+      @apply text-left my-4 ml-8;
+      list-style-position: outside;
+
+      ul, ol {
+        @apply ml-8 my-0;
+      }
+    }
+
+    ul {
+      @apply list-disc;
+      list-style-type: disc;
+    }
+
+    ol {
+      @apply list-decimal;
+      list-style-type: decimal;
+    }
+  }
+
+  /* Frontend styles with wrapper selectors */
+  .umb-rte,
+  [data-rte='true'] {
+    ul,
+    ol {
+      @apply text-left my-4 ml-8;
+      list-style-position: outside !important;
+
+      ul, ol {
+        @apply ml-8 my-0;
+      }
+    }
+
+    ul {
+      @apply list-disc;
+      list-style-type: disc !important;
+    }
+
+    ol {
+      @apply list-decimal;
+      list-style-type: decimal !important;
+    }
+  }
+}

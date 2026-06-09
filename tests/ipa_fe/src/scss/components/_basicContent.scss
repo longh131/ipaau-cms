@@ -1,0 +1,7 @@
+@layer components {
+  [data-type="basicContent"] {
+    small {
+      @apply text-xs;
+    }
+  }
+}

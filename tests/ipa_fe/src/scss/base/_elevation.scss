@@ -1,0 +1,45 @@
+@layer utilities {
+  .elevation-0 {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+  .elevation-1 {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08), 0 0 2px 0 rgba(0, 0, 0, 0.08);
+  }
+  .elevation-2 {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.10), 0 0 4px 0 rgba(0, 0, 0, 0.08);
+  }
+  .elevation-3 {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.10), 0 0 6px 0 rgba(0, 0, 0, 0.08);
+  }
+  .elevation-4 {
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.10), 0 0 8px 0 rgba(0, 0, 0, 0.08);
+  }
+  .elevation-5 {
+    box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.10), 0 0 10px 0 rgba(0, 0, 0, 0.08);
+  }
+  .elevation-6 {
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.10), 0 0 12px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  .elevation-bottom-0 {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+  .elevation-bottom-1 {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.10);
+  }
+  .elevation-bottom-2 {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.10);
+  }
+  .elevation-bottom-3 {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.10);
+  }
+  .elevation-bottom-4 {
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.10);
+  }
+  .elevation-bottom-5 {
+    box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.10);
+  }
+  .elevation-bottom-6 {
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.10);
+  }
+}

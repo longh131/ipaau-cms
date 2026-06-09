@@ -1,0 +1,215 @@
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply mb-6 font-highlight;
+  }
+
+  .has-table {
+    overflow-x: auto;
+  }
+
+  /* Editor context styles - scoped to Umbraco RTE editor */
+  umb-rte-tinymce-editor,
+  [contenteditable='true'] {
+    a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 2px;
+      transition: all 0.3s;
+      color: theme('colors.link');
+
+      &:hover {
+        text-decoration-thickness: 4px;
+        color: theme('colors.link-hover');
+      }
+    }
+  }
+
+  .content {
+    @at-root {
+      h1#{&} {
+        @apply max-lg:text-display-3xl text-display-4xl;
+      }
+      h2#{&} {
+        @apply max-lg:text-display-2xl text-display-3xl;
+      }
+      h3#{&} {
+        @apply max-lg:text-display-xl text-display-2xl;
+      }
+      h4#{&} {
+        @apply max-lg:text-display-lg text-display-xl;
+      }
+    }
+  }
+
+  .banner {
+    @at-root {
+      h1#{&} {
+        @apply max-md:text-display-2xl text-display-3xl;
+      }
+      h2#{&} {
+        @apply max-lg:text-display-2xl text-display-3xl;
+      }
+      h3#{&} {
+        @apply max-lg:text-display-xl text-display-2xl;
+      }
+      h4#{&} {
+        @apply max-lg:text-display-lg text-display-xl;
+      }
+    }
+  }
+
+  .umb-rte,
+  [data-rte='true'] {
+    @apply break-words;
+
+    > div {
+      @apply mb-6
+    }
+
+    > :last-child {
+      @apply mb-0
+    }
+
+    span:empty {
+      @apply inline-block;
+    }
+
+    p,
+    blockquote,
+    code {
+      @apply block mb-4;
+
+      &:last-child {
+        @apply mb-0;
+      }
+      &:empty {
+        margin: 0 !important;
+        display: none;
+        padding: 0 !important;
+      }
+    }
+
+    &:not(.font-din) {
+      .text-display-3xl,
+      .text-display-2xl,
+      .text-display-xl,
+      .text-display-lg,
+      .text-display-md,
+      .text-display-sm {
+        @apply font-apex-book;
+      }
+    }
+
+    p,
+    ul,
+    ol {
+      + h1,
+      + h2,
+      + h3,
+      + h4,
+      + h5,
+      + h6 {
+        @apply mt-10;
+      }
+    }
+
+    blockquote {
+      //rounded-xl shadow-lg ring-1 ring-gray-900/5
+      @apply max-w-full my-12 relative lg:max-w-prose py-6 px-16 ml-12  before:content-[open-quote] after:content-[close-quote] border-l-4 border-secondary;
+      quotes: '\201C' '\201D' '\2018' '\2019';
+
+      &::before,
+      &::after {
+        @apply absolute text-9xl opacity-20;
+      }
+
+      &::before {
+        @apply top-4 left-4;
+      }
+      &::after {
+        @apply bottom-4 right-4 leading-4;
+      }
+    }
+    a {
+      @apply underline underline-offset-4 decoration-2 transition-all duration-300 hover:decoration-4;
+    }
+
+    table img {
+      max-width: none;
+    }
+  }
+
+  [data-rte='true'] div {
+    min-height: 1em;
+  }
+
+  .umb-rte a {
+    @apply text-link hover:text-link-hover decoration-link hover:decoration-link-hover;
+  }
+
+  .text-primary [data-rte='true'] a {
+    @apply text-link hover:text-link-hover decoration-link hover:decoration-link-hover;
+  }
+  .text-secondary [data-rte='true'] a {
+    @apply text-link hover:text-link-hover decoration-link hover:decoration-link-hover;
+  }
+
+  @mixin externalIcon {
+    &::after {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      margin-right: 0.5rem;
+      margin-left: 0.25rem;
+      content: '';
+      mask: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20stroke%3D%22currentColor%22%20class%3D%22w-6%20h-6%22%3E%0A%20%20%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M13.5%206H5.25A2.25%202.25%200%200%200%203%208.25v10.5A2.25%202.25%200%200%200%205.25%2021h10.5A2.25%202.25%200%200%200%2018%2018.75V10.5m-10.5%206L21%203m0%200h-5.25M21%203v5.25%22%20%2F%3E%0A%3C%2Fsvg%3E%0A')
+        no-repeat 50% 50%;
+      -webkit-mask-size: cover;
+      mask-size: cover;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+  }
+
+  .show-external-icons a[target='_blank'] {
+    @apply inline-flex items-center;
+    &:not(.cta) {
+      @include externalIcon();
+    }
+    &.cta {
+      .cta-content {
+        @include externalIcon();
+      }
+    }
+  }
+  a.cta {
+    @apply inline-flex items-center;
+  }
+}
+
+@layer utilities {
+  .label-xl {
+    @apply text-label-xl font-din font-medium uppercase tracking-[1px];
+  }
+  .label-md {
+    @apply text-label-md font-din font-medium uppercase tracking-[0.72px];
+  }
+
+  .label-sm {
+    @apply text-label-sm font-din font-medium mb-2 block tracking-[0.72px];
+  }
+  .label-xs {
+    @apply text-label-xs font-din font-medium mb-2 block tracking-[0.72px];
+  }
+  .eyebrow-md {
+    @apply text-eyebrow-md font-din font-medium  uppercase tracking-[0.72px];
+  }
+  .eyebrow-xl {
+    @apply text-eyebrow-xl font-din font-medium  uppercase tracking-[0.8px];
+  }
+}

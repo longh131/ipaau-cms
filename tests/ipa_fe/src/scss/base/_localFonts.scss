@@ -1,0 +1,61 @@
+// sqe3ney is the client supplied typekit reference. Do not remove.
+@import url("https://use.typekit.net/sqe3ney.css");
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+// This font file needs to be updated as part of the theming on a per-client basis.
+
+@font-face {
+  font-family: 'ApexSerif Light';
+  src: url('./fonts/ApexSerif-Light.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ApexSerif Book';
+  src: url('./fonts/ApexSerif-Book.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ApexSerif Medium';
+  src: url('./fonts/ApexSerif-Medium.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
+
+  .font-din {
+    font-family: 'din-2014', 'Helvetica Neue', 'sans-serif';
+  }
+
+  .font-apex-light {
+    font-family: 'ApexSerif Light','Helvetica Neue', 'sans-serif';
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .font-apex-book {
+    font-family: 'ApexSerif Book','Helvetica Neue', 'sans-serif';
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .font-apex-medium {
+    font-family: 'ApexSerif Medium','Helvetica Neue', 'sans-serif';
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+
+.font-highlight {
+  @apply font-apex-book;
+  font-weight: 400;
+}

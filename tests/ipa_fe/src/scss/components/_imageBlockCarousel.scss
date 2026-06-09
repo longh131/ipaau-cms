@@ -1,0 +1,35 @@
+@layer components {
+  section[data-type='imageBlockWithCarousel'] {
+    .swiper {
+      overflow: hidden;
+    }
+
+    .imageblock-carousel {
+      .swiper-pagination {
+        position: relative;
+        z-index: 10;
+        pointer-events: auto;
+      }
+      .swiper-pagination-bullets {
+        @apply flex justify-center items-center gap-6 mt-12;
+      }
+      //pagination bullets
+      .swiper-pagination-bullet {
+        @apply bg-transparent border-2 border-warm-plum w-4 h-4 m-1 opacity-100 hover:scale-110;
+
+        &.swiper-pagination-bullet-active {
+          @apply bg-warm-plum;
+        }
+      }
+
+      .image-block-carousel__navigation-autoplay-button {
+        @apply text-warm-plum border-warm-plum bg-white;
+        @apply border-2 rounded-full p-2 mb-12 text-sm transition-all duration-300 elevation-0;
+
+        &:hover {
+          @apply scale-110 elevation-6
+        }
+      }
+    }
+  }
+}

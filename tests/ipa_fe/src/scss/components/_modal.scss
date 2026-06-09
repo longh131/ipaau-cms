@@ -1,0 +1,25 @@
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity .5s ease-in-out;
+  z-index: 100;
+
+  &--after-open {
+    opacity: 1;
+  }
+
+  &--before-close {
+    opacity: 0;
+  }
+
+  [data-type="video-modal-content"] {
+    $offset: 2rem;
+    height: calc(100% - #{$offset});
+    top: $offset;
+    
+    [data-type="video-iframe-wrapper"] {
+      iframe {
+        @apply w-full h-full;
+      }
+    }
+  }
+}

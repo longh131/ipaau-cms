@@ -22,6 +22,7 @@ class Article extends Model
         'published_at',
         'is_featured',
         'is_sticky',
+        'is_active',
         'sort_order',
         'extra_fields',
     ];
@@ -31,6 +32,7 @@ class Article extends Model
         'published_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_sticky' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function category(): BelongsTo
