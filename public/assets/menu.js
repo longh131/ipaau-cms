@@ -250,18 +250,13 @@
         }
 
         // 移动端菜单项点击事件（展开子菜单）
-        const mobileMenuItems = document.querySelectorAll('[data-type="mobile-navigation"] [data-level="0"]');
+        const mobileMenuItems = document.querySelectorAll('[data-type="desktop-navigation"] [data-level="0"]');
         mobileMenuItems.forEach((menuItem) => {
             const button = menuItem.querySelector('button');
             if (button) {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    // 切换子菜单显示
-                    menuItem.classList.toggle('active');
-                    menuItem.classList.toggle('inactive');
-                    
-                    // 切换子菜单面板
                     const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
                     if (panel) {
                         panel.classList.toggle('hidden');
@@ -269,6 +264,93 @@
                     }
                 });
             }
+        });
+
+        // 移动端二级菜单项点击事件（展开三级菜单）
+        const mobileSubMenuItems = document.querySelectorAll('[data-type="megamenu-level-1"] > li');
+        mobileSubMenuItems.forEach((subMenuItem) => {
+            const button = subMenuItem.querySelector('button');
+            if (button) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const panel = subMenuItem.querySelector('[data-type="megamenu-level-2"]');
+                    if (panel) {
+                        panel.classList.toggle('hidden');
+                        panel.classList.toggle('block');
+                    }
+                });
+            }
+        });
+    }
+
+    // ==================== 搜索功能 ====================
+
+    // 获取搜索触发器容器
+    function getSearchTriggerContainer() {
+        return document.querySelector('[data-type="search"]');
+    }
+
+    // 获取搜索触发器按钮
+    function getSearchTrigger() {
+        const container = getSearchTriggerContainer();
+        if (container) {
+            return container.querySelector('button');
+        }
+        return null;
+    }
+
+    // 获取搜索表单
+    function getSearchForm() {
+        return document.querySelector('[data-type="searchForm"]');
+    }
+
+    // 获取搜索图标容器（用于切换图标）
+    function getSearchIcon() {
+        const container = getSearchTriggerContainer();
+        if (container) {
+            return container.querySelector('svg');
+        }
+        return null;
+    }
+
+    // 切换搜索框显示
+    function toggleSearch() {
+        const triggerContainer = getSearchTriggerContainer();
+        const searchForm = getSearchForm();
+        
+        if (!triggerContainer || !searchForm) {
+            return;
+        }
+        
+        // 切换触发器容器状态
+        triggerContainer.classList.toggle('active');
+        triggerContainer.classList.toggle('inactive');
+        
+        // 切换搜索表单状态
+        searchForm.classList.toggle('active');
+        searchForm.classList.toggle('inactive');
+        
+        // 切换搜索表单内部的form状态（用于动画）
+        const form = searchForm.querySelector('form');
+        if (form) {
+            form.classList.toggle('active');
+            form.classList.toggle('inactive');
+        }
+    }
+
+    // 初始化搜索功能
+    function initSearch() {
+        const trigger = document.querySelector('[data-type="search"] button');
+        
+        if (!trigger) {
+            return;
+        }
+        
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSearch();
         });
     }
 
@@ -483,6 +565,19 @@
             if (mobileMenuOpen && mobileNav && !mobileNav.contains(e.target) && (!trigger || !trigger.contains(e.target))) {
                 toggleMobileMenu();
             }
+            
+            // 关闭搜索框（点击外部）
+            const searchTriggerContainer = getSearchTriggerContainer();
+            const searchForm = getSearchForm();
+            const searchTrigger = getSearchTrigger();
+            
+            if (searchTriggerContainer && searchForm && searchTrigger) {
+                const isSearchOpen = searchTriggerContainer.classList.contains('active');
+                
+                if (isSearchOpen && !searchForm.contains(e.target) && !searchTrigger.contains(e.target)) {
+                    toggleSearch();
+                }
+            }
         });
     }
 
@@ -510,12 +605,21 @@
         });
     }
 
+    // 防止重复初始化
+    let initialized = false;
+
     // 初始化所有功能
     function init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+        
         initMenuEvents();
         initMobileMenu();
         initTabs();
         initCarousel();
+        initSearch();
         initOutsideClick();
         initEscapeKey();
         initResponsive();
