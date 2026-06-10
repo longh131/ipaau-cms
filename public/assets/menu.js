@@ -354,11 +354,9 @@
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // 移除所有tab的激活状态
                     tabs.forEach(t => t.classList.remove('active'));
                     panels.forEach(p => p.classList.remove('active'));
                     
-                    // 激活当前tab和面板
                     tab.classList.add('active');
                     if (panels[index]) {
                         panels[index].classList.add('active');
@@ -378,11 +376,9 @@
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // 移除所有tab的激活状态
                     tabs.forEach(t => t.classList.remove('active'));
                     contents.forEach(c => c.classList.remove('active'));
                     
-                    // 激活当前tab和内容
                     tab.classList.add('active');
                     if (contents[index]) {
                         contents[index].classList.add('active');
@@ -391,22 +387,20 @@
             });
         });
 
-        // 特殊处理EVENTS COURSES ONLINE CPD选项卡（通过button标签）
+        // 特殊处理EVENTS COURSES ONLINE CPD选项卡
         const eventTabContainers = document.querySelectorAll('[data-type="tab-container"]');
         
         eventTabContainers.forEach(container => {
-            const tabs = container.querySelectorAll('button[data-type="tab"], .tab button');
+            const tabs = container.querySelectorAll('button[data-type="tab"], .tab button, .tab');
             const panels = container.querySelectorAll('[data-type="tab-panel"], [data-type="course-content"]');
             
             tabs.forEach((tab, index) => {
                 tab.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // 移除所有tab的激活状态
                     tabs.forEach(t => t.classList.remove('active'));
                     panels.forEach(p => p.classList.remove('active'));
                     
-                    // 激活当前tab和面板
                     tab.classList.add('active');
                     if (panels[index]) {
                         panels[index].classList.add('active');
@@ -414,12 +408,367 @@
                 });
             });
         });
+
+        // 处理简单的.tab类选项卡（EVENTS COURSES ONLINE CPD）
+        console.log('[DEBUG] 开始处理简单选项卡');
+        const simpleTabContainers = document.querySelectorAll('.flex.h-full.flex-col.items-start');
+        console.log('[DEBUG] 找到简单选项卡容器数量:', simpleTabContainers.length);
+        
+        simpleTabContainers.forEach((container, containerIndex) => {
+            const tabs = container.querySelectorAll('.tab');
+            console.log('[DEBUG] 容器', containerIndex, '找到.tab按钮数量:', tabs.length);
+            
+            if (tabs.length > 0) {
+                // 找到按钮容器
+                const buttonContainer = container.querySelector('.flex.flex-wrap.gap-4');
+                console.log('[DEBUG] 容器', containerIndex, '按钮容器:', buttonContainer ? '找到' : '未找到');
+                
+                if (buttonContainer) {
+                    // 方式1：查找按钮容器内部的内容区域
+                    let contentContainer = buttonContainer.querySelector('.space-y-8');
+                    console.log('[DEBUG] 容器', containerIndex, '按钮容器内查找space-y-8:', contentContainer ? '找到' : '未找到');
+                    
+                    // 方式2：如果不在按钮容器内，查找整个父容器内的内容区域
+                    if (!contentContainer) {
+                        contentContainer = container.querySelector('.space-y-8');
+                        console.log('[DEBUG] 容器', containerIndex, '父容器内查找space-y-8:', contentContainer ? '找到' : '未找到');
+                    }
+                    
+                    // 方式3：查找按钮容器之后的所有元素中包含space-y-8的
+                    if (!contentContainer) {
+                        const allElements = container.querySelectorAll('.space-y-8');
+                        if (allElements.length > 0) {
+                            contentContainer = allElements[0];
+                            console.log('[DEBUG] 容器', containerIndex, '查询选择器查找space-y-8:', '找到');
+                        }
+                    }
+                    
+                    // 方式4：查找包含tab-panel类的元素的父容器
+                    if (!contentContainer) {
+                        const tabPanel = container.querySelector('.tab-panel, [data-type="tab-panel"]');
+                        if (tabPanel) {
+                            contentContainer = tabPanel.parentElement;
+                            console.log('[DEBUG] 容器', containerIndex, '通过tab-panel父容器查找:', contentContainer.className);
+                        }
+                    }
+                    
+                    if (contentContainer) {
+                        console.log('[DEBUG] 容器', containerIndex, '找到内容容器:', contentContainer.className);
+                        // 查找内容容器下的直接子元素作为面板
+                        let panels = contentContainer.children;
+                        console.log('[DEBUG] 容器', containerIndex, '找到面板数量:', panels.length);
+                        
+                        // 如果面板数量少于tabs数量，动态创建缺失的面板
+                        if (panels.length < tabs.length) {
+                            console.log('[DEBUG] 容器', containerIndex, '面板数量不足，需要创建', tabs.length - panels.length, '个面板');
+                            
+                            // 将HTMLCollection转换为数组
+                            panels = Array.from(panels);
+                            
+                            // 获取第一个面板的HTML作为模板
+                            const firstPanel = panels[0];
+                            if (firstPanel) {
+                                const panelTemplate = firstPanel.outerHTML;
+                                
+                                for (let i = panels.length; i < tabs.length; i++) {
+                                    const newPanel = document.createElement('div');
+                                    newPanel.innerHTML = panelTemplate;
+                                    const newPanelContent = newPanel.firstChild;
+                                    newPanelContent.classList.add('hidden');
+                                    
+                                    // 更新内容为对应tab的名称
+                                    const tabName = tabs[i].textContent.trim();
+                                    const titleElement = newPanelContent.querySelector('h3, h4, .title');
+                                    const descElement = newPanelContent.querySelector('p, .description');
+                                    if (titleElement) {
+                                        titleElement.textContent = `${tabName} Content`;
+                                    }
+                                    if (descElement) {
+                                        descElement.textContent = `This is the ${tabName.toLowerCase()} section. Discover our comprehensive ${tabName.toLowerCase()} offerings designed to support your professional development and enhance your skills.`;
+                                    }
+                                    
+                                    contentContainer.appendChild(newPanelContent);
+                                    panels.push(newPanelContent);
+                                    console.log('[DEBUG] 容器', containerIndex, '创建面板', i);
+                                }
+                            }
+                        }
+                        
+                        const targetPanels = panels;
+                        
+                        // 查找选项卡容器中的图片元素（先在容器内找，找不到就在父容器中找）
+                        let imgWrapper = container.querySelector('.img-shape-acorn.img-wrapper');
+                        if (!imgWrapper) {
+                            imgWrapper = container.parentElement.querySelector('.img-shape-acorn.img-wrapper');
+                        }
+                        if (!imgWrapper) {
+                            imgWrapper = container.closest('.flex, .grid, .section').querySelector('.img-shape-acorn.img-wrapper');
+                        }
+                        if (!imgWrapper) {
+                            // 最后尝试在整个文档中查找
+                            imgWrapper = document.querySelector('.img-shape-acorn.img-wrapper');
+                        }
+                        console.log('[DEBUG] 容器', containerIndex, '找到图片容器:', imgWrapper ? '找到' : '未找到');
+                        if (imgWrapper) {
+                            console.log('[DEBUG] 容器', containerIndex, '图片容器className:', imgWrapper.className);
+                        }
+                        
+                        // 为每个tab准备不同的图片URL
+                        const imageUrls = [
+                            'https://picsum.photos/400/400.webp?random=7',
+                            'https://picsum.photos/400/400.webp?random=8',
+                            'https://picsum.photos/400/400.webp?random=9'
+                        ];
+                        
+                        tabs.forEach((tab, index) => {
+                            tab.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                console.log('[DEBUG] 选项卡点击, index:', index, 'text:', tab.textContent.trim());
+                                
+                                tabs.forEach(t => t.classList.remove('active'));
+                                console.log('[DEBUG] 移除所有tab的active类');
+                                
+                                // 隐藏所有面板
+                                for (let i = 0; i < targetPanels.length; i++) {
+                                    targetPanels[i].classList.remove('active');
+                                    targetPanels[i].classList.add('hidden');
+                                }
+                                console.log('[DEBUG] 隐藏所有面板');
+                                
+                                tab.classList.add('active');
+                                console.log('[DEBUG] 激活当前tab');
+                                
+                                if (targetPanels[index]) {
+                                    targetPanels[index].classList.remove('hidden');
+                                    targetPanels[index].classList.add('active');
+                                    console.log('[DEBUG] 显示面板', index);
+                                } else {
+                                    console.log('[DEBUG] 面板', index, '不存在');
+                                }
+                                
+                                // 更新右侧图片
+                                if (imgWrapper && imageUrls[index]) {
+                                    imgWrapper.style.setProperty('--cta-bg-desktop', `url(${imageUrls[index]})`);
+                                    console.log('[DEBUG] 更新图片为:', imageUrls[index]);
+                                }
+                            });
+                        });
+                    } else {
+                        console.log('[DEBUG] 容器', containerIndex, '未找到内容容器');
+                        // 尝试直接在父容器中查找面板
+                        const directPanels = container.querySelectorAll('.tab-panel, [data-type="tab-panel"], .course-content');
+                        console.log('[DEBUG] 容器', containerIndex, '直接查找面板数量:', directPanels.length);
+                        
+                        if (directPanels.length > 0) {
+                            console.log('[DEBUG] 容器', containerIndex, '使用直接查找的面板');
+                            tabs.forEach((tab, index) => {
+                                tab.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    tabs.forEach(t => t.classList.remove('active'));
+                                    directPanels.forEach(p => {
+                                        p.classList.remove('active');
+                                        p.classList.add('hidden');
+                                    });
+                                    tab.classList.add('active');
+                                    if (directPanels[index]) {
+                                        directPanels[index].classList.remove('hidden');
+                                        directPanels[index].classList.add('active');
+                                    }
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // ==================== 滑动效果（轮播）====================
 
     // 初始化滑动效果
     function initCarousel() {
+        // 处理.testimonial-carousel类的轮播
+        console.log('[DEBUG] 开始处理轮播');
+        const testimonialCarousels = document.querySelectorAll('.testimonial-carousel');
+        console.log('[DEBUG] 找到轮播容器数量:', testimonialCarousels.length);
+        
+        testimonialCarousels.forEach((carousel, carouselIndex) => {
+            console.log('[DEBUG] 轮播', carouselIndex, '开始初始化');
+            
+            const swiperWrapper = carousel.querySelector('.swiper-wrapper');
+            const slides = carousel.querySelectorAll('[data-type="slide"], .testimonial-slide, .swiper-slide');
+            const prevButton = carousel.querySelector('[data-type="prev-button"], .prev-button, .testimonial-card__navigation-previous');
+            const nextButton = carousel.querySelector('[data-type="next-button"], .next-button, .testimonial-card__navigation-next');
+            const pagination = carousel.querySelector('.swiper-pagination');
+            const indicators = carousel.querySelectorAll('[data-type="indicator"], .carousel-indicator, .swiper-pagination-bullet');
+            const autoplayButton = carousel.querySelector('.testimonial-card__navigation-autoplay-button');
+            
+            console.log('[DEBUG] 轮播', carouselIndex, 'slides数量:', slides.length);
+            console.log('[DEBUG] 轮播', carouselIndex, 'prevButton:', prevButton ? '找到' : '未找到');
+            console.log('[DEBUG] 轮播', carouselIndex, 'nextButton:', nextButton ? '找到' : '未找到');
+            console.log('[DEBUG] 轮播', carouselIndex, 'pagination:', pagination ? '找到' : '未找到');
+            console.log('[DEBUG] 轮播', carouselIndex, 'indicators数量:', indicators.length);
+            console.log('[DEBUG] 轮播', carouselIndex, 'autoplayButton:', autoplayButton ? '找到' : '未找到');
+            
+            let currentIndex = 0;
+            let autoplayInterval = null;
+            let isAutoplay = true;
+
+            function showSlide(index) {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                
+                currentIndex = index;
+                console.log('[DEBUG] 轮播', carouselIndex, '显示slide:', currentIndex);
+                
+                // 使用transform实现左右滑动
+                if (swiperWrapper) {
+                    swiperWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    swiperWrapper.style.transition = 'transform 0.5s ease';
+                }
+                
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active', 'swiper-slide-active', 'swiper-slide-prev', 'swiper-slide-next', 'hidden');
+                    if (i === currentIndex) {
+                        slide.classList.add('active', 'swiper-slide-active');
+                    } else if (i === currentIndex - 1 || (currentIndex === 0 && i === slides.length - 1)) {
+                        slide.classList.add('swiper-slide-prev');
+                    } else if (i === currentIndex + 1 || (currentIndex === slides.length - 1 && i === 0)) {
+                        slide.classList.add('swiper-slide-next');
+                    }
+                });
+                
+                indicators.forEach((indicator, i) => {
+                    indicator.classList.remove('active', 'swiper-pagination-bullet-active');
+                    if (i === currentIndex) {
+                        indicator.classList.add('active', 'swiper-pagination-bullet-active');
+                    }
+                });
+            }
+
+            function nextSlide() {
+                console.log('[DEBUG] 轮播', carouselIndex, '下一个slide');
+                showSlide(currentIndex + 1);
+            }
+
+            function prevSlide() {
+                console.log('[DEBUG] 轮播', carouselIndex, '上一个slide');
+                showSlide(currentIndex - 1);
+            }
+
+            function startAutoplay() {
+                if (autoplayInterval) clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(nextSlide, 5000);
+                isAutoplay = true;
+                console.log('[DEBUG] 轮播', carouselIndex, '启动自动播放');
+                if (autoplayButton) {
+                    autoplayButton.setAttribute('aria-pressed', 'true');
+                    autoplayButton.setAttribute('aria-label', 'Pause autoplay');
+                }
+            }
+
+            function stopAutoplay() {
+                if (autoplayInterval) clearInterval(autoplayInterval);
+                autoplayInterval = null;
+                isAutoplay = false;
+                console.log('[DEBUG] 轮播', carouselIndex, '停止自动播放');
+                if (autoplayButton) {
+                    autoplayButton.setAttribute('aria-pressed', 'false');
+                    autoplayButton.setAttribute('aria-label', 'Play autoplay');
+                }
+            }
+
+            function toggleAutoplay() {
+                console.log('[DEBUG] 轮播', carouselIndex, '切换自动播放状态');
+                if (isAutoplay) {
+                    stopAutoplay();
+                } else {
+                    startAutoplay();
+                }
+            }
+
+            if (nextButton) {
+                nextButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('[DEBUG] 轮播', carouselIndex, '点击next按钮');
+                    nextSlide();
+                });
+            }
+            if (prevButton) {
+                prevButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('[DEBUG] 轮播', carouselIndex, '点击prev按钮');
+                    prevSlide();
+                });
+            }
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('[DEBUG] 轮播', carouselIndex, '点击指示器:', index);
+                    showSlide(index);
+                });
+            });
+
+            if (autoplayButton) {
+                autoplayButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[DEBUG] 轮播', carouselIndex, '点击自动播放按钮');
+                    console.log('[DEBUG] 轮播', carouselIndex, '当前isAutoplay状态:', isAutoplay);
+                    toggleAutoplay();
+                });
+                
+                // 添加touchend事件支持移动端
+                autoplayButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[DEBUG] 轮播', carouselIndex, '触摸自动播放按钮');
+                    toggleAutoplay();
+                });
+            }
+
+            carousel.addEventListener('mouseenter', function() {
+                console.log('[DEBUG] 轮播', carouselIndex, '鼠标进入，暂停自动播放');
+                // 保存当前状态，以便鼠标离开时恢复
+                if (isAutoplay) {
+                    stopAutoplay();
+                    // 标记需要在鼠标离开时恢复
+                    carousel.dataset.shouldResume = 'true';
+                }
+            });
+            carousel.addEventListener('mouseleave', function() {
+                console.log('[DEBUG] 轮播', carouselIndex, '鼠标离开');
+                console.log('[DEBUG] 轮播', carouselIndex, 'shouldResume:', carousel.dataset.shouldResume);
+                // 只有当鼠标进入前是自动播放状态时才恢复
+                if (carousel.dataset.shouldResume === 'true') {
+                    startAutoplay();
+                    carousel.dataset.shouldResume = 'false';
+                }
+            });
+
+            // 设置swiper-wrapper样式
+            if (swiperWrapper) {
+                swiperWrapper.style.display = 'flex';
+                swiperWrapper.style.flexDirection = 'row';
+            }
+            
+            // 设置slides宽度
+            slides.forEach(slide => {
+                slide.style.flex = '0 0 100%';
+                slide.style.width = '100%';
+            });
+
+            // 初始化显示第一个slide
+            if (slides.length > 0) {
+                showSlide(0);
+            }
+
+            // 启动自动播放
+            startAutoplay();
+            console.log('[DEBUG] 轮播', carouselIndex, '初始化完成');
+        });
+
         // 处理testimonialCarousel
         const testimonialSections = document.querySelectorAll('section[data-type="testimonialCarousel"]');
         
@@ -430,15 +779,12 @@
             const indicators = section.querySelectorAll('[data-type="indicator"], .carousel-indicator');
             let currentIndex = 0;
 
-            // 显示指定slide
             function showSlide(index) {
-                // 循环处理
                 if (index < 0) index = slides.length - 1;
                 if (index >= slides.length) index = 0;
                 
                 currentIndex = index;
                 
-                // 隐藏所有slides
                 slides.forEach((slide, i) => {
                     slide.classList.remove('active');
                     slide.classList.add('hidden');
@@ -448,23 +794,19 @@
                     }
                 });
                 
-                // 更新指示器
                 indicators.forEach((indicator, i) => {
                     indicator.classList.toggle('active', i === currentIndex);
                 });
             }
 
-            // 下一个slide
             function nextSlide() {
                 showSlide(currentIndex + 1);
             }
 
-            // 上一个slide
             function prevSlide() {
                 showSlide(currentIndex - 1);
             }
 
-            // 添加按钮事件
             if (nextButton) {
                 nextButton.addEventListener('click', nextSlide);
             }
@@ -472,19 +814,15 @@
                 prevButton.addEventListener('click', prevSlide);
             }
 
-            // 添加指示器事件
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener('click', () => showSlide(index));
             });
 
-            // 自动播放
             const interval = setInterval(nextSlide, 5000);
             
-            // 鼠标悬停时暂停自动播放
             section.addEventListener('mouseenter', () => clearInterval(interval));
             section.addEventListener('mouseleave', () => setInterval(nextSlide, 5000));
 
-            // 初始化显示第一个slide
             if (slides.length > 0) {
                 showSlide(0);
             }

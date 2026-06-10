@@ -3706,6 +3706,8 @@ section[data-type=testimonialCarousel] > .container.inner {
     overflow: hidden;
   }
 .testimonial-carousel .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
     align-items: center;
     box-sizing: border-box !important;
   }
