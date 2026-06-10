@@ -249,32 +249,17 @@
             });
         }
 
-        // 移动端菜单项点击事件（展开子菜单）
-        const mobileMenuItems = document.querySelectorAll('[data-type="desktop-navigation"] [data-level="0"]');
+        // 移动端菜单项点击事件（展开二级菜单）
+        const mobileMenuItems = document.querySelectorAll('[data-type="mobile-navigation"] [data-level="0"]');
         mobileMenuItems.forEach((menuItem) => {
             const button = menuItem.querySelector('button');
             if (button) {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
+                    menuItem.classList.toggle('inactive');
+                    menuItem.classList.toggle('active');
                     const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
-                    if (panel) {
-                        panel.classList.toggle('hidden');
-                        panel.classList.toggle('block');
-                    }
-                });
-            }
-        });
-
-        // 移动端二级菜单项点击事件（展开三级菜单）
-        const mobileSubMenuItems = document.querySelectorAll('[data-type="megamenu-level-1"] > li');
-        mobileSubMenuItems.forEach((subMenuItem) => {
-            const button = subMenuItem.querySelector('button');
-            if (button) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const panel = subMenuItem.querySelector('[data-type="megamenu-level-2"]');
                     if (panel) {
                         panel.classList.toggle('hidden');
                         panel.classList.toggle('block');
