@@ -44,7 +44,8 @@
             return;
         }
 
-        // 关闭所有菜单
+        // 打开菜单前先关闭搜索和其他面板
+        closeSearch();
         closeAllMenus();
 
         // 激活当前菜单
@@ -128,6 +129,8 @@
 
         menuItems.forEach((menuItem, index) => {
             const menuWrapper = menuItem.querySelector('[data-type="menu-wrapper-0"]');
+            if (!menuWrapper) return;
+
             const link = menuWrapper.querySelector('a');
 
             if (link) {
@@ -135,6 +138,7 @@
                     // 只在桌面端处理点击
                     if (window.innerWidth >= 1280) {
                         e.preventDefault();
+                        e.stopPropagation();
                         toggleMenu(menuItem, index);
                     }
                 });
@@ -144,6 +148,8 @@
             const subMenuItems = getSubMenuItems(menuItem);
             subMenuItems.forEach((subMenuItem, subIndex) => {
                 const subMenuWrapper = subMenuItem.querySelector('[data-type="menu-wrapper-1"]');
+                if (!subMenuWrapper) return;
+
                 const subLink = subMenuWrapper.querySelector('a');
 
                 if (subLink && subLink.getAttribute('data-children') === 'true') {
@@ -200,6 +206,12 @@
         const mobileNav = getMobileNavigation();
         const mobileNavContent = getMobileNavigationContent();
         const menuIcon = getMobileMenuIcon();
+        const willOpen = !mobileMenuOpen;
+
+        if (willOpen) {
+            closeSearch();
+            closeAllMenus();
+        }
         
         if (trigger && mobileNav && triggerContainer) {
             mobileMenuOpen = !mobileMenuOpen;
@@ -252,18 +264,110 @@
         // 移动端菜单项点击事件（展开二级菜单）
         const mobileMenuItems = document.querySelectorAll('[data-type="mobile-navigation"] [data-level="0"]');
         mobileMenuItems.forEach((menuItem) => {
-            const button = menuItem.querySelector('button');
+            const button = menuItem.querySelector('[data-type="menu-wrapper-0"] button');
             if (button) {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
+
+                    const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
+                    const willOpen = menuItem.classList.contains('inactive');
+
                     menuItem.classList.toggle('inactive');
                     menuItem.classList.toggle('active');
-                    const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
+
                     if (panel) {
-                        panel.classList.toggle('hidden');
-                        panel.classList.toggle('block');
+                        panel.classList.toggle('hidden', !willOpen);
+                        panel.classList.toggle('block', willOpen);
+
+                        if (!willOpen) {
+                            resetMobileLevel2Menus(panel);
+                        }
                     }
+                });
+            }
+        });
+
+        initMobileLevel2Menus();
+    }
+
+    function resetMobileLevel2Menus(container) {
+        if (!container) return;
+
+        container.querySelectorAll('[data-type="megamenu-level-1"] > li').forEach((menuItem) => {
+            menuItem.classList.remove('active');
+            menuItem.classList.add('inactive');
+        });
+
+        container.querySelectorAll('[data-type="megamenu-level-2"]').forEach((panel) => {
+            panel.classList.remove('active', 'max-xl:block', 'block');
+            panel.classList.add('inactive', 'max-xl:hidden');
+            panel.querySelectorAll('a').forEach((link) => {
+                link.setAttribute('tabindex', '-1');
+                link.setAttribute('aria-hidden', 'true');
+            });
+        });
+    }
+
+    function setMobileLevel2Open(menuItem, level2Panel, isOpen) {
+        menuItem.classList.toggle('active', isOpen);
+        menuItem.classList.toggle('inactive', !isOpen);
+        level2Panel.classList.toggle('active', isOpen);
+        level2Panel.classList.toggle('max-xl:block', isOpen);
+        level2Panel.classList.toggle('max-xl:hidden', !isOpen);
+        level2Panel.classList.toggle('hidden', !isOpen);
+        level2Panel.classList.toggle('block', isOpen);
+
+        level2Panel.querySelectorAll('a').forEach((link) => {
+            link.setAttribute('tabindex', isOpen ? '0' : '-1');
+            link.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        });
+    }
+
+    function initMobileLevel2Menus() {
+        const mobileNav = document.querySelector('[data-type="mobile-navigation"]');
+        if (!mobileNav) return;
+
+        mobileNav.querySelectorAll('[data-type="megamenu-level-1"] > li').forEach((menuItem) => {
+            const wrapper = menuItem.querySelector('[data-type="menu-wrapper-1"]');
+            const level2Panel = menuItem.querySelector('[data-type="megamenu-level-2"]');
+            if (!wrapper || !level2Panel) return;
+
+            const button = wrapper.querySelector('button');
+            const link = wrapper.querySelector('a[data-children="true"]');
+            if (!button) return;
+
+            function toggleLevel2() {
+                const isOpen = level2Panel.classList.contains('max-xl:block');
+
+                if (isOpen) {
+                    setMobileLevel2Open(menuItem, level2Panel, false);
+                    return;
+                }
+
+                menuItem.parentElement.querySelectorAll(':scope > li').forEach((sibling) => {
+                    if (sibling === menuItem) return;
+                    const siblingPanel = sibling.querySelector('[data-type="megamenu-level-2"]');
+                    if (siblingPanel) {
+                        setMobileLevel2Open(sibling, siblingPanel, false);
+                    }
+                });
+
+                setMobileLevel2Open(menuItem, level2Panel, true);
+            }
+
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleLevel2();
+            });
+
+            if (link) {
+                link.addEventListener('click', function(e) {
+                    if (window.innerWidth >= 1280) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleLevel2();
                 });
             }
         });
@@ -290,6 +394,31 @@
         return document.querySelector('[data-type="searchForm"]');
     }
 
+    function isSearchOpen() {
+        const triggerContainer = getSearchTriggerContainer();
+        return !!(triggerContainer && triggerContainer.classList.contains('active'));
+    }
+
+    function closeSearch() {
+        const triggerContainer = getSearchTriggerContainer();
+        const searchForm = getSearchForm();
+
+        if (!triggerContainer || !searchForm || !isSearchOpen()) {
+            return;
+        }
+
+        triggerContainer.classList.remove('active');
+        triggerContainer.classList.add('inactive');
+        searchForm.classList.remove('active');
+        searchForm.classList.add('inactive');
+
+        const form = searchForm.querySelector('form');
+        if (form) {
+            form.classList.remove('active');
+            form.classList.add('inactive');
+        }
+    }
+
     // 获取搜索图标容器（用于切换图标）
     function getSearchIcon() {
         const container = getSearchTriggerContainer();
@@ -306,6 +435,15 @@
         
         if (!triggerContainer || !searchForm) {
             return;
+        }
+
+        const willOpen = !isSearchOpen();
+
+        if (willOpen) {
+            closeAllMenus();
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
         }
         
         // 切换触发器容器状态
@@ -341,6 +479,121 @@
 
     // ==================== 选项卡效果 ====================
 
+    const TABBED_CONTENT_PRESETS = [
+        {
+            tagline: '声誉与认可',
+            title: '专业声誉，全球认可',
+            description: 'IPA 致力于提升会计行业的专业声誉与国际认可度，为会员提供权威资质背书与职业发展支持。',
+            cta: '了解更多',
+            image: 'assets/img/20231201-ipa-national-congress-day-3-0471.jpg'
+        },
+        {
+            tagline: '倡导（AU）',
+            title: '为中小企业发声，推动行业变革',
+            description: '我们在澳大利亚积极倡导中小企业与会计专业人士的权益，参与政策讨论，为会员争取更有利的营商环境。',
+            cta: '查看倡导工作',
+            image: 'assets/img/ipaportdouglas_2024_congress_day1_0156.jpg'
+        },
+        {
+            tagline: '政策（AU）',
+            title: '深度参与政策制定与行业规范',
+            description: 'IPA 密切关注澳大利亚财税政策动态，为会员解读法规变化，提供合规指引与专业建议。',
+            cta: '浏览政策解读',
+            image: 'assets/img/ipaportdouglas_2024_congress_day1_0302.jpg'
+        },
+        {
+            tagline: 'PA新闻',
+            title: '掌握行业最新动态与资讯',
+            description: '及时了解 Public Accountants 领域的新闻、活动与行业趋势，助您把握先机，持续成长。',
+            cta: '阅读更多新闻',
+            image: 'assets/img/20231201-ipa-national-congress-day-3-0471.jpg'
+        }
+    ];
+
+    function applyTabPanelContent(panel, preset) {
+        const eyebrow = panel.querySelector('.eyebrow-xl');
+        const titleEl = panel.querySelector('[data-type="section-title"] h3, h3');
+        const descEl = panel.querySelector('[data-type="section-description"] .text-primary');
+        const ctaEl = panel.querySelector('.cta-content');
+
+        if (eyebrow) eyebrow.textContent = preset.tagline;
+        if (titleEl) titleEl.textContent = preset.title;
+        if (descEl) descEl.textContent = preset.description;
+        if (ctaEl) ctaEl.textContent = preset.cta;
+    }
+
+    function setTabImage(imgWrapper, imagePath) {
+        if (!imgWrapper || !imagePath) return;
+
+        const img = imgWrapper.querySelector('img');
+        if (img) {
+            img.src = imagePath;
+        }
+    }
+
+    function initTabbedContentSections() {
+        document.querySelectorAll('section[data-type="tabbedContent"]').forEach(section => {
+            const tabGroups = Array.from(section.querySelectorAll('.flex.flex-wrap.gap-4')).filter(
+                group => group.querySelector('button.tab, .tab')
+            );
+            if (tabGroups.length === 0) return;
+
+            const tabCount = tabGroups[0].querySelectorAll('button.tab, .tab').length;
+            const contentColumn = section.querySelector('.flex.h-full.flex-col.items-start');
+            if (!contentColumn) return;
+
+            const imgWrapper = section.querySelector('.img-shape-acorn.img-wrapper');
+            let panels = Array.from(contentColumn.querySelectorAll('[data-type="tab-content"]'));
+
+            if (panels.length === 0) {
+                const original = contentColumn.querySelector('.space-y-8');
+                if (!original) return;
+
+                original.setAttribute('data-type', 'tab-content');
+                panels = [original];
+
+                for (let i = 1; i < tabCount; i++) {
+                    const clone = original.cloneNode(true);
+                    clone.setAttribute('data-type', 'tab-content');
+                    clone.classList.add('hidden');
+                    if (TABBED_CONTENT_PRESETS[i]) {
+                        applyTabPanelContent(clone, TABBED_CONTENT_PRESETS[i]);
+                    }
+                    contentColumn.appendChild(clone);
+                    panels.push(clone);
+                }
+            }
+
+            function switchTab(index) {
+                tabGroups.forEach(group => {
+                    group.querySelectorAll('button.tab, .tab').forEach((tab, i) => {
+                        tab.classList.toggle('active', i === index);
+                    });
+                });
+
+                panels.forEach((panel, i) => {
+                    panel.classList.toggle('hidden', i !== index);
+                });
+
+                const preset = TABBED_CONTENT_PRESETS[index];
+                if (imgWrapper && preset) {
+                    setTabImage(imgWrapper, preset.image);
+                }
+            }
+
+            tabGroups.forEach(group => {
+                group.querySelectorAll('button.tab, .tab').forEach((tab, index) => {
+                    tab.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        switchTab(index);
+                    });
+                });
+            });
+
+            switchTab(0);
+        });
+    }
+
     // 初始化选项卡效果
     function initTabs() {
         // 通用选项卡处理
@@ -365,27 +618,7 @@
             });
         });
 
-        // 特殊处理tabbedContent区域的选项卡
-        const tabbedSections = document.querySelectorAll('section[data-type="tabbedContent"]');
-        
-        tabbedSections.forEach(section => {
-            const tabs = section.querySelectorAll('.tab');
-            const contents = section.querySelectorAll('[data-type="tab-content"]');
-            
-            tabs.forEach((tab, index) => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    tabs.forEach(t => t.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    if (contents[index]) {
-                        contents[index].classList.add('active');
-                    }
-                });
-            });
-        });
+        initTabbedContentSections();
 
         // 特殊处理EVENTS COURSES ONLINE CPD选项卡
         const eventTabContainers = document.querySelectorAll('[data-type="tab-container"]');
@@ -408,179 +641,6 @@
                 });
             });
         });
-
-        // 处理简单的.tab类选项卡（EVENTS COURSES ONLINE CPD）
-        console.log('[DEBUG] 开始处理简单选项卡');
-        const simpleTabContainers = document.querySelectorAll('.flex.h-full.flex-col.items-start');
-        console.log('[DEBUG] 找到简单选项卡容器数量:', simpleTabContainers.length);
-        
-        simpleTabContainers.forEach((container, containerIndex) => {
-            const tabs = container.querySelectorAll('.tab');
-            console.log('[DEBUG] 容器', containerIndex, '找到.tab按钮数量:', tabs.length);
-            
-            if (tabs.length > 0) {
-                // 找到按钮容器
-                const buttonContainer = container.querySelector('.flex.flex-wrap.gap-4');
-                console.log('[DEBUG] 容器', containerIndex, '按钮容器:', buttonContainer ? '找到' : '未找到');
-                
-                if (buttonContainer) {
-                    // 方式1：查找按钮容器内部的内容区域
-                    let contentContainer = buttonContainer.querySelector('.space-y-8');
-                    console.log('[DEBUG] 容器', containerIndex, '按钮容器内查找space-y-8:', contentContainer ? '找到' : '未找到');
-                    
-                    // 方式2：如果不在按钮容器内，查找整个父容器内的内容区域
-                    if (!contentContainer) {
-                        contentContainer = container.querySelector('.space-y-8');
-                        console.log('[DEBUG] 容器', containerIndex, '父容器内查找space-y-8:', contentContainer ? '找到' : '未找到');
-                    }
-                    
-                    // 方式3：查找按钮容器之后的所有元素中包含space-y-8的
-                    if (!contentContainer) {
-                        const allElements = container.querySelectorAll('.space-y-8');
-                        if (allElements.length > 0) {
-                            contentContainer = allElements[0];
-                            console.log('[DEBUG] 容器', containerIndex, '查询选择器查找space-y-8:', '找到');
-                        }
-                    }
-                    
-                    // 方式4：查找包含tab-panel类的元素的父容器
-                    if (!contentContainer) {
-                        const tabPanel = container.querySelector('.tab-panel, [data-type="tab-panel"]');
-                        if (tabPanel) {
-                            contentContainer = tabPanel.parentElement;
-                            console.log('[DEBUG] 容器', containerIndex, '通过tab-panel父容器查找:', contentContainer.className);
-                        }
-                    }
-                    
-                    if (contentContainer) {
-                        console.log('[DEBUG] 容器', containerIndex, '找到内容容器:', contentContainer.className);
-                        // 查找内容容器下的直接子元素作为面板
-                        let panels = contentContainer.children;
-                        console.log('[DEBUG] 容器', containerIndex, '找到面板数量:', panels.length);
-                        
-                        // 如果面板数量少于tabs数量，动态创建缺失的面板
-                        if (panels.length < tabs.length) {
-                            console.log('[DEBUG] 容器', containerIndex, '面板数量不足，需要创建', tabs.length - panels.length, '个面板');
-                            
-                            // 将HTMLCollection转换为数组
-                            panels = Array.from(panels);
-                            
-                            // 获取第一个面板的HTML作为模板
-                            const firstPanel = panels[0];
-                            if (firstPanel) {
-                                const panelTemplate = firstPanel.outerHTML;
-                                
-                                for (let i = panels.length; i < tabs.length; i++) {
-                                    const newPanel = document.createElement('div');
-                                    newPanel.innerHTML = panelTemplate;
-                                    const newPanelContent = newPanel.firstChild;
-                                    newPanelContent.classList.add('hidden');
-                                    
-                                    // 更新内容为对应tab的名称
-                                    const tabName = tabs[i].textContent.trim();
-                                    const titleElement = newPanelContent.querySelector('h3, h4, .title');
-                                    const descElement = newPanelContent.querySelector('p, .description');
-                                    if (titleElement) {
-                                        titleElement.textContent = `${tabName} Content`;
-                                    }
-                                    if (descElement) {
-                                        descElement.textContent = `This is the ${tabName.toLowerCase()} section. Discover our comprehensive ${tabName.toLowerCase()} offerings designed to support your professional development and enhance your skills.`;
-                                    }
-                                    
-                                    contentContainer.appendChild(newPanelContent);
-                                    panels.push(newPanelContent);
-                                    console.log('[DEBUG] 容器', containerIndex, '创建面板', i);
-                                }
-                            }
-                        }
-                        
-                        const targetPanels = panels;
-                        
-                        // 查找选项卡容器中的图片元素（先在容器内找，找不到就在父容器中找）
-                        let imgWrapper = container.querySelector('.img-shape-acorn.img-wrapper');
-                        if (!imgWrapper) {
-                            imgWrapper = container.parentElement.querySelector('.img-shape-acorn.img-wrapper');
-                        }
-                        if (!imgWrapper) {
-                            imgWrapper = container.closest('.flex, .grid, .section').querySelector('.img-shape-acorn.img-wrapper');
-                        }
-                        if (!imgWrapper) {
-                            // 最后尝试在整个文档中查找
-                            imgWrapper = document.querySelector('.img-shape-acorn.img-wrapper');
-                        }
-                        console.log('[DEBUG] 容器', containerIndex, '找到图片容器:', imgWrapper ? '找到' : '未找到');
-                        if (imgWrapper) {
-                            console.log('[DEBUG] 容器', containerIndex, '图片容器className:', imgWrapper.className);
-                        }
-                        
-                        // 为每个tab准备不同的图片URL
-                        const imageUrls = [
-                            'https://picsum.photos/400/400.webp?random=7',
-                            'https://picsum.photos/400/400.webp?random=8',
-                            'https://picsum.photos/400/400.webp?random=9'
-                        ];
-                        
-                        tabs.forEach((tab, index) => {
-                            tab.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                console.log('[DEBUG] 选项卡点击, index:', index, 'text:', tab.textContent.trim());
-                                
-                                tabs.forEach(t => t.classList.remove('active'));
-                                console.log('[DEBUG] 移除所有tab的active类');
-                                
-                                // 隐藏所有面板
-                                for (let i = 0; i < targetPanels.length; i++) {
-                                    targetPanels[i].classList.remove('active');
-                                    targetPanels[i].classList.add('hidden');
-                                }
-                                console.log('[DEBUG] 隐藏所有面板');
-                                
-                                tab.classList.add('active');
-                                console.log('[DEBUG] 激活当前tab');
-                                
-                                if (targetPanels[index]) {
-                                    targetPanels[index].classList.remove('hidden');
-                                    targetPanels[index].classList.add('active');
-                                    console.log('[DEBUG] 显示面板', index);
-                                } else {
-                                    console.log('[DEBUG] 面板', index, '不存在');
-                                }
-                                
-                                // 更新右侧图片
-                                if (imgWrapper && imageUrls[index]) {
-                                    imgWrapper.style.setProperty('--cta-bg-desktop', `url(${imageUrls[index]})`);
-                                    console.log('[DEBUG] 更新图片为:', imageUrls[index]);
-                                }
-                            });
-                        });
-                    } else {
-                        console.log('[DEBUG] 容器', containerIndex, '未找到内容容器');
-                        // 尝试直接在父容器中查找面板
-                        const directPanels = container.querySelectorAll('.tab-panel, [data-type="tab-panel"], .course-content');
-                        console.log('[DEBUG] 容器', containerIndex, '直接查找面板数量:', directPanels.length);
-                        
-                        if (directPanels.length > 0) {
-                            console.log('[DEBUG] 容器', containerIndex, '使用直接查找的面板');
-                            tabs.forEach((tab, index) => {
-                                tab.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    tabs.forEach(t => t.classList.remove('active'));
-                                    directPanels.forEach(p => {
-                                        p.classList.remove('active');
-                                        p.classList.add('hidden');
-                                    });
-                                    tab.classList.add('active');
-                                    if (directPanels[index]) {
-                                        directPanels[index].classList.remove('hidden');
-                                        directPanels[index].classList.add('active');
-                                    }
-                                });
-                            });
-                        }
-                    }
-                }
-            }
-        });
     }
 
     // ==================== 滑动效果（轮播）====================
@@ -592,43 +652,114 @@
         const testimonialCarousels = document.querySelectorAll('.testimonial-carousel');
         console.log('[DEBUG] 找到轮播容器数量:', testimonialCarousels.length);
         
-        testimonialCarousels.forEach((carousel, carouselIndex) => {
-            console.log('[DEBUG] 轮播', carouselIndex, '开始初始化');
-            
+        testimonialCarousels.forEach((carousel) => {
             const swiperWrapper = carousel.querySelector('.swiper-wrapper');
-            const slides = carousel.querySelectorAll('[data-type="slide"], .testimonial-slide, .swiper-slide');
-            const prevButton = carousel.querySelector('[data-type="prev-button"], .prev-button, .testimonial-card__navigation-previous');
-            const nextButton = carousel.querySelector('[data-type="next-button"], .next-button, .testimonial-card__navigation-next');
-            const pagination = carousel.querySelector('.swiper-pagination');
-            const indicators = carousel.querySelectorAll('[data-type="indicator"], .carousel-indicator, .swiper-pagination-bullet');
+            let slides = carousel.querySelectorAll('.swiper-slide');
+            const indicators = carousel.querySelectorAll('.swiper-pagination-bullet');
             const autoplayButton = carousel.querySelector('.testimonial-card__navigation-autoplay-button');
-            
-            console.log('[DEBUG] 轮播', carouselIndex, 'slides数量:', slides.length);
-            console.log('[DEBUG] 轮播', carouselIndex, 'prevButton:', prevButton ? '找到' : '未找到');
-            console.log('[DEBUG] 轮播', carouselIndex, 'nextButton:', nextButton ? '找到' : '未找到');
-            console.log('[DEBUG] 轮播', carouselIndex, 'pagination:', pagination ? '找到' : '未找到');
-            console.log('[DEBUG] 轮播', carouselIndex, 'indicators数量:', indicators.length);
-            console.log('[DEBUG] 轮播', carouselIndex, 'autoplayButton:', autoplayButton ? '找到' : '未找到');
-            
+            const autoplayLiveRegion = carousel.querySelector('[aria-live="polite"]');
+
+            if (!swiperWrapper || slides.length === 0) return;
+
+            if (indicators.length > slides.length) {
+                const source = slides[slides.length - 1];
+                for (let i = slides.length; i < indicators.length; i++) {
+                    const clone = source.cloneNode(true);
+                    clone.className = 'swiper-slide';
+                    clone.setAttribute('aria-label', `${i + 1} / ${indicators.length}`);
+                    const quote = clone.querySelector('.testimonial-card__quote');
+                    if (quote) {
+                        quote.textContent =
+                            '"作为 IPA 会员，我深刻感受到协会对专业发展的持续支持，线上培训与行业活动让成长不断延续。"';
+                    }
+                    const nameEl = clone.querySelector('[itemprop="name"]');
+                    if (nameEl) nameEl.textContent = 'Michael Chen';
+                    const titleEl = clone.querySelector('.testimonial-card__title');
+                    if (titleEl) titleEl.textContent = 'FIPA, Member for 15 Years';
+                    swiperWrapper.appendChild(clone);
+                }
+                slides = carousel.querySelectorAll('.swiper-slide');
+            }
+
             let currentIndex = 0;
             let autoplayInterval = null;
-            let isAutoplay = true;
+            let isAutoplayEnabled = true;
+
+            function normalizeSlides() {
+                slides.forEach((slide) => {
+                    slide.style.removeProperty('width');
+                    slide.style.removeProperty('margin-right');
+                    slide.style.flex = '0 0 100%';
+                    slide.style.width = '100%';
+                    slide.style.maxWidth = '100%';
+                    slide.style.boxSizing = 'border-box';
+
+                    const wrapper = slide.querySelector('.testimonial-card__wrapper');
+                    if (wrapper) {
+                        wrapper.classList.remove(
+                            'swiper-slide-active',
+                            'swiper-slide-prev',
+                            'swiper-slide-next',
+                            'container'
+                        );
+                    }
+                });
+
+                swiperWrapper.style.removeProperty('transition-duration');
+            }
+
+            function updateAutoplayUI() {
+                if (!autoplayButton) return;
+
+                const playing = isAutoplayEnabled;
+                autoplayButton.setAttribute('aria-pressed', playing ? 'true' : 'false');
+                autoplayButton.setAttribute('aria-label', playing ? 'Pause autoplay' : 'Resume autoplay');
+                autoplayButton.title = playing ? 'Pause autoplay' : 'Resume autoplay';
+
+                const visibleSpan = autoplayButton.querySelector('span[aria-hidden="true"]');
+                const srSpan = autoplayButton.querySelector('span.sr-only');
+                if (visibleSpan) {
+                    visibleSpan.textContent = playing ? 'Pause Autoplay' : 'Resume Autoplay';
+                }
+                if (srSpan) {
+                    srSpan.textContent = playing ? 'Pause autoplay' : 'Resume autoplay';
+                }
+                if (autoplayLiveRegion) {
+                    autoplayLiveRegion.textContent = playing ? 'Autoplay is running' : 'Autoplay is paused';
+                }
+            }
+
+            function pauseAutoplayTimer() {
+                if (autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    autoplayInterval = null;
+                }
+            }
+
+            function startAutoplayTimer() {
+                pauseAutoplayTimer();
+                if (!isAutoplayEnabled) return;
+                autoplayInterval = setInterval(nextSlide, 5000);
+            }
 
             function showSlide(index) {
                 if (index < 0) index = slides.length - 1;
                 if (index >= slides.length) index = 0;
-                
+
                 currentIndex = index;
-                console.log('[DEBUG] 轮播', carouselIndex, '显示slide:', currentIndex);
-                
-                // 使用transform实现左右滑动
-                if (swiperWrapper) {
-                    swiperWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-                    swiperWrapper.style.transition = 'transform 0.5s ease';
-                }
-                
+
+                swiperWrapper.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
+                swiperWrapper.style.transition = 'transform 0.5s ease';
+
                 slides.forEach((slide, i) => {
-                    slide.classList.remove('active', 'swiper-slide-active', 'swiper-slide-prev', 'swiper-slide-next', 'hidden');
+                    slide.classList.remove(
+                        'active',
+                        'swiper-slide-active',
+                        'swiper-slide-prev',
+                        'swiper-slide-next',
+                        'hidden'
+                    );
+
                     if (i === currentIndex) {
                         slide.classList.add('active', 'swiper-slide-active');
                     } else if (i === currentIndex - 1 || (currentIndex === 0 && i === slides.length - 1)) {
@@ -637,75 +768,54 @@
                         slide.classList.add('swiper-slide-next');
                     }
                 });
-                
+
                 indicators.forEach((indicator, i) => {
                     indicator.classList.remove('active', 'swiper-pagination-bullet-active');
+                    indicator.removeAttribute('aria-current');
                     if (i === currentIndex) {
                         indicator.classList.add('active', 'swiper-pagination-bullet-active');
+                        indicator.setAttribute('aria-current', 'true');
                     }
                 });
             }
 
             function nextSlide() {
-                console.log('[DEBUG] 轮播', carouselIndex, '下一个slide');
                 showSlide(currentIndex + 1);
             }
 
             function prevSlide() {
-                console.log('[DEBUG] 轮播', carouselIndex, '上一个slide');
                 showSlide(currentIndex - 1);
             }
 
-            function startAutoplay() {
-                if (autoplayInterval) clearInterval(autoplayInterval);
-                autoplayInterval = setInterval(nextSlide, 5000);
-                isAutoplay = true;
-                console.log('[DEBUG] 轮播', carouselIndex, '启动自动播放');
-                if (autoplayButton) {
-                    autoplayButton.setAttribute('aria-pressed', 'true');
-                    autoplayButton.setAttribute('aria-label', 'Pause autoplay');
-                }
-            }
-
-            function stopAutoplay() {
-                if (autoplayInterval) clearInterval(autoplayInterval);
-                autoplayInterval = null;
-                isAutoplay = false;
-                console.log('[DEBUG] 轮播', carouselIndex, '停止自动播放');
-                if (autoplayButton) {
-                    autoplayButton.setAttribute('aria-pressed', 'false');
-                    autoplayButton.setAttribute('aria-label', 'Play autoplay');
-                }
-            }
-
             function toggleAutoplay() {
-                console.log('[DEBUG] 轮播', carouselIndex, '切换自动播放状态');
-                if (isAutoplay) {
-                    stopAutoplay();
+                isAutoplayEnabled = !isAutoplayEnabled;
+                updateAutoplayUI();
+                if (isAutoplayEnabled) {
+                    startAutoplayTimer();
                 } else {
-                    startAutoplay();
+                    pauseAutoplayTimer();
                 }
             }
 
-            if (nextButton) {
-                nextButton.addEventListener('click', function(e) {
+            carousel.querySelectorAll('.testimonial-card__navigation--prev button').forEach((button) => {
+                button.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('[DEBUG] 轮播', carouselIndex, '点击next按钮');
-                    nextSlide();
-                });
-            }
-            if (prevButton) {
-                prevButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('[DEBUG] 轮播', carouselIndex, '点击prev按钮');
+                    e.stopPropagation();
                     prevSlide();
                 });
-            }
+            });
+
+            carousel.querySelectorAll('.testimonial-card__navigation--next button').forEach((button) => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    nextSlide();
+                });
+            });
 
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('[DEBUG] 轮播', carouselIndex, '点击指示器:', index);
                     showSlide(index);
                 });
             });
@@ -714,59 +824,28 @@
                 autoplayButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('[DEBUG] 轮播', carouselIndex, '点击自动播放按钮');
-                    console.log('[DEBUG] 轮播', carouselIndex, '当前isAutoplay状态:', isAutoplay);
-                    toggleAutoplay();
-                });
-                
-                // 添加touchend事件支持移动端
-                autoplayButton.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('[DEBUG] 轮播', carouselIndex, '触摸自动播放按钮');
                     toggleAutoplay();
                 });
             }
 
-            carousel.addEventListener('mouseenter', function() {
-                console.log('[DEBUG] 轮播', carouselIndex, '鼠标进入，暂停自动播放');
-                // 保存当前状态，以便鼠标离开时恢复
-                if (isAutoplay) {
-                    stopAutoplay();
-                    // 标记需要在鼠标离开时恢复
-                    carousel.dataset.shouldResume = 'true';
-                }
-            });
+            carousel.addEventListener('mouseenter', pauseAutoplayTimer);
             carousel.addEventListener('mouseleave', function() {
-                console.log('[DEBUG] 轮播', carouselIndex, '鼠标离开');
-                console.log('[DEBUG] 轮播', carouselIndex, 'shouldResume:', carousel.dataset.shouldResume);
-                // 只有当鼠标进入前是自动播放状态时才恢复
-                if (carousel.dataset.shouldResume === 'true') {
-                    startAutoplay();
-                    carousel.dataset.shouldResume = 'false';
+                if (isAutoplayEnabled) {
+                    startAutoplayTimer();
                 }
             });
 
-            // 设置swiper-wrapper样式
-            if (swiperWrapper) {
-                swiperWrapper.style.display = 'flex';
-                swiperWrapper.style.flexDirection = 'row';
-            }
-            
-            // 设置slides宽度
-            slides.forEach(slide => {
-                slide.style.flex = '0 0 100%';
-                slide.style.width = '100%';
+            window.addEventListener('resize', function() {
+                normalizeSlides();
+                showSlide(currentIndex);
             });
 
-            // 初始化显示第一个slide
-            if (slides.length > 0) {
-                showSlide(0);
-            }
-
-            // 启动自动播放
-            startAutoplay();
-            console.log('[DEBUG] 轮播', carouselIndex, '初始化完成');
+            swiperWrapper.style.display = 'flex';
+            swiperWrapper.style.flexDirection = 'row';
+            normalizeSlides();
+            showSlide(0);
+            updateAutoplayUI();
+            startAutoplayTimer();
         });
 
         // 处理testimonialCarousel
@@ -909,6 +988,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' || e.key === 'Esc') {
                 closeAllMenus();
+                closeSearch();
                 if (mobileMenuOpen) {
                     toggleMobileMenu();
                 }

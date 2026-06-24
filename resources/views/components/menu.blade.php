@@ -1,4 +1,6 @@
-<nav data-type="desktop-navigation">
+@props(['menuItems', 'variant' => 'desktop'])
+
+<nav data-type="{{ $variant === 'mobile' ? 'mobile-navigation' : 'desktop-navigation' }}">
     <ul data-type="menu-level-0">
         @foreach($menuItems as $index => $item)
             <li data-children="{{ !empty($item['children']) ? 'true' : 'false' }}" data-level="0" class="inactive group/navlink">

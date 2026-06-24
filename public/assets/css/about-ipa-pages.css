@@ -1,0 +1,168 @@
+/* About IPA section pages: about-the-ipa, recognition, contact-us */
+
+.about-section .about-rich-text h1,
+.about-section .about-rich-text h3,
+.about-section .about-rich-text h4 {
+  color: inherit;
+}
+
+.about-rich-text p {
+  margin: 0 0 1.25rem;
+}
+
+.about-rich-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-rich-text ul {
+  margin: 0 0 1.25rem 1.25rem;
+  padding: 0;
+}
+
+.about-rich-text a:not(.cta) {
+  color: oklch(0.4867 0.1803 336.11);
+  text-decoration: underline;
+}
+
+.about-copy-block__item {
+  padding: 0.5rem 0;
+}
+
+.about-copy-block__grid {
+  align-items: start;
+}
+
+.about-copy-block__item .cta {
+  display: inline-flex;
+}
+
+.about-copy-block__item .cta-content {
+  text-align: center;
+}
+
+.about-cta__image {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.about-cta__image--rect {
+  background-color: oklch(0.9612 0 0);
+}
+
+.about-cta__image--rect,
+.about-cta__image--rect img {
+  border-radius: 24px;
+}
+
+.about-cta__image--acorn {
+  width: calc(100% - 6em);
+  margin-left: auto;
+  margin-right: auto;
+  aspect-ratio: 1491.082 / 1572.087;
+  background-color: transparent;
+}
+
+@media (min-width: 640px) {
+  .about-cta__image--acorn {
+    width: calc(100% - 14em);
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-cta__image--acorn {
+    width: 100%;
+  }
+}
+
+.about-cta__image--acorn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-mask: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1491.082'%20height='1572.087'%20viewBox='0%200%201491.082%201572.087'%3e%3cpath%20id='Path_1'%20data-name='Path%201'%20d='M451,836.506S325.98,690.471,253,369.851c-56.982-335.793-14.258-530.977,62.178-733.269s200.7-501.529,691.782-299.418S1729.517-179.524,1717.394-6.111c-5.95,137.609-97.739,256.04-204.18,391.795C1297.158,648.991,991.81,768.5,789.765,813.35,584.669,859.027,451,836.506,451,836.506Z'%20transform='translate(-226.764%20730.029)'/%3e%3c/svg%3e");
+  mask: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1491.082'%20height='1572.087'%20viewBox='0%200%201491.082%201572.087'%3e%3cpath%20id='Path_1'%20data-name='Path%201'%20d='M451,836.506S325.98,690.471,253,369.851c-56.982-335.793-14.258-530.977,62.178-733.269s200.7-501.529,691.782-299.418S1729.517-179.524,1717.394-6.111c-5.95,137.609-97.739,256.04-204.18,391.795C1297.158,648.991,991.81,768.5,789.765,813.35,584.669,859.027,451,836.506,451,836.506Z'%20transform='translate(-226.764%20730.029)'/%3e%3c/svg%3e");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.about-cta__image--rect {
+  aspect-ratio: 4 / 3;
+}
+
+.about-cta__image--rect img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-page-hero .about-rich-text {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-tab-panel.hidden {
+  display: none;
+}
+
+.about-tab-images img {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-mask: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1491.082'%20height='1572.087'%20viewBox='0%200%201491.082%201572.087'%3e%3cpath%20id='Path_1'%20data-name='Path%201'%20d='M451,836.506S325.98,690.471,253,369.851c-56.982-335.793-14.258-530.977,62.178-733.269s200.7-501.529,691.782-299.418S1729.517-179.524,1717.394-6.111c-5.95,137.609-97.739,256.04-204.18,391.795C1297.158,648.991,991.81,768.5,789.765,813.35,584.669,859.027,451,836.506,451,836.506Z'%20transform='translate(-226.764%20730.029)'/%3e%3c/svg%3e");
+  mask: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1491.082'%20height='1572.087'%20viewBox='0%200%201491.082%201572.087'%3e%3cpath%20id='Path_1'%20data-name='Path%201'%20d='M451,836.506S325.98,690.471,253,369.851c-56.982-335.793-14.258-530.977,62.178-733.269s200.7-501.529,691.782-299.418S1729.517-179.524,1717.394-6.111c-5.95,137.609-97.739,256.04-204.18,391.795C1297.158,648.991,991.81,768.5,789.765,813.35,584.669,859.027,451,836.506,451,836.506Z'%20transform='translate(-226.764%20730.029)'/%3e%3c/svg%3e");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.about-tab-images img.is-active {
+  display: block;
+}
+
+.about-testimonial-slide {
+  display: none;
+}
+
+.about-testimonial-slide--active {
+  display: block;
+}
+
+.about-testimonial-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 0;
+  background: oklch(0.85 0 0);
+  cursor: pointer;
+}
+
+.about-testimonial-dot--active {
+  background: oklch(0.4867 0.1803 336.11);
+}
+
+.about-representation {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.96 0.02 280),
+    transparent
+  );
+  border-radius: 24px;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .about-representation {
+    padding: 3rem 2rem;
+  }
+}

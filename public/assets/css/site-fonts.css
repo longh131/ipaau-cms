@@ -1,0 +1,65 @@
+/*
+ * Site typography: Arial (Latin) + 等线 / DengXian (CJK).
+ * Load after home.css to override Inter, ApexSerif Book, and din-2014.
+ */
+
+:root {
+  --ipa-font-family: Arial, "等线", "DengXian", sans-serif;
+}
+
+html,
+:host,
+body {
+  font-family: var(--ipa-font-family) !important;
+}
+
+.font-inter,
+.font-din,
+.font-apex-book {
+  font-family: var(--ipa-font-family) !important;
+}
+
+#root :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  button,
+  label,
+  input,
+  textarea,
+  select,
+  option,
+  li,
+  td,
+  th,
+  div,
+  figcaption,
+  blockquote,
+  strong,
+  em,
+  small
+) {
+  font-family: var(--ipa-font-family) !important;
+}
+
+.umb-rte,
+.umb-rte :is(h1, h2, h3, h4, h5, h6, p, span, a, li, div),
+[data-rte="true"],
+[data-rte="true"] :is(h1, h2, h3, h4, h5, h6, p, span, a, li, div) {
+  font-family: var(--ipa-font-family) !important;
+}
+
+[data-type="desktop-navigation"],
+[data-type="desktop-navigation"] *,
+[data-type="mobile-navigation"],
+[data-type="mobile-navigation"] *,
+.footer-main,
+.footer-main * {
+  font-family: var(--ipa-font-family) !important;
+}

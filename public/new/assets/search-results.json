@@ -1,0 +1,678 @@
+{
+  "success": true,
+  "taxonomies": {
+    "categories": [
+      {
+        "name": "Home Loans",
+        "selected": false,
+        "id": "cat-001"
+      },
+      {
+        "name": "Personal Loans",
+        "selected": false,
+        "id": "cat-002"
+      },
+      {
+        "name": "Investment Services",
+        "selected": false,
+        "id": "cat-003"
+      },
+      {
+        "name": "Insurance",
+        "selected": false,
+        "id": "cat-004"
+      },
+      {
+        "name": "Business Banking",
+        "selected": false,
+        "id": "cat-005"
+      }
+    ],
+    "topics": [
+      {
+        "name": "Interest Rates",
+        "selected": false,
+        "id": "topic-001"
+      },
+      {
+        "name": "Property Investment",
+        "selected": false,
+        "id": "topic-002"
+      },
+      {
+        "name": "Retirement Planning",
+        "selected": false,
+        "id": "topic-003"
+      },
+      {
+        "name": "Financial Advice",
+        "selected": false,
+        "id": "topic-004"
+      }
+    ],
+    "locations": [
+      {
+        "name": "NSW",
+        "selected": false,
+        "id": "loc-001"
+      },
+      {
+        "name": "VIC",
+        "selected": false,
+        "id": "loc-002"
+      },
+      {
+        "name": "QLD",
+        "selected": false,
+        "id": "loc-003"
+      },
+      {
+        "name": "WA",
+        "selected": false,
+        "id": "loc-004"
+      },
+      {
+        "name": "SA",
+        "selected": false,
+        "id": "loc-005"
+      },
+      {
+        "name": "TAS",
+        "selected": false,
+        "id": "loc-006"
+      },
+      {
+        "name": "ACT",
+        "selected": false,
+        "id": "loc-007"
+      },
+      {
+        "name": "NT",
+        "selected": false,
+        "id": "loc-008"
+      }
+    ]
+  },
+  "result": [
+    {
+      "title": "First Home Buyer Workshop",
+      "description": "Join our comprehensive workshop designed specifically for first home buyers. Learn about government grants, loan options, and the entire home buying process from our experienced mortgage specialists.",
+      "url": "/events/first-home-buyer-workshop",
+      "categories": [
+        {
+          "name": "Home Loans",
+          "selected": false,
+          "id": "cat-001"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Interest Rates",
+          "selected": false,
+          "id": "topic-001"
+        },
+        {
+          "name": "Property Investment",
+          "selected": false,
+          "id": "topic-002"
+        }
+      ],
+      "locations": [
+        {
+          "name": "NSW",
+          "selected": false,
+          "id": "loc-001"
+        },
+        {
+          "name": "VIC",
+          "selected": false,
+          "id": "loc-002"
+        }
+      ],
+      "startDate": "2024-02-15",
+      "endDate": null,
+      "startTime": "18:00",
+      "endTime": "20:00"
+    },
+    {
+      "title": "Investment Portfolio Review",
+      "description": "Get a comprehensive review of your investment portfolio with our financial advisors. We'll analyze your current investments, assess risk levels, and provide recommendations for optimizing your returns.",
+      "url": "/events/investment-portfolio-review",
+      "categories": [
+        {
+          "name": "Investment Services",
+          "selected": false,
+          "id": "cat-003"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        },
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "QLD",
+          "selected": false,
+          "id": "loc-003"
+        },
+        {
+          "name": "WA",
+          "selected": false,
+          "id": "loc-004"
+        }
+      ],
+      "startDate": "2024-02-20",
+      "endDate": "2024-02-20",
+      "startTime": "10:00",
+      "endTime": "12:00"
+    },
+    {
+      "title": "Small Business Finance Solutions",
+      "description": "Discover financing options tailored for small businesses. Learn about business loans, equipment financing, and cash flow management strategies to help your business grow and thrive.",
+      "url": "/events/small-business-finance",
+      "categories": [
+        {
+          "name": "Business Banking",
+          "selected": false,
+          "id": "cat-005"
+        },
+        {
+          "name": "Personal Loans",
+          "selected": false,
+          "id": "cat-002"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "SA",
+          "selected": false,
+          "id": "loc-005"
+        },
+        {
+          "name": "TAS",
+          "selected": false,
+          "id": "loc-006"
+        }
+      ],
+      "startDate": "2024-02-25",
+      "endDate": "2024-02-25",
+      "startTime": "14:00",
+      "endTime": "16:00"
+    },
+    {
+      "title": "Insurance Protection Seminar",
+      "description": "Understand the importance of comprehensive insurance coverage for your family and assets. Our insurance specialists will guide you through different policy types and help you choose the right coverage.",
+      "url": "/events/insurance-protection-seminar",
+      "categories": [
+        {
+          "name": "Insurance",
+          "selected": false,
+          "id": "cat-004"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        },
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "ACT",
+          "selected": false,
+          "id": "loc-007"
+        },
+        {
+          "name": "NT",
+          "selected": false,
+          "id": "loc-008"
+        }
+      ],
+      "startDate": "2024-03-01",
+      "endDate": null,
+      "startTime": "19:00",
+      "endTime": "21:00"
+    },
+    {
+      "title": "Personal Loan Options Workshop",
+      "description": "Explore personal loan options for various needs including debt consolidation, home improvements, and major purchases. Learn about interest rates, repayment terms, and how to choose the best loan for your situation.",
+      "url": "/events/personal-loan-workshop",
+      "categories": [
+        {
+          "name": "Personal Loans",
+          "selected": false,
+          "id": "cat-002"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Interest Rates",
+          "selected": false,
+          "id": "topic-001"
+        },
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "NSW",
+          "selected": false,
+          "id": "loc-001"
+        },
+        {
+          "name": "VIC",
+          "selected": false,
+          "id": "loc-002"
+        },
+        {
+          "name": "QLD",
+          "selected": false,
+          "id": "loc-003"
+        }
+      ],
+      "startDate": "2024-03-05",
+      "endDate": "2024-03-05",
+      "startTime": "19:00",
+      "endTime": "21:00"
+    },
+    {
+      "title": "Retirement Planning Workshop",
+      "description": "Plan for your retirement with confidence. Learn about superannuation, investment strategies, and how to maximize your retirement income. Our financial planners will guide you through creating a comprehensive retirement plan.",
+      "url": "/events/retirement-planning-workshop",
+      "categories": [
+        {
+          "name": "Investment Services",
+          "selected": false,
+          "id": "cat-003"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        },
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "WA",
+          "selected": false,
+          "id": "loc-004"
+        },
+        {
+          "name": "SA",
+          "selected": false,
+          "id": "loc-005"
+        }
+      ],
+      "startDate": "2024-03-10",
+      "endDate": null,
+      "startTime": "10:00",
+      "endTime": "12:00"
+    },
+    {
+      "title": "First Home Buyer Grant Information Session",
+      "description": "Discover all available government grants and assistance programs for first home buyers. Learn about eligibility criteria, application processes, and how to maximize your benefits when purchasing your first home.",
+      "url": "/events/first-home-buyer-grants",
+      "categories": [
+        {
+          "name": "Home Loans",
+          "selected": false,
+          "id": "cat-001"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Property Investment",
+          "selected": false,
+          "id": "topic-002"
+        }
+      ],
+      "locations": [
+        {
+          "name": "TAS",
+          "selected": false,
+          "id": "loc-006"
+        },
+        {
+          "name": "ACT",
+          "selected": false,
+          "id": "loc-007"
+        }
+      ],
+      "startDate": "2024-03-12",
+      "endDate": "2024-03-12",
+      "startTime": "18:30",
+      "endTime": "20:30"
+    },
+    {
+      "title": "Business Loan Application Workshop",
+      "description": "Navigate the business loan application process with confidence. Learn about documentation requirements, credit assessments, and how to present your business case effectively to lenders.",
+      "url": "/events/business-loan-workshop",
+      "categories": [
+        {
+          "name": "Business Banking",
+          "selected": false,
+          "id": "cat-005"
+        },
+        {
+          "name": "Personal Loans",
+          "selected": false,
+          "id": "cat-002"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "NT",
+          "selected": false,
+          "id": "loc-008"
+        },
+        {
+          "name": "NSW",
+          "selected": false,
+          "id": "loc-001"
+        }
+      ],
+      "startDate": "2024-03-15",
+      "endDate": null,
+      "startTime": "14:00",
+      "endTime": "16:00"
+    },
+    {
+      "title": "Investment Property Seminar",
+      "description": "Learn the fundamentals of property investment. Understand market analysis, financing options, rental yield calculations, and tax implications. Perfect for both new and experienced property investors.",
+      "url": "/events/investment-property-seminar",
+      "categories": [
+        {
+          "name": "Investment Services",
+          "selected": false,
+          "id": "cat-003"
+        },
+        {
+          "name": "Home Loans",
+          "selected": false,
+          "id": "cat-001"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Property Investment",
+          "selected": false,
+          "id": "topic-002"
+        },
+        {
+          "name": "Interest Rates",
+          "selected": false,
+          "id": "topic-001"
+        }
+      ],
+      "locations": [
+        {
+          "name": "VIC",
+          "selected": false,
+          "id": "loc-002"
+        },
+        {
+          "name": "QLD",
+          "selected": false,
+          "id": "loc-003"
+        },
+        {
+          "name": "WA",
+          "selected": false,
+          "id": "loc-004"
+        }
+      ],
+      "startDate": "2024-03-18",
+      "endDate": "2024-03-18",
+      "startTime": "19:00",
+      "endTime": "21:00"
+    },
+    {
+      "title": "Life Insurance Needs Assessment",
+      "description": "Evaluate your life insurance needs and coverage options. Learn about different types of life insurance, how much coverage you need, and how to choose the right policy for your family's protection.",
+      "url": "/events/life-insurance-assessment",
+      "categories": [
+        {
+          "name": "Insurance",
+          "selected": false,
+          "id": "cat-004"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        },
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        }
+      ],
+      "locations": [
+        {
+          "name": "SA",
+          "selected": false,
+          "id": "loc-005"
+        },
+        {
+          "name": "TAS",
+          "selected": false,
+          "id": "loc-006"
+        }
+      ],
+      "startDate": "2024-03-20",
+      "endDate": null,
+      "startTime": "10:00",
+      "endTime": "12:00"
+    },
+    {
+      "title": "Debt Consolidation Strategies",
+      "description": "Learn effective strategies to consolidate and manage your debt. Understand different consolidation options, interest rate comparisons, and how to create a sustainable debt repayment plan.",
+      "url": "/events/debt-consolidation-strategies",
+      "categories": [
+        {
+          "name": "Personal Loans",
+          "selected": false,
+          "id": "cat-002"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Interest Rates",
+          "selected": false,
+          "id": "topic-001"
+        },
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        }
+      ],
+      "locations": [
+        {
+          "name": "ACT",
+          "selected": false,
+          "id": "loc-007"
+        },
+        {
+          "name": "NT",
+          "selected": false,
+          "id": "loc-008"
+        },
+        {
+          "name": "NSW",
+          "selected": false,
+          "id": "loc-001"
+        }
+      ],
+      "startDate": "2024-03-22",
+      "endDate": "2024-03-22",
+      "startTime": "18:00",
+      "endTime": "20:00"
+    },
+    {
+      "title": "Superannuation Optimization Workshop",
+      "description": "Maximize your superannuation benefits and understand contribution strategies. Learn about salary sacrificing, co-contributions, and how to optimize your super for retirement.",
+      "url": "/events/superannuation-optimization",
+      "categories": [
+        {
+          "name": "Investment Services",
+          "selected": false,
+          "id": "cat-003"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        }
+      ],
+      "locations": [
+        {
+          "name": "VIC",
+          "selected": false,
+          "id": "loc-002"
+        },
+        {
+          "name": "QLD",
+          "selected": false,
+          "id": "loc-003"
+        }
+      ],
+      "startDate": "2024-03-25",
+      "endDate": null,
+      "startTime": "19:00",
+      "endTime": "21:00"
+    },
+    {
+      "title": "Commercial Property Finance",
+      "description": "Explore financing options for commercial property investments. Learn about commercial loans, development finance, and how to structure deals for maximum returns.",
+      "url": "/events/commercial-property-finance",
+      "categories": [
+        {
+          "name": "Business Banking",
+          "selected": false,
+          "id": "cat-005"
+        },
+        {
+          "name": "Investment Services",
+          "selected": false,
+          "id": "cat-003"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Property Investment",
+          "selected": false,
+          "id": "topic-002"
+        },
+        {
+          "name": "Interest Rates",
+          "selected": false,
+          "id": "topic-001"
+        }
+      ],
+      "locations": [
+        {
+          "name": "WA",
+          "selected": false,
+          "id": "loc-004"
+        },
+        {
+          "name": "SA",
+          "selected": false,
+          "id": "loc-005"
+        }
+      ],
+      "startDate": "2024-03-28",
+      "endDate": "2024-03-28",
+      "startTime": "14:00",
+      "endTime": "16:00"
+    },
+    {
+      "title": "Financial Health Check",
+      "description": "Get a comprehensive assessment of your financial health. Our advisors will review your income, expenses, investments, and insurance to provide personalized recommendations for improvement.",
+      "url": "/events/financial-health-check",
+      "categories": [
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "cat-004"
+        }
+      ],
+      "topics": [
+        {
+          "name": "Financial Advice",
+          "selected": false,
+          "id": "topic-004"
+        },
+        {
+          "name": "Retirement Planning",
+          "selected": false,
+          "id": "topic-003"
+        }
+      ],
+      "locations": [
+        {
+          "name": "TAS",
+          "selected": false,
+          "id": "loc-006"
+        },
+        {
+          "name": "ACT",
+          "selected": false,
+          "id": "loc-007"
+        },
+        {
+          "name": "NT",
+          "selected": false,
+          "id": "loc-008"
+        }
+      ],
+      "startDate": "2024-03-30",
+      "endDate": null,
+      "startTime": "10:00",
+      "endTime": "12:00"
+    }
+  ]
+}

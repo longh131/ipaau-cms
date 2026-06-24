@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 
-Route::get('/', [FrontendController::class, 'home']);
+Route::get('/', [FrontendController::class, 'home'])->name('home');
 Route::get('/test-menu', function() {
     return view('frontend.test');
 });
