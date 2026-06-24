@@ -41,6 +41,18 @@ class CategoryResource extends Resource
         return array_filter($allTypes, fn ($key) => in_array($key, $enabledTypes), ARRAY_FILTER_USE_KEY);
     }
 
+    protected static function buildTreeOptions($categories, $prefix = ''): array
+    {
+        $options = [];
+        foreach ($categories as $category) {
+            $options[$category->id] = $prefix . $category->name;
+            if ($category->children && $category->children->count() > 0) {
+                $options = $options + static::buildTreeOptions($category->children, $prefix . '→ ');
+            }
+        }
+        return $options;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -55,10 +67,10 @@ class CategoryResource extends Resource
                 Forms\Components\Select::make('parent_id')
                     ->label('上级栏目')
                     ->options(function () {
-                        return [0 => '无（作为顶级栏目）'] + Category::where('parent_id', 0)
-                            ->orderBy('sort_order')
-                            ->pluck('name', 'id')
-                            ->toArray();
+                        $options = [0 => '无（作为顶级栏目）'];
+                        $categories = Category::getSortedTree();
+                        $options = $options + static::buildTreeOptions($categories);
+                        return $options;
                     })
                     ->default(0),
                 Forms\Components\Select::make('type')
