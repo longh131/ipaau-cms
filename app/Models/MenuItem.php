@@ -14,11 +14,11 @@ class MenuItem extends Model
         'parent_id',
         'title',
         'url',
+        'route',
+        'route_params',
         'target',
         'sort_order',
         'is_active',
-        'link_type',
-        'link_id',
     ];
 
     public function menu()

@@ -12,7 +12,7 @@
     @endphp
     
     @if ($depth > 0)
-        <span style="margin-left: {{ ($depth - 1) * 20 }}px; display: inline-block;"></span>
+        <span style="margin-left: {{ $depth * 20 }}px; display: inline-block;"></span>
         <span class="text-gray-400">├──</span>
     @endif
     
@@ -30,7 +30,7 @@
         <span class="w-6"></span>
     @endif
     
-    <span class="category-item" data-parent-id="{{ $getRecord()->parent_id }}" data-id="{{ $getRecord()->id }}">
+    <span class="category-item" data-parent-id="{{ $getRecord()->parent_id }}" data-id="{{ $getRecord()->id }}" data-depth="{{ $depth }}">
         {{ $getRecord()->name }}
     </span>
 </div>
@@ -43,16 +43,51 @@
         const parentId = button.getAttribute('data-id');
         const icon = button.querySelector('span');
         
+        const isExpanded = icon.textContent === '▼';
+        
+        if (isExpanded) {
+            icon.textContent = '▶';
+            hideChildren(parentId);
+        } else {
+            icon.textContent = '▼';
+            showChildren(parentId);
+        }
+    }
+    
+    function hideChildren(parentId) {
         document.querySelectorAll('.category-item').forEach(item => {
             const itemParentId = item.getAttribute('data-parent-id');
             if (itemParentId == parentId) {
                 const row = item.closest('tr');
-                if (row.style.display === 'none') {
-                    row.style.display = '';
-                    icon.textContent = '▼';
-                } else {
-                    row.style.display = 'none';
+                row.style.display = 'none';
+                
+                const toggleBtn = row.querySelector('.category-toggle');
+                if (toggleBtn) {
+                    const icon = toggleBtn.querySelector('span');
                     icon.textContent = '▶';
+                }
+                
+                hideChildren(item.getAttribute('data-id'));
+            }
+        });
+    }
+    
+    function showChildren(parentId) {
+        document.querySelectorAll('.category-item').forEach(item => {
+            const itemParentId = item.getAttribute('data-parent-id');
+            if (itemParentId == parentId) {
+                const row = item.closest('tr');
+                row.style.display = '';
+                
+                const toggleBtn = row.querySelector('.category-toggle');
+                if (toggleBtn) {
+                    const icon = toggleBtn.querySelector('span');
+                    icon.textContent = '▼';
+                }
+                
+                const hasChildren = row.querySelector('.category-toggle');
+                if (hasChildren) {
+                    showChildren(item.getAttribute('data-id'));
                 }
             }
         });

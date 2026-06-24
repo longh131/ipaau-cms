@@ -59,9 +59,7 @@ class Category extends Model
     {
         return self::where('parent_id', 0)
             ->orderBy('sort_order')
-            ->with(['children' => function ($query) {
-                $query->orderBy('sort_order');
-            }])
+            ->with('allChildren')
             ->get();
     }
 

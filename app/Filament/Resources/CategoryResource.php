@@ -106,12 +106,15 @@ class CategoryResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 $categories = Category::getSortedTree();
                 $sortedIds = [];
-                foreach ($categories as $category) {
-                    $sortedIds[] = $category->id;
-                    foreach ($category->children as $child) {
-                        $sortedIds[] = $child->id;
+                $collectIds = function ($items) use (&$collectIds, &$sortedIds) {
+                    foreach ($items as $item) {
+                        $sortedIds[] = $item->id;
+                        if ($item->children && $item->children->count() > 0) {
+                            $collectIds($item->children);
+                        }
                     }
-                }
+                };
+                $collectIds($categories);
                 if (!empty($sortedIds)) {
                     return $query->whereIn('id', $sortedIds)->orderByRaw('FIELD(id, ' . implode(',', $sortedIds) . ')');
                 }

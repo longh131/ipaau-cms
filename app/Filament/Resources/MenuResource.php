@@ -31,7 +31,7 @@ class MenuResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('菜单名称')
                     ->required(),
-                Forms\Components\TextInput::make('slug')
+                Forms\Components\TextInput::make('location')
                     ->label('标识')
                     ->required(),
                 Forms\Components\Textarea::make('description')
@@ -48,7 +48,7 @@ class MenuResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('菜单名称'),
-                Tables\Columns\TextColumn::make('slug')
+                Tables\Columns\TextColumn::make('location')
                     ->label('标识'),
                 Tables\Columns\TextColumn::make('description')
                     ->label('描述'),
@@ -66,6 +66,10 @@ class MenuResource extends Resource
             ->actions([
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
+                Actions\Action::make('manageItems')
+                    ->label('管理菜单项')
+                    ->url(fn ($record) => MenuItemResource::getUrl('index', ['menu_id' => $record->id]))
+                    ->icon(Heroicon::Plus),
             ])
             ->headerActions([
                 Actions\CreateAction::make(),
