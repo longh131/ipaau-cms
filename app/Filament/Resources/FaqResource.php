@@ -19,6 +19,10 @@ class FaqResource extends Resource
 
     protected static ?string $navigationLabel = '常见问题';
 
+    protected static ?int $navigationSort = 19;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
+
     protected static ?string $modelLabel = '问题';
 
     protected static ?string $pluralModelLabel = '问题';

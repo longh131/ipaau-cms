@@ -19,7 +19,7 @@ class MenuResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::ListBullet;
     
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $modelLabel = '菜单';
 

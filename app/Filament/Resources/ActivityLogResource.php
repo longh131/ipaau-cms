@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Models\ActivityLog;
 use App\Filament\Resources\ActivityLogResource\Pages;
-use Filament\Actions;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -17,39 +16,39 @@ class ActivityLogResource extends Resource
     protected static ?string $navigationLabel = '操作日志';
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Clock;
-    
-    protected static ?int $navigationSort = 13;
+
+    protected static ?int $navigationSort = 62;
+
+    protected static string|\UnitEnum|null $navigationGroup = '权限管理';
 
     protected static ?string $modelLabel = '日志';
 
     protected static ?string $pluralModelLabel = '操作日志';
-    public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
+
+    public static function canCreate(): bool
     {
-        return $schema
-            ->components([
-                Forms\Components\TextInput::make('action')
-                    ->label('操作'),
-                Forms\Components\TextInput::make('target_type')
-                    ->label('目标类型'),
-                Forms\Components\TextInput::make('target_id')
-                    ->label('目标ID'),
-                Forms\Components\Textarea::make('description')
-                    ->label('描述'),
-            ]);
+        return false;
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('用户'),
-                Tables\Columns\TextColumn::make('action')
-                    ->label('操作'),
-                Tables\Columns\TextColumn::make('target_type')
-                    ->label('目标类型'),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('描述'),
+                    ->label('用户')
+                    ->placeholder('—'),
+                Tables\Columns\TextColumn::make('event')
+                    ->label('事件')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('model_type')
+                    ->label('模型')
+                    ->formatStateUsing(fn (?string $state) => $state ? class_basename($state) : '—'),
+                Tables\Columns\TextColumn::make('model_id')
+                    ->label('记录 ID'),
+                Tables\Columns\TextColumn::make('ip_address')
+                    ->label('IP')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('时间')
                     ->dateTime(),
@@ -58,9 +57,9 @@ class ActivityLogResource extends Resource
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label('用户')
                     ->relationship('user', 'name'),
-            ])
-            ->actions([
-                Actions\ViewAction::make(),
+                Tables\Filters\SelectFilter::make('event')
+                    ->label('事件')
+                    ->options(fn () => ActivityLog::query()->distinct()->pluck('event', 'event')->filter()->all()),
             ]);
     }
 
@@ -68,7 +67,6 @@ class ActivityLogResource extends Resource
     {
         return [
             'index' => Pages\ListActivityLogs::route('/'),
-            'view' => Pages\ViewActivityLog::route('/{record}'),
         ];
     }
 }

@@ -19,6 +19,10 @@ class CaseResource extends Resource
 
     protected static ?string $navigationLabel = '案例管理';
 
+    protected static ?int $navigationSort = 15;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
+
     protected static ?string $modelLabel = '案例';
 
     protected static ?string $pluralModelLabel = '案例';

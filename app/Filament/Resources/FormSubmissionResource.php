@@ -23,6 +23,10 @@ class FormSubmissionResource extends Resource
 
     protected static ?string $pluralModelLabel = '表单提交';
 
+    protected static ?int $navigationSort = 52;
+
+    protected static string|\UnitEnum|null $navigationGroup = '系统';
+
     public static function form(Schema $schema): Schema
     {
         return $schema

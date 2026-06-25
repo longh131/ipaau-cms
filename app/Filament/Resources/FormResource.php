@@ -18,8 +18,10 @@ class FormResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::ClipboardDocumentList;
 
     protected static ?string $navigationLabel = '表单页面';
-    
-    protected static ?int $navigationSort = 8;
+
+    protected static ?int $navigationSort = 20;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
 
     protected static ?string $modelLabel = '表单';
 

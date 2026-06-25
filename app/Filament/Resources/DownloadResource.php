@@ -19,6 +19,10 @@ class DownloadResource extends Resource
 
     protected static ?string $navigationLabel = '下载中心';
 
+    protected static ?int $navigationSort = 18;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
+
     protected static ?string $modelLabel = '下载文件';
 
     protected static ?string $pluralModelLabel = '下载文件';

@@ -19,6 +19,10 @@ class ProductResource extends Resource
 
     protected static ?string $navigationLabel = '产品管理';
 
+    protected static ?int $navigationSort = 14;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
+
     protected static ?string $modelLabel = '产品';
 
     protected static ?string $pluralModelLabel = '产品';

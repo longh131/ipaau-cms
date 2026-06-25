@@ -1,7 +1,7 @@
 # IPA 后台技术交接文档
 
 > **用途**：供新开发者快速了解后台结构，继续开发和测试工作。  
-> **最后更新**：2026-06-24  
+> **最后更新**：2026-06-23  
 > **项目根目录**：`D:\Laragon\www\ipaau-cms\`
 
 ---
@@ -12,7 +12,7 @@
 |---|---|
 | Laravel 版本 | 13.11.2 |
 | PHP 版本 | 8.3.30 |
-| 后台框架 | Filament v3 |
+| 后台框架 | Filament v5 |
 | 数据库 | MySQL，`ipaau_cms` |
 | 本地访问 | `http://ipaau-cms.test` |
 | 后台地址 | `http://ipaau-cms.test/admin` |
@@ -138,62 +138,79 @@ public function allChildren()
 protected static function booted()
 ```
 
-### 4.3 菜单项资源 - MenuItemResource.php
+### 4.3 菜单项链接规范 - MenuItemLink.php
+
+前台 URL 规范（后台保存 `route` + `route_params`，外链存 `url`）：
+
+| 类型 | 路由名 | URL 模式 |
+|------|--------|----------|
+| 单页 | `page.show` | `/page/{slug}` |
+| 栏目 | `category.show` | `/category/{slug}` |
+| 文章 | `article.show` | `/article/{slug}` |
+| 外链 | — | `menu_items.url` 完整 URL |
+
+- **工具类**：`app/Support/MenuItemLink.php`
+- **后台表单**：`link_type` / `link_id` 为虚拟字段，保存时由 `MenuItemLink::apply()` 转换
+- **前台解析**（预备，尚未接入 Blade）：`MenuItemLink::resolveUrl()`
+
+### 4.4 菜单项资源 - MenuItemResource.php
 - 表格显示：树形结构，深度缩进
 - 批量导入：支持多选栏目、包含子栏目、全选功能
 - 排序操作：上移/下移交换排序值
 
-### 4.4 列表页面 - ListMenuItems.php
+### 4.5 列表页面 - ListMenuItems.php
 ```php
 // 树形排序算法
 private function sortByTree(Collection $records): Collection
 // 获取所有菜单项后按父子关系排序
 ```
 
-### 4.5 视图文件
+### 4.6 权限与用户
+
+- **角色表** `roles`：`name`（内部标识）、`display_name`（显示名），无 `slug`
+- **用户角色**：多对多 `user_roles`，无 `users.role_id` / `is_active`
+- **操作日志** `activity_logs`：`event`, `model_type`, `model_id`, `old_values`, `new_values`
+
+### 4.7 视图文件
 | 文件 | 用途 |
 |------|------|
 | `resources/views/filament/resources/menu-item/columns/tree-title.blade.php` | 树形标题列显示 |
-| `public/new/home-new.html` | 前台首页（纯HTML+CSS+JS） |
+| `resources/views/layouts/app.blade.php` | 前台母版（静态 section，尚未接 CMS 数据） |
 
 ---
 
 ## 5. 前台页面
 
-### 5.1 新首页
-- **文件**：`public/new/home-new.html`
-- **特点**：纯 HTML+CSS+JS，无框架依赖
-- **功能**：
-  - 选项卡切换（EVENTS/COURSES/ONLINE CPD）
-  - 轮播图（自动播放、左右切换、暂停）
-  - 下拉菜单（点击触发）
-  - 背景光晕动画（丝滑效果）
+> **说明**：`public/new/` 目录已废弃并删除。前台以 Blade 模板为准（见 `docs/blade-templates.md`）。CMS 数据接入暂缓。
 
-### 5.2 SVG 资源
-| 文件 | 用途 |
-|------|------|
-| `public/new/svg/hero-wave.svg` | 英雄区波浪 |
-| `public/new/svg/section-wave.svg` | 区域分隔波浪 |
-| `public/new/svg/decoration-blob.svg` | 装饰性 blob |
+### 5.1 首页
+- **路由**：`GET /` → `frontend.home`
+- **模板**：`resources/views/frontend/home.blade.php`（section 拆分，当前为静态内容）
+
+### 5.2 内容页路由（已注册，视图待完善）
+- `/page/{slug}` → `page.show`
+- `/category/{slug}` → `category.show`
+- `/article/{slug}` → `article.show`
 
 ---
 
 ## 6. 待优化项
 
 ### 6.1 后台待完成功能
-- [ ] 菜单项拖拽排序（已移除，待完善）
-- [ ] 菜单前端显示（需创建 Blade 模板）
-- [ ] 文章详情页开发
-- [ ] 栏目内容编辑（富文本编辑器）
+- [ ] 菜单项拖拽排序（已移除错误闭包路由，可用上移/下移）
+- [ ] RBAC 权限校验接入 Filament Policy
+- [ ] 维护模式 middleware
+- [ ] Settings 页 `notify()` 方法兼容 Filament v5
+- [ ] 文章/栏目/单页前台 Blade 与 CMS 数据联动
 
 ### 6.2 前台待完成功能
 - [ ] 首页内容与后台数据联动
-- [ ] 响应式布局优化
-- [ ] 其他静态页面迁移
+- [ ] 菜单组件读取 `menus.location = main`
+- [ ] 其他静态 HTML 页面迁移为 Blade
 
 ### 6.3 技术债务
-- [ ] `public/` 根目录存在重复的旧导出文件，需清理
-- [ ] 首页 `home.blade.php` 代码冗余（约26000行）
+- [ ] `public/` 根目录存在重复的旧导出 HTML，需清理
+- [x] 迁移文件与 live DB 对齐（baseline 2026_05_25_*）
 
 ---
 

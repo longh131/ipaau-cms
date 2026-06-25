@@ -7,18 +7,17 @@ use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Category;
 use App\Models\Article;
+use App\Support\MenuItemLink;
 use App\Filament\Resources\MenuItemResource\Pages;
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Components as FormsComponents;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Facades\DB;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Builder;
 
 class MenuItemResource extends Resource
@@ -43,12 +42,14 @@ class MenuItemResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('parent_id')
                     ->label('上级菜单')
-                    ->options(function ($get) {
+                    ->options(function (Get $get) {
                         $menuId = $get('menu_id');
-                        if (!$menuId) {
-                            return MenuItem::whereNull('parent_id')->pluck('title', 'id');
+                        $query = MenuItem::query()->orderBy('sort_order');
+                        if ($menuId) {
+                            $query->where('menu_id', $menuId);
                         }
-                        return MenuItem::where('menu_id', $menuId)->whereNull('parent_id')->pluck('title', 'id');
+
+                        return $query->pluck('title', 'id')->prepend('无（顶级菜单）', '');
                     })
                     ->nullable(),
                 Forms\Components\TextInput::make('title')
@@ -56,39 +57,29 @@ class MenuItemResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('link_type')
                     ->label('链接类型')
-                    ->options([
-                        'url' => '自定义URL',
-                        'page' => '页面',
-                        'category' => '栏目',
-                        'article' => '文章',
-                    ])
-                    ->default('url'),
+                    ->options(MenuItemLink::typeOptions())
+                    ->default(MenuItemLink::TYPE_URL)
+                    ->live()
+                    ->dehydrated(true),
                 Forms\Components\Select::make('link_id')
                     ->label('链接目标')
-                    ->options(function ($get) {
-                        $linkType = $get('link_type');
-                        switch ($linkType) {
-                            case 'page':
-                                return Page::where('is_active', true)->pluck('title', 'id');
-                            case 'category':
-                                return Category::where('is_active', true)->pluck('name', 'id');
-                            case 'article':
-                                return Article::where('is_active', true)->pluck('title', 'id');
-                            default:
-                                return [];
-                        }
+                    ->options(function (Get $get) {
+                        return match ($get('link_type')) {
+                            MenuItemLink::TYPE_PAGE => Page::where('is_active', true)->pluck('title', 'id'),
+                            MenuItemLink::TYPE_CATEGORY => Category::where('is_active', true)->pluck('name', 'id'),
+                            MenuItemLink::TYPE_ARTICLE => Article::where('is_active', true)->pluck('title', 'id'),
+                            default => [],
+                        };
                     })
-                    ->nullable(),
+                    ->searchable()
+                    ->visible(fn (Get $get) => $get('link_type') && $get('link_type') !== MenuItemLink::TYPE_URL)
+                    ->required(fn (Get $get) => $get('link_type') && $get('link_type') !== MenuItemLink::TYPE_URL)
+                    ->dehydrated(true),
                 Forms\Components\TextInput::make('url')
-                    ->label('自定义URL')
+                    ->label('自定义 URL')
                     ->url()
-                    ->visible(fn ($get) => empty($get('link_type')) || $get('link_type') === 'url'),
-                Forms\Components\TextInput::make('route')
-                    ->label('路由名称')
-                    ->visible(fn ($get) => !empty($get('link_type')) && $get('link_type') !== 'url'),
-                Forms\Components\TextInput::make('route_params')
-                    ->label('路由参数(JSON)')
-                    ->visible(fn ($get) => !empty($get('link_type')) && $get('link_type') !== 'url'),
+                    ->visible(fn (Get $get) => ($get('link_type') ?: MenuItemLink::TYPE_URL) === MenuItemLink::TYPE_URL)
+                    ->required(fn (Get $get) => ($get('link_type') ?: MenuItemLink::TYPE_URL) === MenuItemLink::TYPE_URL),
                 Forms\Components\Select::make('target')
                     ->label('打开方式')
                     ->options([
@@ -116,7 +107,7 @@ class MenuItemResource extends Resource
                     ->formatStateUsing(function ($state, $record) {
                         $depth = static::getDepth($record);
                         $hasChildren = MenuItem::where('parent_id', $record->id)->exists();
-                        
+
                         return view('filament.resources.menu-item.columns.tree-title', [
                             'title' => $state,
                             'depth' => $depth,
@@ -127,12 +118,10 @@ class MenuItemResource extends Resource
                         ]);
                     })
                     ->html(),
-                Tables\Columns\TextColumn::make('route')
-                    ->label('路由')
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('url')
-                    ->label('链接地址')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('链接')
+                    ->formatStateUsing(fn ($state, MenuItem $record) => MenuItemLink::resolveUrl($record))
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('排序')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -165,33 +154,27 @@ class MenuItemResource extends Resource
                                 $options = [];
                                 foreach ($categories as $category) {
                                     $options[$category->id] = $category->name;
-                                    $children = Category::where('parent_id', $category->id)->get();
-                                    foreach ($children as $child) {
-                                        $options[$child->id] = '└─ ' . $child->name;
-                                        $grandchildren = Category::where('parent_id', $child->id)->get();
-                                        foreach ($grandchildren as $grandchild) {
-                                            $options[$grandchild->id] = '  └─ ' . $grandchild->name;
+                                    foreach (Category::where('parent_id', $category->id)->orderBy('sort_order')->get() as $child) {
+                                        $options[$child->id] = '└─ '.$child->name;
+                                        foreach (Category::where('parent_id', $child->id)->orderBy('sort_order')->get() as $grandchild) {
+                                            $options[$grandchild->id] = '  └─ '.$grandchild->name;
                                         }
                                     }
                                 }
+
                                 return $options;
                             })
                             ->columns(3)
                             ->required()
                             ->live()
                             ->afterStateUpdated(function ($state, Set $set) {
-                                $set('all_selected', count($state) === count(Category::all()));
+                                $set('all_selected', count($state) === Category::count());
                             }),
                         Forms\Components\Checkbox::make('all_selected')
                             ->label('全选所有栏目')
                             ->live()
-                            ->afterStateUpdated(function ($state, Get $get, Set $set) {
-                                if ($state) {
-                                    $allCategoryIds = Category::pluck('id')->toArray();
-                                    $set('category_ids', $allCategoryIds);
-                                } else {
-                                    $set('category_ids', []);
-                                }
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                $set('category_ids', $state ? Category::pluck('id')->all() : []);
                             }),
                         Forms\Components\Checkbox::make('include_descendants')
                             ->label('包含选中栏目的所有子栏目')
@@ -207,64 +190,44 @@ class MenuItemResource extends Resource
                                 ->title('请选择栏目')
                                 ->danger()
                                 ->send();
+
                             return;
                         }
 
                         $allCategoryIds = $categoryIds;
                         if ($includeDescendants) {
                             foreach ($categoryIds as $catId) {
-                                $descendants = Category::where('parent_id', $catId)->get();
-                                foreach ($descendants as $descendant) {
-                                    if (!in_array($descendant->id, $allCategoryIds)) {
-                                        $allCategoryIds[] = $descendant->id;
-                                    }
-                                    $grandDescendants = Category::where('parent_id', $descendant->id)->get();
-                                    foreach ($grandDescendants as $gd) {
-                                        if (!in_array($gd->id, $allCategoryIds)) {
-                                            $allCategoryIds[] = $gd->id;
-                                        }
-                                    }
-                                }
+                                $allCategoryIds = array_merge(
+                                    $allCategoryIds,
+                                    static::collectCategoryDescendantIds((int) $catId)
+                                );
                             }
                         }
 
-                        $categories = Category::whereIn('id', $allCategoryIds)->get();
-                        $categoryMap = $categories->keyBy('id');
+                        $allCategoryIds = array_values(array_unique($allCategoryIds));
+                        $categories = Category::whereIn('id', $allCategoryIds)->get()->keyBy('id');
+                        $sorted = static::sortCategoriesByDepth($categories);
 
-                        $count = 0;
-                        
                         $categoryToMenuItemMap = [];
-                        
-                        foreach ($categories as $category) {
-                            if (!$category->parent_id) {
-                                $menuItem = MenuItem::create([
-                                    'menu_id' => $menuId,
-                                    'parent_id' => null,
-                                    'title' => $category->name,
-                                    'route' => 'category.show',
-                                    'route_params' => json_encode(['slug' => $category->slug]),
-                                    'sort_order' => $category->sort_order ?? 0,
-                                    'is_active' => true,
-                                ]);
-                                $categoryToMenuItemMap[$category->id] = $menuItem->id;
-                                $count++;
-                            }
-                        }
-                        
-                        foreach ($categories as $category) {
-                            if ($category->parent_id && isset($categoryToMenuItemMap[$category->parent_id])) {
-                                $menuItem = MenuItem::create([
-                                    'menu_id' => $menuId,
-                                    'parent_id' => $categoryToMenuItemMap[$category->parent_id],
-                                    'title' => $category->name,
-                                    'route' => 'category.show',
-                                    'route_params' => json_encode(['slug' => $category->slug]),
-                                    'sort_order' => $category->sort_order ?? 0,
-                                    'is_active' => true,
-                                ]);
-                                $categoryToMenuItemMap[$category->id] = $menuItem->id;
-                                $count++;
-                            }
+                        $count = 0;
+
+                        foreach ($sorted as $category) {
+                            $parentMenuItemId = $category->parent_id
+                                ? ($categoryToMenuItemMap[$category->parent_id] ?? null)
+                                : null;
+
+                            $menuItem = MenuItem::create([
+                                'menu_id' => $menuId,
+                                'parent_id' => $parentMenuItemId,
+                                'title' => $category->name,
+                                'route' => MenuItemLink::ROUTE_MAP[MenuItemLink::TYPE_CATEGORY],
+                                'route_params' => json_encode(['slug' => $category->slug], JSON_UNESCAPED_UNICODE),
+                                'sort_order' => $category->sort_order ?? 0,
+                                'is_active' => (bool) $category->is_active,
+                            ]);
+
+                            $categoryToMenuItemMap[$category->id] = $menuItem->id;
+                            $count++;
                         }
 
                         Notification::make()
@@ -284,13 +247,11 @@ class MenuItemResource extends Resource
                         $siblings = MenuItem::where('menu_id', $record->menu_id)
                             ->where('parent_id', $record->parent_id)
                             ->where('sort_order', '<', $record->sort_order)
-                            ->orderBy('sort_order', 'desc')
+                            ->orderByDesc('sort_order')
                             ->first();
-                        
+
                         if ($siblings) {
-                            $temp = $record->sort_order;
-                            $record->sort_order = $siblings->sort_order;
-                            $siblings->sort_order = $temp;
+                            [$record->sort_order, $siblings->sort_order] = [$siblings->sort_order, $record->sort_order];
                             $record->save();
                             $siblings->save();
                         }
@@ -304,11 +265,9 @@ class MenuItemResource extends Resource
                             ->where('sort_order', '>', $record->sort_order)
                             ->orderBy('sort_order')
                             ->first();
-                        
+
                         if ($siblings) {
-                            $temp = $record->sort_order;
-                            $record->sort_order = $siblings->sort_order;
-                            $siblings->sort_order = $temp;
+                            [$record->sort_order, $siblings->sort_order] = [$siblings->sort_order, $record->sort_order];
                             $record->save();
                             $siblings->save();
                         }
@@ -339,10 +298,37 @@ class MenuItemResource extends Resource
         $parentId = $record->parent_id;
         while ($parentId) {
             $parent = MenuItem::find($parentId);
-            if (!$parent) break;
+            if (! $parent) {
+                break;
+            }
             $depth++;
             $parentId = $parent->parent_id;
         }
+
         return $depth;
+    }
+
+    private static function collectCategoryDescendantIds(int $categoryId): array
+    {
+        $ids = [];
+        foreach (Category::where('parent_id', $categoryId)->pluck('id') as $childId) {
+            $ids[] = $childId;
+            $ids = array_merge($ids, static::collectCategoryDescendantIds((int) $childId));
+        }
+
+        return $ids;
+    }
+
+    private static function sortCategoriesByDepth($categories)
+    {
+        $depth = function ($category) use ($categories, &$depth) {
+            if (! $category->parent_id || ! $categories->has($category->parent_id)) {
+                return 0;
+            }
+
+            return 1 + $depth($categories->get($category->parent_id));
+        };
+
+        return $categories->sortBy(fn ($category) => [$depth($category), $category->sort_order, $category->id])->values();
     }
 }

@@ -19,7 +19,7 @@
 
         <div class="mt-6">
             <x-filament::button wire:click="save">
-                保存设置
+                保存并刷新菜单
             </x-filament::button>
         </div>
 

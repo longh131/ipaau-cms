@@ -17,9 +17,13 @@ class Menu extends Model
         'is_active',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     protected static function booted(): void
     {
-        static::creating(function ($menu) {
+        static::creating(function (Menu $menu) {
             if (empty($menu->location)) {
                 $menu->location = Str::slug($menu->name);
             }

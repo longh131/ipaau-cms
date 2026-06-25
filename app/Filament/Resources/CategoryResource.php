@@ -80,6 +80,9 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
                     ->default(0),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('是否启用')
+                    ->default(true),
             ]);
     }
 
@@ -99,6 +102,9 @@ class CategoryResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('排序'),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('启用')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('创建时间')
                     ->dateTime(),
@@ -116,7 +122,9 @@ class CategoryResource extends Resource
                 };
                 $collectIds($categories);
                 if (!empty($sortedIds)) {
-                    return $query->whereIn('id', $sortedIds)->orderByRaw('FIELD(id, ' . implode(',', $sortedIds) . ')');
+                    $safeIds = implode(',', array_map('intval', $sortedIds));
+
+                    return $query->whereIn('id', $sortedIds)->orderByRaw('FIELD(id, ' . $safeIds . ')');
                 }
                 return $query;
             })

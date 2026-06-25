@@ -8,6 +8,8 @@ use Filament\Support\Icons\Heroicon;
 
 class SystemInfoWidget extends BaseWidget
 {
+    protected int|string|array $columnSpan = 6;
+
     protected function getStats(): array
     {
         return [

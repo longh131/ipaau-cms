@@ -19,7 +19,9 @@ class UserResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Users;
     
-    protected static ?int $navigationSort = 12;
+    protected static ?int $navigationSort = 61;
+
+    protected static string|\UnitEnum|null $navigationGroup = '权限管理';
 
     protected static ?string $modelLabel = '用户';
 
@@ -38,14 +40,12 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->label('密码')
                     ->password()
+                    ->dehydrated(fn ($state) => filled($state))
                     ->required(fn ($context) => $context === 'create'),
-                Forms\Components\Select::make('role_id')
+                Forms\Components\CheckboxList::make('roles')
                     ->label('角色')
-                    ->options(\App\Models\Role::all()->pluck('name', 'id'))
-                    ->nullable(),
-                Forms\Components\Toggle::make('is_active')
-                    ->label('是否启用')
-                    ->default(true),
+                    ->relationship('roles', 'display_name')
+                    ->columns(2),
             ]);
     }
 
@@ -57,21 +57,18 @@ class UserResource extends Resource
                     ->label('姓名'),
                 Tables\Columns\TextColumn::make('email')
                     ->label('邮箱'),
-                Tables\Columns\TextColumn::make('role.name')
-                    ->label('角色'),
+                Tables\Columns\TextColumn::make('roles.display_name')
+                    ->label('角色')
+                    ->badge()
+                    ->separator(','),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('创建时间')
                     ->dateTime(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->label('是否启用')
-                    ->boolean(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('role_id')
+                Tables\Filters\SelectFilter::make('roles')
                     ->label('角色')
-                    ->options(\App\Models\Role::all()->pluck('name', 'id')),
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('仅显示启用的'),
+                    ->relationship('roles', 'display_name'),
             ])
             ->headerActions([
                 Actions\CreateAction::make(),

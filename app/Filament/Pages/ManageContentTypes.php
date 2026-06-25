@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Setting;
 use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 
@@ -15,8 +16,8 @@ class ManageContentTypes extends Page
 
     protected static ?string $navigationLabel = '类型管理';
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Cog6Tooth;
-    
+    protected static \BackedEnum|string|null $navigationIcon = Heroicon::Squares2x2;
+
     protected static ?int $navigationSort = 2;
 
     protected string $view = 'filament.pages.manage-content-types';
@@ -31,7 +32,14 @@ class ManageContentTypes extends Page
     public function save(): void
     {
         Setting::set('enabled_content_types', $this->enabledTypes);
-        $this->dispatch('saved');
+
+        Notification::make()
+            ->title('保存成功')
+            ->body('左侧菜单已更新，请查看「内容管理」分组下的内容类型。')
+            ->success()
+            ->send();
+
+        $this->redirect(static::getUrl(), navigate: true);
     }
 
     protected function getHeaderActions(): array
@@ -39,9 +47,7 @@ class ManageContentTypes extends Page
         return [
             Action::make('save')
                 ->label('保存设置')
-                ->action(function () {
-                    $this->save();
-                }),
+                ->action('save'),
         ];
     }
 

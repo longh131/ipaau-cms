@@ -18,8 +18,10 @@ class MemberResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Users;
 
     protected static ?string $navigationLabel = '会员管理';
-    
-    protected static ?int $navigationSort = 7;
+
+    protected static ?int $navigationSort = 13;
+
+    protected static string|\UnitEnum|null $navigationGroup = '内容管理';
 
     protected static ?string $modelLabel = '会员';
 

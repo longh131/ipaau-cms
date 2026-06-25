@@ -19,7 +19,9 @@ class MediaResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Photo;
     
-    protected static ?int $navigationSort = 9;
+    protected static ?int $navigationSort = 50;
+
+    protected static string|\UnitEnum|null $navigationGroup = '系统';
 
     protected static ?string $modelLabel = '媒体文件';
 

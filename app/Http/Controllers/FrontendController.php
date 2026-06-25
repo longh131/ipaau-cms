@@ -6,7 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Menu;
-use App\Models\MenuItem;
+use App\Support\MenuItemLink;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 
@@ -112,14 +112,25 @@ class FrontendController extends Controller
         ];
     }
 
-    public function render($type, $slug = null)
+    public function render(Request $request, string $slug)
     {
+        $type = match ($request->route()?->getName()) {
+            'page.show' => 'page',
+            'category.show' => 'category',
+            'article.show' => 'article',
+            default => null,
+        };
+
+        if (! $type) {
+            abort(404);
+        }
+
         try {
             $menu = $this->getMenuItems('main');
         } catch (QueryException $e) {
             $menu = [];
         }
-        
+
         switch ($type) {
             case 'page':
                 $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
@@ -142,15 +153,21 @@ class FrontendController extends Controller
         }
     }
 
-    public function getMenuItems($menuSlug)
+    public function getMenuItems(string $location)
     {
-        $menu = Menu::where('slug', $menuSlug)->first();
-        
-        if (!$menu) {
+        $menu = Menu::where('location', $location)->where('is_active', true)->first();
+
+        if (! $menu) {
             return [];
         }
 
-        return $this->buildMenuTree($menu->items()->where('parent_id', 0)->orderBy('sort_order')->get());
+        $items = $menu->items()
+            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->get();
+
+        return $this->buildMenuTree($items);
     }
 
     private function buildMenuTree($items)
@@ -159,25 +176,12 @@ class FrontendController extends Controller
             return [
                 'id' => $item->id,
                 'title' => $item->title,
-                'url' => $this->resolveMenuItemUrl($item),
-                'target' => $item->target,
-                'children' => $this->buildMenuTree($item->children),
+                'url' => MenuItemLink::resolveUrl($item),
+                'target' => $item->target ?? '_self',
+                'children' => $this->buildMenuTree(
+                    $item->children()->where('is_active', true)->orderBy('sort_order')->get()
+                ),
             ];
         })->toArray();
-    }
-
-    private function resolveMenuItemUrl($item)
-    {
-        switch ($item->link_type) {
-            case 'page':
-                return route('page.show', $item->link_id ? Page::find($item->link_id)?->slug : '');
-            case 'category':
-                return route('category.show', $item->link_id ? Category::find($item->link_id)?->slug : '');
-            case 'article':
-                return route('article.show', $item->link_id ? Article::find($item->link_id)?->slug : '');
-            case 'url':
-            default:
-                return $item->url;
-        }
     }
 }

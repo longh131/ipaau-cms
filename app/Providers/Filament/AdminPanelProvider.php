@@ -14,6 +14,9 @@ use App\Filament\Resources\MenuItemResource;
 use App\Filament\Resources\UserResource;
 use App\Filament\Resources\RoleResource;
 use App\Filament\Resources\ActivityLogResource;
+use App\Filament\Resources\FormSubmissionResource;
+use App\Filament\Resources\PageComponentResource;
+use App\Filament\Resources\SubscriberResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -22,7 +25,7 @@ use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Icons\IconProvider;
+use Filament\Navigation\NavigationGroup;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,6 +46,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('内容管理'),
+                NavigationGroup::make('权限管理'),
+                NavigationGroup::make('系统'),
             ])
             ->resources($this->getResources())
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -100,9 +108,12 @@ class AdminPanelProvider extends PanelProvider
         array_unshift($resources, CategoryResource::class);
 
         $systemResources = [
+            PageComponentResource::class,
             MediaResource::class,
             MenuResource::class,
             MenuItemResource::class,
+            SubscriberResource::class,
+            FormSubmissionResource::class,
             RoleResource::class,
             UserResource::class,
             ActivityLogResource::class,

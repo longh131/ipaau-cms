@@ -10,13 +10,19 @@ class ActivityLog extends Model
     use HasFactory;
 
     protected $fillable = [
+        'event',
+        'model_type',
+        'model_id',
+        'old_values',
+        'new_values',
         'user_id',
-        'action',
-        'target_type',
-        'target_id',
-        'description',
         'ip_address',
         'user_agent',
+    ];
+
+    protected $casts = [
+        'old_values' => 'array',
+        'new_values' => 'array',
     ];
 
     public function user()

@@ -24,6 +24,10 @@ class SubscriberResource extends Resource
 
     protected static ?string $pluralModelLabel = '订阅';
 
+    protected static ?int $navigationSort = 51;
+
+    protected static string|\UnitEnum|null $navigationGroup = '系统';
+
     public static function form(Schema $schema): Schema
     {
         return $schema
