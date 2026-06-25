@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use App\Services\MenuService;
+use App\Services\PageComponentService;
 use App\Services\SiteSettingsService;
 use Filament\Forms\Components\RichEditor;
 use Filament\Support\Assets\Js;
@@ -20,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(MenuService::class);
         $this->app->singleton(SiteSettingsService::class);
+        $this->app->singleton(PageComponentService::class);
     }
 
     /**

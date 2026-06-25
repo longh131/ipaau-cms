@@ -2,6 +2,9 @@
 
 namespace App\Support;
 
+use App\Support\HomeSection\FootnoteCardsSectionData;
+use App\Support\HomeSection\HeroSectionData;
+
 /**
  * 首页 Blade section 与 page_components 的映射。
  * 前台接入时按 sort_order 渲染对应 @include('sections.home.{key}')。
@@ -10,17 +13,23 @@ class HomeSectionTypes
 {
     public const PAGE_SLUG = 'home';
 
+    /** @var array<int, string> */
+    public const STRUCTURED_TYPES = [
+        'hero',
+        'footnote-cards',
+    ];
+
     public static function definitions(): array
     {
         return [
             'hero' => [
                 'label' => 'Hero 主视觉',
-                'description' => '首屏标题、副标题、CTA 按钮',
-                'fields' => ['eyebrow', 'title', 'subtitle', 'cta_text', 'cta_url'],
+                'description' => '首屏小标题、大标题、正文与 CTA 按钮（蓝底/白底）',
+                'fields' => ['tagline', 'title_lines', 'description', 'buttons'],
             ],
             'footnote-cards' => [
                 'label' => '脚注卡片',
-                'description' => 'Hero 下方快捷入口卡片',
+                'description' => 'Hero 下方最多 6 张快捷入口卡片（图片、标题、链接）',
                 'fields' => ['items'],
             ],
             'membership' => [
@@ -76,6 +85,11 @@ class HomeSectionTypes
         ];
     }
 
+    public static function isStructured(string $type): bool
+    {
+        return in_array($type, self::STRUCTURED_TYPES, true);
+    }
+
     public static function options(): array
     {
         return collect(static::definitions())
@@ -99,8 +113,10 @@ class HomeSectionTypes
 
     public static function defaultData(string $key): array
     {
-        $fields = static::definitions()[$key]['fields'] ?? [];
-
-        return array_fill_keys($fields, null);
+        return match ($key) {
+            'hero' => HeroSectionData::emptyStorage(),
+            'footnote-cards' => FootnoteCardsSectionData::emptyStorage(),
+            default => array_fill_keys(static::definitions()[$key]['fields'] ?? [], null),
+        };
     }
 }

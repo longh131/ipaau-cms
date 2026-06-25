@@ -6,18 +6,22 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Page;
 use App\Services\MenuService;
+use App\Services\PageComponentService;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
 {
     public function __construct(
         private readonly MenuService $menuService,
+        private readonly PageComponentService $pageComponentService,
     ) {}
 
     public function home()
     {
         return view('frontend.home', [
             'menuItems' => $this->menuService->getHeaderMenuItems(),
+            'hero' => $this->pageComponentService->getHeroData(),
+            'footnoteCards' => $this->pageComponentService->getFootnoteCardsData(),
             'articles' => [],
             'categories' => [],
         ]);

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PageComponentResource\Forms\FootnoteCardsSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\HeroSectionForm;
 use App\Models\PageComponent;
 use App\Support\HomeSectionTypes;
 use Filament\Actions;
@@ -33,41 +35,69 @@ class PageComponentResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Forms\Components\Hidden::make('page_slug')
-                    ->default(HomeSectionTypes::PAGE_SLUG),
-                Forms\Components\Select::make('component_type')
-                    ->label('板块类型')
-                    ->options(HomeSectionTypes::options())
-                    ->required()
-                    ->live()
-                    ->disabledOn('edit')
-                    ->afterStateUpdated(function (?string $state, Set $set) {
-                        if ($state) {
-                            $set('sort_order', HomeSectionTypes::defaultSortOrder($state));
-                        }
-                    }),
-                Forms\Components\Placeholder::make('section_hint')
-                    ->label('板块说明')
-                    ->content(fn (Get $get) => HomeSectionTypes::definitions()[$get('component_type')]['description'] ?? '请选择板块类型')
-                    ->visible(fn (Get $get) => filled($get('component_type'))),
-                Forms\Components\TextInput::make('sort_order')
-                    ->label('排序')
-                    ->numeric()
-                    ->default(0)
-                    ->helperText('数字越小越靠前，需与前台 section 顺序一致'),
-                Forms\Components\KeyValue::make('data')
-                    ->label('板块数据')
-                    ->keyLabel('字段')
-                    ->valueLabel('内容')
-                    ->reorderable()
-                    ->columnSpanFull()
-                    ->helperText('JSON 键值；复杂结构（如 tabs、items）可存 JSON 字符串，前台接入时再解析'),
-                Forms\Components\Toggle::make('is_active')
-                    ->label('是否启用')
-                    ->default(true),
-            ]);
+        return $schema->components(static::formComponents(includeKeyValue: true));
+    }
+
+    /**
+     * @return array<int, \Filament\Schemas\Components\Component|\Filament\Forms\Components\Field>
+     */
+    public static function formComponents(bool $includeKeyValue = true): array
+    {
+        $components = [
+            ...static::baseFormComponents(),
+            ...HeroSectionForm::schema(),
+            ...FootnoteCardsSectionForm::schema(),
+        ];
+
+        if ($includeKeyValue) {
+            $components[] = Forms\Components\KeyValue::make('data')
+                ->label('板块数据')
+                ->keyLabel('字段')
+                ->valueLabel('内容')
+                ->reorderable()
+                ->columnSpanFull()
+                ->visible(fn (Get $get) => filled($get('component_type')) && ! HomeSectionTypes::isStructured((string) $get('component_type')))
+                ->dehydrated(fn (Get $get) => filled($get('component_type')) && ! HomeSectionTypes::isStructured((string) $get('component_type')))
+                ->helperText('JSON 键值；复杂结构（如 tabs、items）可存 JSON 字符串，前台接入时再解析');
+        }
+
+        $components[] = Forms\Components\TextInput::make('sort_order')
+            ->label('排序')
+            ->numeric()
+            ->default(0)
+            ->helperText('数字越小越靠前，需与前台 section 顺序一致');
+
+        $components[] = Forms\Components\Toggle::make('is_active')
+            ->label('是否启用')
+            ->default(true);
+
+        return $components;
+    }
+
+    /**
+     * @return array<int, \Filament\Schemas\Components\Component|\Filament\Forms\Components\Field>
+     */
+    public static function baseFormComponents(): array
+    {
+        return [
+            Forms\Components\Hidden::make('page_slug')
+                ->default(HomeSectionTypes::PAGE_SLUG),
+            Forms\Components\Select::make('component_type')
+                ->label('板块类型')
+                ->options(HomeSectionTypes::options())
+                ->required()
+                ->live()
+                ->disabledOn('edit')
+                ->afterStateUpdated(function (?string $state, Set $set) {
+                    if ($state) {
+                        $set('sort_order', HomeSectionTypes::defaultSortOrder($state));
+                    }
+                }),
+            Forms\Components\Placeholder::make('section_hint')
+                ->label('板块说明')
+                ->content(fn (Get $get) => HomeSectionTypes::definitions()[$get('component_type')]['description'] ?? '请选择板块类型')
+                ->visible(fn (Get $get) => filled($get('component_type'))),
+        ];
     }
 
     public static function table(Table $table): Table

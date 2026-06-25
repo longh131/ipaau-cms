@@ -1,5 +1,5 @@
-@include('sections.home.hero')
-@include('sections.home.footnote-cards')
+@include('sections.home.hero', ['hero' => $hero ?? null])
+@include('sections.home.footnote-cards', ['footnoteCards' => $footnoteCards ?? ['items' => []]])
 @include('sections.home.membership')
 @include('sections.home.stats')
 @include('partials.decorators.decorator-1')

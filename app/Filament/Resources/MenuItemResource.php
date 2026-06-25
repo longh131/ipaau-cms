@@ -8,6 +8,7 @@ use App\Models\Page;
 use App\Models\Category;
 use App\Models\Article;
 use App\Support\MenuItemLink;
+use App\Filament\Forms\ImageUpload;
 use App\Filament\Resources\MenuItemResource\Pages;
 use Filament\Actions;
 use Filament\Forms;
@@ -100,16 +101,8 @@ class MenuItemResource extends Resource
                     ->description('仅一级菜单显示：下拉面板右侧的图片与文字链接（共 7 个大栏目可各配一组）')
                     ->visible(fn (Get $get) => blank($get('parent_id')))
                     ->schema([
-                        Forms\Components\FileUpload::make('icon')
-                            ->label('推广图片')
-                            ->image()
-                            ->disk('public')
-                            ->directory('menu-promo')
-                            ->visibility('public')
-                            ->imageEditor()
-                            ->maxSize(5120)
-                            ->columnSpanFull()
-                            ->helperText('建议尺寸约 445×195，支持 JPG / PNG / WebP'),
+                        ImageUpload::make('icon', 'menu-promo', '推广图片', '建议尺寸约 445×195')
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('megamenu_image_alt')
                             ->label('图片 Alt 文本'),
                         Forms\Components\TextInput::make('megamenu_promo_text')
