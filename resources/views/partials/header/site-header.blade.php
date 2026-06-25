@@ -1,4 +1,8 @@
 <header class="relative container mx-auto">
+    @php
+        $menuItems = $menuItems ?? app(\App\Services\MenuService::class)->getHeaderMenuItems();
+    @endphp
+
     @include('partials.header.blob-home')
 
     <div class="mx-auto h-full flex lg:grid lg:grid-cols-[minmax(0,min-content)_minmax(0,auto)_minmax(0,max-content)_minmax(0,max-content)] justify-between lg:justify-normal lg:gap-x-2 no-wrap items-stretch px-4 xl:px-10">
@@ -73,9 +77,9 @@
                 <x-menu :menuItems="$menuItems" variant="mobile" />
             </div>
             <div id="mobile-navigation-footer" class="w-full mt-auto basis-max grow-0 shrink-0">
-                <div data-type="menu-decorator" class="empty:hidden"></div>
-                <div data-type="menu-decorator" class="empty:hidden"></div>
-                <div data-type="menu-decorator" class="empty:hidden"></div>
+                @foreach($menuItems as $item)
+                    @include('partials.header.menu-decorator', ['item' => $item])
+                @endforeach
             </div>
         </div>
     </div>

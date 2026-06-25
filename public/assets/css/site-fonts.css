@@ -63,3 +63,27 @@ body {
 .footer-main * {
   font-family: var(--ipa-font-family) !important;
 }
+
+/* Footer copyright: inline badge icon must not break the sentence onto extra lines */
+.footer-main .footer-copyright-text [data-rte="true"] img {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: none;
+  height: auto;
+}
+
+.footer-main .footer-copyright-text [data-rte="true"] a {
+  display: inline;
+  white-space: normal;
+}
+
+.footer-main .footer-copyright-text [data-rte="true"] p {
+  display: block;
+  margin-bottom: 0;
+}
+
+.footer-main .footer-copyright-text [data-rte="true"] > div {
+  display: inline;
+  margin-bottom: 0;
+  min-height: 0;
+}

@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +40,8 @@ class MenuItemResource extends Resource
                 Forms\Components\Select::make('menu_id')
                     ->label('所属菜单')
                     ->options(Menu::all()->pluck('name', 'id'))
-                    ->required(),
+                    ->required()
+                    ->default(fn () => request()->integer('menu_id') ?: null),
                 Forms\Components\Select::make('parent_id')
                     ->label('上级菜单')
                     ->options(function (Get $get) {
@@ -94,6 +96,30 @@ class MenuItemResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->label('是否启用')
                     ->default(true),
+                Section::make('下拉推广区')
+                    ->description('仅一级菜单显示：下拉面板右侧的图片与文字链接（共 7 个大栏目可各配一组）')
+                    ->visible(fn (Get $get) => blank($get('parent_id')))
+                    ->schema([
+                        Forms\Components\FileUpload::make('icon')
+                            ->label('推广图片')
+                            ->image()
+                            ->disk('public')
+                            ->directory('menu-promo')
+                            ->visibility('public')
+                            ->imageEditor()
+                            ->maxSize(5120)
+                            ->columnSpanFull()
+                            ->helperText('建议尺寸约 445×195，支持 JPG / PNG / WebP'),
+                        Forms\Components\TextInput::make('megamenu_image_alt')
+                            ->label('图片 Alt 文本'),
+                        Forms\Components\TextInput::make('megamenu_promo_text')
+                            ->label('推广文字')
+                            ->placeholder('如：了解更多关于 IPA'),
+                        Forms\Components\TextInput::make('megamenu_promo_url')
+                            ->label('推广链接')
+                            ->placeholder('/about-the-ipa 或 https://...'),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -112,6 +138,7 @@ class MenuItemResource extends Resource
                             'title' => $state,
                             'depth' => $depth,
                             'hasChildren' => $hasChildren,
+                            'showToggle' => $hasChildren && $depth < 2,
                             'recordId' => $record->id,
                             'isActive' => $record->is_active,
                             'parentId' => $record->parent_id,
@@ -137,53 +164,83 @@ class MenuItemResource extends Resource
                     ->label('仅显示启用的'),
             ])
             ->headerActions([
-                Actions\CreateAction::make(),
-                Actions\Action::make('importCategories')
-                    ->label('批量导入栏目')
-                    ->icon(Heroicon::Plus)
-                    ->form([
-                        Forms\Components\Select::make('menu_id')
-                            ->label('选择菜单')
-                            ->options(Menu::all()->pluck('name', 'id'))
-                            ->required()
-                            ->default(fn () => Menu::first()?->id),
-                        Forms\Components\CheckboxList::make('category_ids')
-                            ->label('选择栏目（可多选）')
-                            ->options(function () {
-                                $categories = Category::where('parent_id', 0)->get();
-                                $options = [];
-                                foreach ($categories as $category) {
-                                    $options[$category->id] = $category->name;
-                                    foreach (Category::where('parent_id', $category->id)->orderBy('sort_order')->get() as $child) {
-                                        $options[$child->id] = '└─ '.$child->name;
-                                        foreach (Category::where('parent_id', $child->id)->orderBy('sort_order')->get() as $grandchild) {
-                                            $options[$grandchild->id] = '  └─ '.$grandchild->name;
-                                        }
-                                    }
-                                }
+                Actions\CreateAction::make()
+                    ->url(fn (Pages\ListMenuItems $livewire) => MenuItemResource::getUrl('create', filled($livewire->menuId)
+                        ? ['menu_id' => $livewire->menuId]
+                        : [])),
+                Actions\Action::make('bulkDeleteSelected')
+                    ->label('批量删除')
+                    ->icon(Heroicon::Trash)
+                    ->color('danger')
+                    ->action(function (Pages\ListMenuItems $livewire) {
+                        if ($livewire->getSelectedTableRecords()->isEmpty()) {
+                            Notification::make()
+                                ->title('未选择任何菜单项')
+                                ->body('请先在表格左侧勾选要删除的菜单项，再点击「批量删除」。')
+                                ->warning()
+                                ->send();
 
-                                return $options;
-                            })
-                            ->columns(3)
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($state, Set $set) {
-                                $set('all_selected', count($state) === Category::count());
-                            }),
-                        Forms\Components\Checkbox::make('all_selected')
-                            ->label('全选所有栏目')
-                            ->live()
-                            ->afterStateUpdated(function ($state, Set $set) {
-                                $set('category_ids', $state ? Category::pluck('id')->all() : []);
-                            }),
-                        Forms\Components\Checkbox::make('include_descendants')
-                            ->label('包含选中栏目的所有子栏目')
-                            ->default(true),
+                            return;
+                        }
+
+                        return $livewire->mountTableBulkAction('delete');
+                    }),
+                Actions\Action::make('importCategories')
+                    ->label(function (Pages\ListMenuItems $livewire): string {
+                        $label = '批量导入栏目';
+
+                        if (filled($livewire->menuId)) {
+                            $name = Menu::find($livewire->menuId)?->name;
+                            if ($name) {
+                                return "{$label} · {$name}";
+                            }
+                        }
+
+                        return $label;
+                    })
+                    ->icon(Heroicon::Plus)
+                    ->fillForm(fn (Pages\ListMenuItems $livewire): array => [
+                        'menu_id' => $livewire->menuId ?: Menu::query()->value('id'),
+                        'include_descendants' => true,
+                        'all_selected' => false,
+                        'category_ids' => [],
                     ])
+                    ->form(function (Pages\ListMenuItems $livewire): array {
+                        $menuLocked = filled($livewire->menuId);
+
+                        return [
+                            Forms\Components\Hidden::make('menu_id')
+                                ->default($livewire->menuId)
+                                ->dehydrated()
+                                ->visible($menuLocked),
+                            Forms\Components\Select::make('menu_id')
+                                ->hiddenLabel()
+                                ->options(Menu::all()->pluck('name', 'id'))
+                                ->placeholder('请选择菜单')
+                                ->required(! $menuLocked)
+                                ->visible(! $menuLocked),
+                            Forms\Components\CheckboxList::make('category_ids')
+                                ->label('选择栏目（可多选）')
+                                ->options(fn () => static::buildCategoryImportOptions())
+                                ->columns(3)
+                                ->required()
+                                ->live(onBlur: true),
+                            Forms\Components\Checkbox::make('all_selected')
+                                ->label('全选下列栏目')
+                                ->live()
+                                ->afterStateUpdated(function (bool $state, Set $set) {
+                                    $set('category_ids', $state ? array_keys(static::buildCategoryImportOptions()) : []);
+                                }),
+                            Forms\Components\Checkbox::make('include_descendants')
+                                ->label('导入时包含选中栏目的所有子栏目')
+                                ->helperText('仅影响提交导入结果，不会自动勾选列表中的其他栏目')
+                                ->default(true),
+                        ];
+                    })
                     ->action(function (array $data) {
                         $menuId = $data['menu_id'];
-                        $categoryIds = $data['category_ids'] ?? [];
-                        $includeDescendants = $data['include_descendants'] ?? true;
+                        $categoryIds = array_values(array_unique(array_map('intval', $data['category_ids'] ?? [])));
+                        $includeDescendants = (bool) ($data['include_descendants'] ?? true);
 
                         if (empty($categoryIds)) {
                             Notification::make()
@@ -212,7 +269,7 @@ class MenuItemResource extends Resource
                         $count = 0;
 
                         foreach ($sorted as $category) {
-                            $parentMenuItemId = $category->parent_id
+                            $parentMenuItemId = ($category->parent_id && $category->parent_id !== 0)
                                 ? ($categoryToMenuItemMap[$category->parent_id] ?? null)
                                 : null;
 
@@ -273,9 +330,10 @@ class MenuItemResource extends Resource
                         }
                     }),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
+                    Actions\DeleteBulkAction::make()
+                        ->label('批量删除'),
                 ]),
             ])
             ->modifyQueryUsing(function (Builder $query) {
@@ -290,6 +348,25 @@ class MenuItemResource extends Resource
             'create' => Pages\CreateMenuItem::route('/create'),
             'edit' => Pages\EditMenuItem::route('/{record}/edit'),
         ];
+    }
+
+    private static function buildCategoryImportOptions(): array
+    {
+        $options = [];
+
+        $append = function ($categories, string $prefix = '') use (&$append, &$options) {
+            foreach ($categories as $category) {
+                $options[$category->id] = $prefix.$category->name;
+                $children = Category::where('parent_id', $category->id)->orderBy('sort_order')->get();
+                if ($children->isNotEmpty()) {
+                    $append($children, $prefix.'└─ ');
+                }
+            }
+        };
+
+        $append(Category::where('parent_id', 0)->orderBy('sort_order')->get());
+
+        return $options;
     }
 
     private static function getDepth(MenuItem $record): int
@@ -311,8 +388,9 @@ class MenuItemResource extends Resource
     private static function collectCategoryDescendantIds(int $categoryId): array
     {
         $ids = [];
-        foreach (Category::where('parent_id', $categoryId)->pluck('id') as $childId) {
-            $ids[] = $childId;
+
+        foreach (Category::where('parent_id', $categoryId)->orderBy('sort_order')->pluck('id') as $childId) {
+            $ids[] = (int) $childId;
             $ids = array_merge($ids, static::collectCategoryDescendantIds((int) $childId));
         }
 

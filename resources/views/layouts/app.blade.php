@@ -28,7 +28,7 @@
             href="#main"
         >Skip to main content</a>
 
-        @include('partials.header.site-header', ['menuItems' => $menuItems ?? []])
+        @include('partials.header.site-header')
 
         <main id="main">
             @yield('content')

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 
 Route::get('/', [FrontendController::class, 'home'])->name('home');
+Route::redirect('/home-exported.html', '/');
 Route::get('/test-menu', function () {
     return view('frontend.test');
 });
