@@ -22,6 +22,11 @@ class FrontendController extends Controller
             'menuItems' => $this->menuService->getHeaderMenuItems(),
             'hero' => $this->pageComponentService->getHeroData(),
             'footnoteCards' => $this->pageComponentService->getFootnoteCardsData(),
+            'membership' => $this->pageComponentService->getMembershipData(),
+            'stats' => $this->pageComponentService->getStatsData(),
+            'cpdIntro' => $this->pageComponentService->getCpdIntroData(),
+            'tabbedContent' => $this->pageComponentService->getTabbedContentData(),
+            'testimonials' => $this->pageComponentService->getTestimonialsData(),
             'articles' => [],
             'categories' => [],
         ]);

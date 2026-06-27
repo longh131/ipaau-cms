@@ -1,3 +1,8 @@
+@php
+    /** @var array{items: array<int, array{number: string, title: string, content: string}>} $stats */
+    $stats = $stats ?? ['items' => []];
+@endphp
+@if(! empty($stats['items']))
         <section
           data-type="statsCards"
           data-index="2"
@@ -15,81 +20,16 @@
           >
             <div class="container mx-auto px-4">
               <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-10">
-                <div
-                  class="relative bg-white rounded-3xl py-6 lg:px-10 lg:py-24 text-center border-2 border-transparent shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-center px-4"
-                  style="
-                    background:
-                      linear-gradient(white, white) padding-box padding-box,
-                      linear-gradient(
-                          to right,
-                          rgb(201, 60, 159),
-                          rgb(240, 95, 34)
-                        )
-                        border-box border-box;
-                  "
-                >
-                  <div
-                    class="text-6xl xl:text-[130px] font-bold font-apex-book text-secondary leading-[1.2] tracking-[-.02em] break-words xl:-mb-2"
-                  >
-                    1
-                  </div>
-                  <div
-                    class="text-base lg:text-[20px] text-warm-plum leading-[1.3] tracking-[.04em] font-medium uppercase break-words"
-                  >
-                    <div>
-                      international community connecting IPA Aus &amp; IFA UK
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="relative bg-white rounded-3xl py-6 lg:px-10 lg:py-24 text-center border-2 border-transparent shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-center px-4"
-                  style="
-                    background:
-                      linear-gradient(white, white) padding-box padding-box,
-                      linear-gradient(
-                          to right,
-                          rgb(201, 60, 159),
-                          rgb(240, 95, 34)
-                        )
-                        border-box border-box;
-                  "
-                >
-                  <div
-                    class="text-6xl xl:text-[130px] font-bold font-apex-book text-secondary leading-[1.2] tracking-[-.02em] break-words xl:-mb-2"
-                  >
-                    50k
-                  </div>
-                  <div
-                    class="text-base lg:text-[20px] text-warm-plum leading-[1.3] tracking-[.04em] font-medium uppercase break-words"
-                  >
-                    <div>Members and Students globally</div>
-                  </div>
-                </div>
-                <div
-                  class="relative bg-white rounded-3xl py-6 lg:px-10 lg:py-24 text-center border-2 border-transparent shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-center col-span-2 lg:col-span-1 px-5"
-                  style="
-                    background:
-                      linear-gradient(white, white) padding-box padding-box,
-                      linear-gradient(
-                          to right,
-                          rgb(201, 60, 159),
-                          rgb(240, 95, 34)
-                        )
-                        border-box border-box;
-                  "
-                >
-                  <div
-                    class="text-6xl xl:text-[130px] font-bold font-apex-book text-secondary leading-[1.2] tracking-[-.02em] break-words xl:-mb-2"
-                  >
-                    100<sup class="top-[-0.42em]">+</sup>
-                  </div>
-                  <div
-                    class="text-base lg:text-[20px] text-warm-plum leading-[1.3] tracking-[.04em] font-medium uppercase break-words"
-                  >
-                    <div>Years of supporting members and the industry</div>
-                  </div>
-                </div>
+                @foreach ($stats['items'] as $index => $item)
+                <x-stat-card
+                  :number="$item['number']"
+                  :title="$item['title']"
+                  :content="$item['content']"
+                  :wide-on-mobile="$index === 2 && count($stats['items']) === 3"
+                />
+                @endforeach
               </div>
             </div>
           </div>
         </section>
+@endif

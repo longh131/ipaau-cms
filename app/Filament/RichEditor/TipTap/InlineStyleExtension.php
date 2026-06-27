@@ -57,6 +57,19 @@ class InlineStyleExtension extends Extension
                             return ['style' => $style];
                         },
                     ],
+                    'class' => [
+                        'default' => null,
+                        'parseHTML' => fn ($DOMNode) => $DOMNode->getAttribute('class') ?: null,
+                        'renderHTML' => function ($attributes) {
+                            $class = $attributes->class ?? null;
+
+                            if (blank($class)) {
+                                return null;
+                            }
+
+                            return ['class' => $class];
+                        },
+                    ],
                 ],
             ],
         ];

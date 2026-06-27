@@ -575,6 +575,13 @@
                     panel.classList.toggle('hidden', i !== index);
                 });
 
+                const panel = panels[index];
+                const imageUrl = panel?.dataset?.tabImage;
+                if (imgWrapper && imageUrl) {
+                    setTabImage(imgWrapper, imageUrl);
+                    return;
+                }
+
                 const preset = TABBED_CONTENT_PRESETS[index];
                 if (imgWrapper && preset) {
                     setTabImage(imgWrapper, preset.image);

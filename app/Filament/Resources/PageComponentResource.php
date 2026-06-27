@@ -2,8 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PageComponentResource\Forms\CpdIntroSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\FootnoteCardsSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\HeroSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\MembershipSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\StatsSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\TabbedContentSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\TestimonialsSectionForm;
 use App\Models\PageComponent;
 use App\Support\HomeSectionTypes;
 use Filament\Actions;
@@ -47,6 +52,11 @@ class PageComponentResource extends Resource
             ...static::baseFormComponents(),
             ...HeroSectionForm::schema(),
             ...FootnoteCardsSectionForm::schema(),
+            ...MembershipSectionForm::schema(),
+            ...StatsSectionForm::schema(),
+            ...CpdIntroSectionForm::schema(),
+            ...TabbedContentSectionForm::schema(),
+            ...TestimonialsSectionForm::schema(),
         ];
 
         if ($includeKeyValue) {

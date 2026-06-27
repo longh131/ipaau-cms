@@ -1,3 +1,8 @@
+@php
+    /** @var array{html: string}|null $cpdIntro */
+    $cpdIntro = $cpdIntro ?? ['html' => ''];
+@endphp
+@if(filled($cpdIntro['html'] ?? null))
         <section
           data-type="basicContentWithColumns"
           data-index="4"
@@ -35,14 +40,7 @@
                       color: var(--ipa-color-light);
                     "
                   >
-                    <h2
-                      class="max-w-prose text-display-xl lg:text-display-2xl"
-                      style="text-align: center"
-                    >
-                      <span class="text-gradient-pink-reverse">Empowering</span>
-                      the community with high quality Online CPD, Events and
-                      Courses.
-                    </h2>
+                    {!! $cpdIntro['html'] !!}
                   </div>
                 </div>
               </div>
@@ -52,4 +50,4 @@
             </div>
           </div>
         </section>
-        <section
+@endif

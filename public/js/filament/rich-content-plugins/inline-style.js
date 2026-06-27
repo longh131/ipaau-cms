@@ -58,6 +58,7 @@
                     types: styledNodeTypes,
                     attributes: {
                         style: styleAttribute,
+                        class: classAttribute,
                     },
                 },
             ]

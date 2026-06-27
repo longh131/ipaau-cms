@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\PageComponentResource\Forms;
 
-class HeroSectionForm
+class MembershipSectionForm
 {
     /**
      * @return array<int, \Filament\Schemas\Components\Component>
@@ -10,9 +10,10 @@ class HeroSectionForm
     public static function schema(): array
     {
         return BasicContentSectionForm::schema(
-            componentType: 'hero',
-            sectionTitle: 'Hero 内容',
-            titleHeadingTag: 'H1',
+            componentType: 'membership',
+            sectionTitle: '会员推广内容',
+            titleHeadingTag: 'H2',
+            maxButtons: 10,
         );
     }
 }

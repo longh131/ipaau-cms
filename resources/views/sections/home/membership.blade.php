@@ -1,3 +1,13 @@
+@php
+    /** @var array{tagline: string, title_lines: array<int, string>, description: string, buttons: array<int, array{label: string, url: string, target: ?string, style: string>}|null $membership */
+    $membership = $membership ?? ['tagline' => '', 'title_lines' => [], 'description' => '', 'buttons' => []];
+    $hasLeft = filled($membership['tagline'] ?? null) || ! empty($membership['title_lines']);
+    $hasRight = filled($membership['description'] ?? null) || ! empty($membership['buttons']);
+    $descriptionParagraphs = filled($membership['description'] ?? null)
+        ? preg_split('/\R\R+/', trim($membership['description'])) ?: []
+        : [];
+@endphp
+@if($hasLeft || $hasRight)
         <section
           data-type="basicContentWithColumns"
           data-index="1"
@@ -18,10 +28,12 @@
               data-bw=""
               style="--ipa-border-color: transparent; --ipa-border-style: solid"
             >
+              @if($hasLeft)
               <div
                 class="max-lg:pt-5 first:max-lg:pt-0 column flex flex-col h-full pb-5 border-solid"
               >
                 <div class="text-left container mx-auto">
+                  @if(filled($membership['tagline'] ?? null))
                   <span
                     class="eyebrow-xl"
                     style="
@@ -29,8 +41,10 @@
                       --ipa-color-dark: oklch(0.8944 0.0357 331.62);
                       color: var(--ipa-color-light);
                     "
-                    >YOUR MEMBERSHIP</span
+                    >{{ $membership['tagline'] }}</span
                   >
+                  @endif
+                  @if(! empty($membership['title_lines']))
                   <div
                     data-type="section-title"
                     data-rte="true"
@@ -41,18 +55,24 @@
                       color: var(--ipa-color-light);
                     "
                   >
+                    @foreach ($membership['title_lines'] as $line)
                     <h2
                       class="text-display-xl lg:text-display-2xl"
                       style="text-align: left"
                     >
-                      Driving industry change, inclusion and diversity.
+                      {{ $line }}
                     </h2>
+                    @endforeach
                   </div>
+                  @endif
                 </div>
               </div>
+              @endif
+              @if($hasRight)
               <div
                 class="max-lg:pt-5 first:max-lg:pt-0 column flex flex-col h-full pb-5 border-solid"
               >
+                @if(! empty($descriptionParagraphs))
                 <div class="text-left container mx-auto">
                   <div
                     class="text-[color:var(--ipa-color)] text-xl font-din"
@@ -64,62 +84,33 @@
                       color: var(--ipa-color-light);
                     "
                   >
+                    @foreach ($descriptionParagraphs as $paragraph)
+                    @if(filled(trim($paragraph)))
                     <div style="text-align: left">
-                      <span class="text-primary"
-                        >We're one of Australia's three professional accounting
-                        bodies �?recognised globally and respected for our human
-                        approach to business.<br
-                      /></span>
+                      <span class="text-primary">{{ trim($paragraph) }}</span>
                     </div>
-                    <div style="text-align: left">
-                      <span class="text-primary"
-                        >We give small business and public practice a strong
-                        voice �?shaping policy and standing up for what matters
-                        to our members.</span
-                      >
-                    </div>
+                    @endif
+                    @endforeach
                   </div>
                 </div>
+                @endif
+                @if(! empty($membership['buttons']))
                 <div
                   class="basis-auto mt-12 flex flex-col sm:flex-row justify-start flex-wrap gap-6 mt-12 mb-6"
                 >
-                  <a
-                    href="./"
-                    class="max-sm:w-full cta group font-medium uppercase border-2 border-link bg-link text-white hover:bg-link-hover hover:border-link-hover focus-visible:bg-link-hover focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent disabled:bg-disabled disabled:border-disabled disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
-                    tabindex="0"
-                    ><div class="flex flex-wrap items-center w-full">
-                      <div
-                        class="cta-content flex flex-nowrap items-center justify-center w-full uppercase"
-                      >
-                        了解会员权益
-                      </div>
-                    </div></a
-                  ><a
-                    href="./"
-                    class="max-sm:w-full cta group font-medium uppercase border-2 border-link bg-white text-link hover:bg-link-hover hover:text-white focus-visible:bg-link-hover focus-visible:text-white focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent focus-visible:no-underline disabled:bg-disabled disabled:border-grey disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
-                    tabindex="0"
-                    ><div class="flex flex-wrap items-center w-full">
-                      <div
-                        class="cta-content flex flex-nowrap items-center justify-center w-full uppercase"
-                      >
-                        入会途径
-                      </div>
-                    </div></a
-                  ><a
-                    href="./"
-                    class="max-sm:w-full cta group font-medium uppercase border-2 border-link bg-white text-link hover:bg-link-hover hover:text-white focus-visible:bg-link-hover focus-visible:text-white focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent focus-visible:no-underline disabled:bg-disabled disabled:border-grey disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
-                    tabindex="0"
-                    ><div class="flex flex-wrap items-center w-full">
-                      <div
-                        class="cta-content flex flex-nowrap items-center justify-center w-full uppercase"
-                      >
-                        我是小白
-                      </div>
-                    </div></a
-                  >
+                  @foreach ($membership['buttons'] as $button)
+                  <x-cta-button
+                    :label="$button['label']"
+                    :url="$button['url']"
+                    :style="$button['style']"
+                    :target="$button['target']"
+                  />
+                  @endforeach
                 </div>
+                @endif
               </div>
+              @endif
             </div>
           </div>
         </section>
-        <section
+@endif

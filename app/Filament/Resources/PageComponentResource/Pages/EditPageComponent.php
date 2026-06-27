@@ -3,8 +3,12 @@
 namespace App\Filament\Resources\PageComponentResource\Pages;
 
 use App\Filament\Resources\PageComponentResource;
+use App\Support\HomeSection\BasicContentSectionData;
+use App\Support\HomeSection\CpdIntroSectionData;
 use App\Support\HomeSection\FootnoteCardsSectionData;
-use App\Support\HomeSection\HeroSectionData;
+use App\Support\HomeSection\StatsSectionData;
+use App\Support\HomeSection\TabbedContentSectionData;
+use App\Support\HomeSection\TestimonialsSectionData;
 use App\Support\HomeSectionTypes;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
@@ -32,13 +36,17 @@ class EditPageComponent extends EditRecord
         $stored = is_array($data['data'] ?? null) ? $data['data'] : null;
 
         $data['data'] = match ($type) {
-            'hero' => HeroSectionData::forForm($stored),
+            'hero', 'membership' => BasicContentSectionData::forForm($stored),
             'footnote-cards' => FootnoteCardsSectionData::forForm($stored),
+            'stats' => StatsSectionData::forForm($stored),
+            'cpd-intro' => CpdIntroSectionData::forForm($stored),
+            'tabbed-content' => TabbedContentSectionData::forForm($stored),
+            'testimonials' => TestimonialsSectionData::forForm($stored),
             default => $stored ?? [],
         };
 
-        if ($type === 'hero' && ($data['data']['title_lines'] ?? []) === []) {
-            $data['data']['title_lines'] = [['text' => '']];
+        if (in_array($type, HomeSectionTypes::BASIC_CONTENT_TYPES, true)) {
+            $data['data'] = static::ensureTitleLinesForForm($data['data']);
         }
 
         return $data;
@@ -53,8 +61,12 @@ class EditPageComponent extends EditRecord
         }
 
         $formData = match ($type) {
-            'hero' => HeroSectionData::forForm($this->getRecord()->data),
+            'hero', 'membership' => BasicContentSectionData::forForm($this->getRecord()->data),
             'footnote-cards' => FootnoteCardsSectionData::forForm($this->getRecord()->data),
+            'stats' => StatsSectionData::forForm($this->getRecord()->data),
+            'cpd-intro' => CpdIntroSectionData::forForm($this->getRecord()->data),
+            'tabbed-content' => TabbedContentSectionData::forForm($this->getRecord()->data),
+            'testimonials' => TestimonialsSectionData::forForm($this->getRecord()->data),
             default => null,
         };
 
@@ -62,8 +74,8 @@ class EditPageComponent extends EditRecord
             return;
         }
 
-        if ($type === 'hero' && ($formData['title_lines'] ?? []) === []) {
-            $formData['title_lines'] = [['text' => '']];
+        if (in_array($type, HomeSectionTypes::BASIC_CONTENT_TYPES, true)) {
+            $formData = static::ensureTitleLinesForForm($formData);
         }
 
         $this->form->fillPartially([
@@ -78,5 +90,18 @@ class EditPageComponent extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         return CreatePageComponent::normalizeStructuredData($data);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private static function ensureTitleLinesForForm(array $data): array
+    {
+        if (($data['title_lines'] ?? []) === []) {
+            $data['title_lines'] = [['text' => '']];
+        }
+
+        return $data;
     }
 }

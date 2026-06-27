@@ -3,8 +3,12 @@
 namespace App\Filament\Resources\PageComponentResource\Pages;
 
 use App\Filament\Resources\PageComponentResource;
+use App\Support\HomeSection\BasicContentSectionData;
+use App\Support\HomeSection\CpdIntroSectionData;
 use App\Support\HomeSection\FootnoteCardsSectionData;
-use App\Support\HomeSection\HeroSectionData;
+use App\Support\HomeSection\StatsSectionData;
+use App\Support\HomeSection\TabbedContentSectionData;
+use App\Support\HomeSection\TestimonialsSectionData;
 use App\Support\HomeSectionTypes;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Schema;
@@ -36,13 +40,30 @@ class CreatePageComponent extends CreateRecord
     public static function normalizeStructuredData(array $data): array
     {
         $type = $data['component_type'] ?? null;
+        $stored = is_array($data['data'] ?? null) ? $data['data'] : [];
 
-        if ($type === 'hero') {
-            $data['data'] = HeroSectionData::forStorage(is_array($data['data'] ?? null) ? $data['data'] : []);
+        if (in_array($type, HomeSectionTypes::BASIC_CONTENT_TYPES, true)) {
+            $data['data'] = BasicContentSectionData::forStorage($stored);
         }
 
         if ($type === 'footnote-cards') {
-            $data['data'] = FootnoteCardsSectionData::forStorage(is_array($data['data'] ?? null) ? $data['data'] : []);
+            $data['data'] = FootnoteCardsSectionData::forStorage($stored);
+        }
+
+        if ($type === 'stats') {
+            $data['data'] = StatsSectionData::forStorage($stored);
+        }
+
+        if ($type === 'cpd-intro') {
+            $data['data'] = CpdIntroSectionData::forStorage($stored);
+        }
+
+        if ($type === 'tabbed-content') {
+            $data['data'] = TabbedContentSectionData::forStorage($stored);
+        }
+
+        if ($type === 'testimonials') {
+            $data['data'] = TestimonialsSectionData::forStorage($stored);
         }
 
         return $data;

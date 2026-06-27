@@ -1,3 +1,4 @@
+        <div
           datatype="decorator3"
           class="w-full !absolute hidden lg:block min-h-[50vh] -translate-y-1/3 -z-[1] !overflow-visible"
           aria-hidden="true"
@@ -101,4 +102,3 @@
             />
           </div>
         </div>
-        <section
