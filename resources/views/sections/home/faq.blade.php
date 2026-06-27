@@ -1,3 +1,9 @@
+@php
+    /** @var array{items: array<int, array{question: string, answer: string}>} $faq */
+    $faq = $faq ?? ['items' => []];
+    $items = $faq['items'] ?? [];
+@endphp
+@if(! empty($items))
         <section
           data-type="accordion"
           data-index="12"
@@ -58,12 +64,15 @@
               </div>
             </div>
             <ul class="border-b border-grey-subtle mt-16">
+              @foreach ($items as $item)
               <li class="border-t border-grey-subtle">
                 <button
+                  type="button"
                   class="flex justify-between items-center text-left w-full pt-6 pb-6"
+                  aria-expanded="false"
                 >
                   <span class="text-secondary text-xl font-medium"
-                    >Who can join the IPA?</span
+                    >{{ $item['question'] }}</span
                   >
                   <div
                     class="ml-2 circle rounded-xl border-2 border-secondary text-warm-plum"
@@ -87,139 +96,14 @@
                     ><span class="sr-only">Open Accordion</span>
                   </div>
                 </button>
+                @if(filled($item['answer'] ?? null))
                 <div data-rte="true" class="mb-6 hidden">
-                  <div>
-                    Anyone with a passion for accounting and business can become
-                    a member �?from students and emerging professionals to
-                    experienced practitioners. We also welcome affiliates and
-                    business advisers who want to be part of a trusted
-                    professional community.
-                  </div>
+                  <div>{!! $item['answer'] !!}</div>
                 </div>
+                @endif
               </li>
-              <li class="border-t border-grey-subtle">
-                <button
-                  class="flex justify-between items-center text-left w-full pt-6 pb-6"
-                >
-                  <span class="text-secondary text-xl font-medium"
-                    >How do I join the IPA?</span
-                  >
-                  <div
-                    class="ml-2 circle rounded-xl border-2 border-secondary text-warm-plum"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                      data-slot="icon"
-                      role="none"
-                      class="w-4 h-4 shrink-0"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      ></path></svg
-                    ><span class="sr-only">Open Accordion</span>
-                  </div>
-                </button>
-                <div data-rte="true" class="mb-6 hidden">
-                  <div>
-                    Becoming a member is simple. Click "<a
-                      href="./students-members/become-a-member/"
-                      title="Become a Member"
-                      >Become a Member</a
-                    >," choose your membership type, and complete your
-                    application online. Our team is here to guide you every step
-                    of the way.
-                  </div>
-                </div>
-              </li>
-              <li class="border-t border-grey-subtle">
-                <button
-                  class="flex justify-between items-center text-left w-full pt-6 pb-6"
-                >
-                  <span class="text-secondary text-xl font-medium"
-                    >How do I book an event/webinar/course?</span
-                  >
-                  <div
-                    class="ml-2 circle rounded-xl border-2 border-secondary text-warm-plum"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                      data-slot="icon"
-                      role="none"
-                      class="w-4 h-4 shrink-0"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      ></path></svg
-                    ><span class="sr-only">Open Accordion</span>
-                  </div>
-                </button>
-                <div data-rte="true" class="mb-6 hidden">
-                  <p class="MsoNormal">
-                    Simple! If you're an IPA member login to tour account and
-                    add the event to your cart and hit purchase. If you are not
-                    a member of the IPA you simply need to create an account log
-                    in. Once activated, log in, add your desired event to cart
-                    and purchase!
-                  </p>
-                </div>
-              </li>
-              <li class="border-t border-grey-subtle">
-                <button
-                  class="flex justify-between items-center text-left w-full pt-6 pb-6"
-                >
-                  <span class="text-secondary text-xl font-medium"
-                    >What are the benefits of membership?</span
-                  >
-                  <div
-                    class="ml-2 circle rounded-xl border-2 border-secondary text-warm-plum"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                      data-slot="icon"
-                      role="none"
-                      class="w-4 h-4 shrink-0"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      ></path></svg
-                    ><span class="sr-only">Open Accordion</span>
-                  </div>
-                </button>
-                <div data-rte="true" class="mb-6 hidden">
-                  <div>
-                    IPA members gain access to professional recognition,
-                    practical resources, career support, free and discounted CPD
-                    opportunities, networking events, and advocacy that ensures
-                    your voice is heard in shaping the future of the profession,
-                    and
-                    <a href="./about-the-ipa.html" title="About the IPA"
-                      >much more&gt;</a
-                    >
-                  </div>
-                </div>
-              </li>
+              @endforeach
             </ul>
           </div>
         </section>
-        <section
+@endif

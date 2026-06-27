@@ -1,3 +1,19 @@
+@php
+    /** @var array{tagline: string, title_lines: array<int, string>, description: string, buttons: array<int, array{label: string, url: string, target: ?string, style: string}>, image: ?string}|null $ctaSection */
+    $ctaSection = $ctaSection ?? ['tagline' => '', 'title_lines' => [], 'description' => '', 'buttons' => [], 'image' => null];
+    $hasContent = filled($ctaSection['tagline'] ?? null)
+        || ! empty($ctaSection['title_lines'])
+        || filled($ctaSection['description'] ?? null)
+        || ! empty($ctaSection['buttons'])
+        || filled($ctaSection['image'] ?? null);
+    $descriptionParagraphs = filled($ctaSection['description'] ?? null)
+        ? array_values(array_filter(array_map(
+            'trim',
+            preg_split("/\n{2,}/", str_replace(["\r\n", "\r"], "\n", trim($ctaSection['description']))) ?: []
+        ), fn (string $paragraph) => $paragraph !== ''))
+        : [];
+@endphp
+@if($hasContent)
         <section
           data-type="ctaSection"
           data-index="10"
@@ -17,18 +33,24 @@
               <div
                 class="grid grid-cols-1 lg:grid-cols-[40%_1fr] items-center gap-14 lg:gap-20"
               >
+                @if(filled($ctaSection['image'] ?? null))
                 <div
                   class="content-section content-section-1 content-section-1--image row-start-1 col-start-1"
                 >
                   <div
                     class="img-shape-rectangle img-wrapper"
-                    style="--cta-bg-desktop: url({{ asset('assets/bg-primary.png') }})"
+                    style="--cta-bg-desktop: url('{{ $ctaSection['image'] }}'); --cta-bg-mobile: url('{{ $ctaSection['image'] }}')"
                   ></div>
                 </div>
+                @endif
                 <div
-                  class="content-section content-section-2 lg:row-start-1 lg:col-start-2"
+                  @class([
+                      'content-section content-section-2',
+                      'lg:row-start-1 lg:col-start-2' => filled($ctaSection['image'] ?? null),
+                  ])
                 >
                   <div class="text-left container mx-auto">
+                    @if(filled($ctaSection['tagline'] ?? null))
                     <span
                       class="eyebrow-xl"
                       style="
@@ -36,8 +58,10 @@
                         --ipa-color-dark: oklch(0.8944 0.0357 331.62);
                         color: var(--ipa-color-light);
                       "
-                      >shaping the future
-                    </span>
+                      >{{ $ctaSection['tagline'] }}</span
+                    >
+                    @endif
+                    @if(! empty($ctaSection['title_lines']))
                     <div
                       data-type="section-title"
                       data-rte="true"
@@ -48,10 +72,14 @@
                         color: var(--ipa-color-light);
                       "
                     >
+                      @foreach ($ctaSection['title_lines'] as $line)
                       <h3 class="text-display-lg lg:text-display-xl">
-                        Driving industry change, inclusion and diveristy.
+                        {{ $line }}
                       </h3>
+                      @endforeach
                     </div>
+                    @endif
+                    @if(! empty($descriptionParagraphs))
                     <div
                       class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
                       data-type="section-description"
@@ -62,47 +90,29 @@
                         color: var(--ipa-color-light);
                       "
                     >
-                      <p data-start="337" data-end="581">
-                        We're not just responding to change �?we're driving
-                        it.<br data-start="432" data-end="435" />Through
-                        innovation, advocacy, and education, we're equipping our
-                        members with the skills and insight to thrive in an
-                        evolving world of business.
-                      </p>
-                      <p data-start="583" data-end="769">
-                        We're championing digital transformation, supporting
-                        sustainable practices, and investing in future-focused
-                        learning that ensures our members remain at the
-                        forefront of the profession.
-                      </p>
-                      <p data-start="771" data-end="990">
-                        From empowering small business advisers to embracing
-                        emerging technologies, we're shaping a future where
-                        accountants continue to play a vital role �?as trusted
-                        partners, ethical leaders, and agents of positive
-                        change.
-                      </p>
+                      @foreach ($descriptionParagraphs as $paragraph)
+                      <p>{{ $paragraph }}</p>
+                      @endforeach
                     </div>
+                    @endif
                   </div>
+                  @if(! empty($ctaSection['buttons']))
                   <div
                     class="component-cta flex flex-col shrink-0 sm:flex-row gap-4 lg:justify-start"
                   >
-                    <a
-                      href="./"
-                      class="cta group font-medium uppercase border-2 border-link bg-white text-link hover:bg-link-hover hover:text-white focus-visible:bg-link-hover focus-visible:text-white focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent focus-visible:no-underline disabled:bg-disabled disabled:border-grey disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
-                      tabindex="0"
-                      ><div class="flex flex-wrap items-center w-full">
-                        <div
-                          class="cta-content flex flex-nowrap items-center justify-center w-full uppercase"
-                        >
-                          HAVE YOUR SAY
-                        </div>
-                      </div></a
-                    >
+                    @foreach ($ctaSection['buttons'] as $button)
+                    <x-cta-button
+                      :label="$button['label']"
+                      :url="$button['url']"
+                      :style="$button['style']"
+                      :target="$button['target']"
+                    />
+                    @endforeach
                   </div>
+                  @endif
                 </div>
               </div>
             </div>
           </div>
         </section>
-        <div
+@endif

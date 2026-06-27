@@ -108,7 +108,11 @@ class TestimonialsSectionData
             return [];
         }
 
-        return collect(preg_split('/\R/', $title) ?: [])
+        // Use explode instead of preg_split('/\R/') — without the u modifier, \R
+        // matches byte 0x85 inside UTF-8 sequences (e.g. 兰 E5 85 B0, 公 E5 85 AC).
+        $normalized = str_replace(["\r\n", "\r"], "\n", $title);
+
+        return collect(explode("\n", $normalized))
             ->map(fn (string $line) => trim($line))
             ->filter(fn (string $line) => $line !== '')
             ->values()

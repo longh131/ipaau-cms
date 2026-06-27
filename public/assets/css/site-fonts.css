@@ -87,3 +87,307 @@ body {
   margin-bottom: 0;
   min-height: 0;
 }
+
+/* 会员推荐：光晕在 section 层全宽；顶部白→色渐变 */
+section[data-type="testimonialCarousel"].testimonial-carousel-section {
+  position: relative;
+}
+
+.testimonial-carousel .testimonial-card__wrapper {
+  overflow: hidden;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.testimonial-carousel__stage {
+  position: relative;
+}
+
+.testimonial-carousel__halo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  transform: translateX(-50%);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.testimonial-carousel__halo-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.78;
+}
+
+.testimonial-carousel__halo-blob--orange {
+  width: 46%;
+  height: 88%;
+  left: -14%;
+  top: 22%;
+  background: radial-gradient(circle, rgba(251, 142, 9, 0.82) 0%, rgba(251, 142, 9, 0) 70%);
+}
+
+.testimonial-carousel__halo-blob--blue {
+  width: 58%;
+  height: 96%;
+  left: 18%;
+  top: 8%;
+  background: radial-gradient(circle, rgba(43, 165, 212, 0.72) 0%, rgba(43, 165, 212, 0) 70%);
+}
+
+.testimonial-carousel__halo-blob--purple {
+  width: 48%;
+  height: 92%;
+  right: -14%;
+  top: 14%;
+  background: radial-gradient(circle, rgba(163, 58, 148, 0.68) 0%, rgba(163, 58, 148, 0) 70%);
+}
+
+.testimonial-carousel__halo-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: min(240px, 42%);
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.94) 22%,
+    rgba(255, 255, 255, 0.55) 48%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.testimonial-carousel__stage .swiper {
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-carousel .testimonial-card__figure--split {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  padding: 1.5rem 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .testimonial-carousel .testimonial-card__figure--split {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .testimonial-carousel .testimonial-card__figure--split {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+.testimonial-carousel .testimonial-card__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .testimonial-carousel .testimonial-card__layout {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.testimonial-carousel .testimonial-card__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .testimonial-carousel .testimonial-card__copy {
+    gap: 2rem;
+    padding-right: 0.5rem;
+  }
+}
+
+.testimonial-carousel .testimonial-card__quote {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.testimonial-carousel .testimonial-card__details {
+  width: 100%;
+}
+
+.testimonial-carousel .testimonial-card__media {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 220px;
+}
+
+@media (min-width: 1024px) {
+  .testimonial-carousel .testimonial-card__media {
+    min-height: 280px;
+    justify-content: flex-end;
+  }
+}
+
+.testimonial-carousel .testimonial-card__portrait {
+  width: auto;
+  max-width: min(100%, 320px);
+  max-height: 280px;
+  height: auto;
+  object-position: top center;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .testimonial-carousel .testimonial-card__portrait {
+    max-height: 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonial-carousel .testimonial-card__portrait {
+    max-width: 100%;
+    max-height: 360px;
+    min-height: 280px;
+  }
+}
+
+.testimonial-carousel .testimonial-card__navigation {
+  z-index: 2;
+}
+
+/* 多元与包容：上图下标题，纯白底（盖住装饰层） */
+section.diversity-section {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  color: oklch(0.3152 0.1176 262.41);
+  padding: 4rem 0;
+}
+
+@media (min-width: 1024px) {
+  section.diversity-section {
+    padding: 5rem 0;
+  }
+}
+
+.diversity-section__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.diversity-section__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 1.5rem;
+}
+
+.diversity-section__title {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  margin-top: 3.5rem;
+  text-align: center;
+  color: oklch(0.3152 0.1176 262.41);
+}
+
+@media (min-width: 768px) {
+  .diversity-section__title {
+    margin-top: 4.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .diversity-section__title {
+    margin-top: 5.5rem;
+    max-width: 58rem;
+  }
+}
+
+.diversity-section__title h1,
+.diversity-section__title h2,
+.diversity-section__title h3,
+.diversity-section__title .diversity-section__heading {
+  margin: 0;
+  text-align: center !important;
+  font-size: 3.0625rem !important;
+  line-height: 1.15 !important;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: oklch(0.3152 0.1176 262.41);
+}
+
+.diversity-section__title h1 span,
+.diversity-section__title h2 span,
+.diversity-section__title h3 span,
+.diversity-section__title .diversity-section__heading span {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+@media (min-width: 768px) {
+  .diversity-section__title h1,
+  .diversity-section__title h2,
+  .diversity-section__title h3,
+  .diversity-section__title .diversity-section__heading {
+    font-size: 3.8125rem !important;
+    line-height: 1.12 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .diversity-section__title h1,
+  .diversity-section__title h2,
+  .diversity-section__title h3,
+  .diversity-section__title .diversity-section__heading {
+    font-size: 4.75rem !important;
+    line-height: 1.2 !important;
+  }
+}
+
+.diversity-section__title p {
+  margin: 0;
+  text-align: center !important;
+  font-size: 3.0625rem !important;
+  line-height: 1.15 !important;
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .diversity-section__title p {
+    font-size: 3.8125rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .diversity-section__title p {
+    font-size: 4.75rem !important;
+  }
+}
+
+.diversity-section__title .text-display-xl,
+.diversity-section__title .text-display-2xl,
+.diversity-section__title .text-display-3xl,
+.diversity-section__title .lg\:text-display-2xl {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}

@@ -1,3 +1,10 @@
+@php
+    /** @var array{title: string, content_html: string, button_text: string}|null $newsletter */
+    $newsletter = $newsletter ?? ['title' => '', 'content_html' => '', 'button_text' => '提交'];
+    $hasContent = filled($newsletter['title'] ?? null) || filled($newsletter['content_html'] ?? null);
+    $buttonText = filled($newsletter['button_text'] ?? null) ? $newsletter['button_text'] : '提交';
+@endphp
+@if($hasContent)
         <section
           data-type="newsletter"
           data-index="13"
@@ -22,61 +29,58 @@
                 class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start"
               >
                 <div class="content-section">
-                  <div>
-                    <div class="text-center container mx-auto">
-                      <div
-                        data-type="section-title"
-                        data-rte="true"
-                        class="font-apex-book"
-                        style="
-                          --ipa-color-light: oklch(0.3152 0.1176 262.41);
-                          --ipa-color-dark: oklch(0.9011 0.0552 218.07);
-                          color: var(--ipa-color-light);
-                        "
-                      >
-                        <div>
-                          <h4
-                            class="text-display-xl lg:text-display-2xl text-display-lg lg:text-display-xl"
-                          >
-                            Subscribe to our newsletter
-                          </h4>
-                        </div>
-                      </div>
-                      <div
-                        class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
-                        data-type="section-description"
-                        data-rte="true"
-                        style="
-                          --ipa-color-light: oklch(0.464 0 0);
-                          --ipa-color-dark: oklch(0.9612 0 0);
-                          color: var(--ipa-color-light);
-                        "
-                      >
-                        <div>
-                          <h1>
-                            Join our 2,000 subscribers to get the latest updates
-                            delivered straight to your inbox—no spam, just the
-                            good stuff.
-                          </h1>
-                          <div>
-                            <ul>
-                              <li>
-                                Stay informed with the latest news, trends, and
-                                tips
-                              </li>
-                              <li>
-                                Quick reads designed to fit your busy schedule
-                              </li>
-                              <li>No spam—ever, just the good stuff</li>
-                            </ul>
-                          </div>
-                        </div>
+                  <div class="text-center container mx-auto">
+                    @if(filled($newsletter['title'] ?? null))
+                    <div
+                      data-type="section-title"
+                      data-rte="true"
+                      class="font-apex-book"
+                      style="
+                        --ipa-color-light: oklch(0.3152 0.1176 262.41);
+                        --ipa-color-dark: oklch(0.9011 0.0552 218.07);
+                        color: var(--ipa-color-light);
+                      "
+                    >
+                      <div>
+                        <h4
+                          class="text-display-xl lg:text-display-2xl text-display-lg lg:text-display-xl"
+                        >
+                          {{ $newsletter['title'] }}
+                        </h4>
                       </div>
                     </div>
+                    @endif
+                    @if(filled($newsletter['content_html'] ?? null))
+                    <div
+                      class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
+                      data-type="section-description"
+                      data-rte="true"
+                      style="
+                        --ipa-color-light: oklch(0.464 0 0);
+                        --ipa-color-dark: oklch(0.9612 0 0);
+                        color: var(--ipa-color-light);
+                      "
+                    >
+                      <div>{!! $newsletter['content_html'] !!}</div>
+                    </div>
+                    @endif
                   </div>
                 </div>
                 <div class="form-section relative">
-                  <form class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <form
+                    class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+                    data-newsletter-form
+                    action="{{ route('newsletter.subscribe') }}"
+                    method="post"
+                    novalidate
+                  >
+                    @csrf
+                    <div
+                      class="lg:col-span-2 hidden rounded-lg px-4 py-3 text-sm"
+                      data-newsletter-feedback
+                      role="status"
+                      aria-live="polite"
+                    ></div>
                     <div>
                       <label for="fullName"
                         >姓名<span class="text-error-bold ml-1"
@@ -147,14 +151,14 @@
                     <div class="flex justify-center lg:justify-end">
                       <button
                         type="submit"
-                        class="max-sm:w-full cta group font-medium uppercase border-2 border-link bg-link text-white hover:bg-link-hover hover:border-link-hover focus-visible:bg-link-hover focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent disabled:bg-disabled disabled:border-disabled disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
+                        class="max-sm:w-full cta group font-medium border-2 border-link bg-link text-white hover:bg-link-hover hover:border-link-hover focus-visible:bg-link-hover focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent disabled:bg-disabled disabled:border-disabled disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border text-lg hover:underline focus-visible:underline px-[24px] py-[11.5px] sm:px-[32px] sm:py-[15.5px] rounded-full"
                         data-idx="0"
                       >
                         <div class="flex flex-wrap items-center w-full">
                           <div
-                            class="cta-content flex flex-nowrap items-center justify-center w-full uppercase"
+                            class="cta-content flex flex-nowrap items-center justify-center w-full"
                           >
-                            SUBSCRIBE
+                            {{ $buttonText }}
                           </div>
                         </div>
                       </button>
@@ -165,3 +169,4 @@
             </div>
           </div>
         </section>
+@endif

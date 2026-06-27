@@ -2,10 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PageComponentResource\Forms\AboutIntroSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\CpdIntroSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\CtaSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\DiversitySectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\FaqSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\FootnoteCardsSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\HeroSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\MembershipSectionForm;
+use App\Filament\Resources\PageComponentResource\Forms\NewsletterSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\StatsSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\TabbedContentSectionForm;
 use App\Filament\Resources\PageComponentResource\Forms\TestimonialsSectionForm;
@@ -57,6 +62,11 @@ class PageComponentResource extends Resource
             ...CpdIntroSectionForm::schema(),
             ...TabbedContentSectionForm::schema(),
             ...TestimonialsSectionForm::schema(),
+            ...AboutIntroSectionForm::schema(),
+            ...DiversitySectionForm::schema(),
+            ...CtaSectionForm::schema(),
+            ...FaqSectionForm::schema(),
+            ...NewsletterSectionForm::schema(),
         ];
 
         if ($includeKeyValue) {

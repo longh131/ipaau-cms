@@ -183,25 +183,68 @@ function initDropdowns() {
 }
 
 function initNewsletterForm() {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const emailInput = form.querySelector('input[type="email"]');
-            if (!emailInput) return;
+    document.querySelectorAll('form[data-newsletter-form]').forEach(function(form) {
+        const feedback = form.querySelector('[data-newsletter-feedback]');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const defaultButtonHtml = submitBtn ? submitBtn.innerHTML : '';
+
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (!emailInput.value || !emailInput.value.includes('@')) {
-                emailInput.focus();
+
+            if (!submitBtn) {
                 return;
             }
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = 'Subscribed!';
+
+            if (feedback) {
+                feedback.classList.add('hidden');
+                feedback.textContent = '';
+            }
+
             submitBtn.disabled = true;
-            setTimeout(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                });
+
+                const payload = await response.json().catch(function() {
+                    return {};
+                });
+
+                if (!response.ok) {
+                    const message = payload.message
+                        || (payload.errors ? Object.values(payload.errors).flat().join(' ') : '提交失败，请稍后重试。');
+                    throw new Error(message);
+                }
+
+                if (feedback) {
+                    feedback.textContent = payload.message || '提交成功，感谢您的订阅。';
+                    feedback.classList.remove('hidden');
+                    feedback.classList.remove('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+                    feedback.classList.add('bg-green-50', 'text-green-800', 'border', 'border-green-200');
+                }
+
                 form.reset();
-            }, 2000);
+            } catch (error) {
+                if (feedback) {
+                    feedback.textContent = error.message || '提交失败，请稍后重试。';
+                    feedback.classList.remove('hidden');
+                    feedback.classList.remove('bg-green-50', 'text-green-800', 'border', 'border-green-200');
+                    feedback.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = defaultButtonHtml;
+            }
         });
     });
 }

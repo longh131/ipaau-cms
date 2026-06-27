@@ -18,7 +18,8 @@
     role="group"
     aria-label="{{ $index + 1 }} / {{ $total }}"
 >
-    <div class="testimonial-card__wrapper group/testimonial">
+    <div @class(['testimonial-card__wrapper group/testimonial', 'testimonial-card_single' => $total === 1])>
+
         <div
             class="testimonial-card__navigation testimonial-card__navigation--prev invisible group-[:is(.swiper-slide-active_&amp;)]/testimonial:visible"
         >
@@ -35,31 +36,21 @@
                 <span class="sr-only">Previous testimonial</span>
             </button>
         </div>
+
         <figure
-            class="testimonial-card__figure"
+            class="testimonial-card__figure testimonial-card__figure--split"
             itemscope=""
             itemtype="https://schema.org/Review"
         >
-            <div class="testimonial-card__content">
-                @if(filled($item['content'] ?? null))
-                <blockquote
-                    itemprop="reviewBody"
-                    class="testimonial-card__quote font-apex-book text-secondary text-xl md:text-display-xs xl:text-display-lg w-full max-w-full mx-auto"
-                >
-                    {{ $item['content'] }}
-                </blockquote>
-                @endif
-                @if(filled($item['image'] ?? null) || ! empty($item['title_lines'] ?? []))
-                <figcaption class="testimonial-card__author flex items-center mt-6">
-                    @if(filled($item['image'] ?? null))
-                    <div class="testimonial-card__image max-md:mr-4">
-                        <img
-                            loading="lazy"
-                            class="testimonial-card__avatar rounded-full object-cover"
-                            src="{{ $item['image'] }}"
-                            alt=""
-                        />
-                    </div>
+            <div class="testimonial-card__layout">
+                <div class="testimonial-card__copy">
+                    @if(filled($item['content'] ?? null))
+                    <blockquote
+                        itemprop="reviewBody"
+                        class="testimonial-card__quote font-apex-book text-secondary text-xl md:text-display-xs xl:text-display-lg w-full max-w-full mx-auto"
+                    >
+                        {{ $item['content'] }}
+                    </blockquote>
                     @endif
                     @if(! empty($item['title_lines']))
                     <div
@@ -77,10 +68,21 @@
                         </div>
                     </div>
                     @endif
-                </figcaption>
+                </div>
+                @if(filled($item['image'] ?? null))
+                <div class="testimonial-card__media">
+                    <img
+                        loading="lazy"
+                        class="testimonial-card__portrait object-cover"
+                        src="{{ $item['image'] }}"
+                        alt=""
+                        itemprop="image"
+                    />
+                </div>
                 @endif
             </div>
         </figure>
+
         <div
             class="testimonial-card__navigation testimonial-card__navigation--next invisible group-[:is(.swiper-slide-active_&amp;)]/testimonial:visible"
         >

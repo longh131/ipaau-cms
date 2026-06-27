@@ -5,7 +5,11 @@ namespace App\Filament\Resources\PageComponentResource\Pages;
 use App\Filament\Resources\PageComponentResource;
 use App\Support\HomeSection\BasicContentSectionData;
 use App\Support\HomeSection\CpdIntroSectionData;
+use App\Support\HomeSection\CtaSectionData;
+use App\Support\HomeSection\DiversitySectionData;
+use App\Support\HomeSection\FaqSectionData;
 use App\Support\HomeSection\FootnoteCardsSectionData;
+use App\Support\HomeSection\NewsletterSectionData;
 use App\Support\HomeSection\StatsSectionData;
 use App\Support\HomeSection\TabbedContentSectionData;
 use App\Support\HomeSection\TestimonialsSectionData;
@@ -36,12 +40,16 @@ class EditPageComponent extends EditRecord
         $stored = is_array($data['data'] ?? null) ? $data['data'] : null;
 
         $data['data'] = match ($type) {
-            'hero', 'membership' => BasicContentSectionData::forForm($stored),
+            'hero', 'membership', 'about-intro' => BasicContentSectionData::forForm($stored),
+            'cta-section' => CtaSectionData::forForm($stored),
             'footnote-cards' => FootnoteCardsSectionData::forForm($stored),
             'stats' => StatsSectionData::forForm($stored),
             'cpd-intro' => CpdIntroSectionData::forForm($stored),
             'tabbed-content' => TabbedContentSectionData::forForm($stored),
             'testimonials' => TestimonialsSectionData::forForm($stored),
+            'diversity' => DiversitySectionData::forForm($stored),
+            'faq' => FaqSectionData::forForm($stored),
+            'newsletter' => NewsletterSectionData::forForm($stored),
             default => $stored ?? [],
         };
 
@@ -61,12 +69,16 @@ class EditPageComponent extends EditRecord
         }
 
         $formData = match ($type) {
-            'hero', 'membership' => BasicContentSectionData::forForm($this->getRecord()->data),
+            'hero', 'membership', 'about-intro' => BasicContentSectionData::forForm($this->getRecord()->data),
+            'cta-section' => CtaSectionData::forForm($this->getRecord()->data),
             'footnote-cards' => FootnoteCardsSectionData::forForm($this->getRecord()->data),
             'stats' => StatsSectionData::forForm($this->getRecord()->data),
             'cpd-intro' => CpdIntroSectionData::forForm($this->getRecord()->data),
             'tabbed-content' => TabbedContentSectionData::forForm($this->getRecord()->data),
             'testimonials' => TestimonialsSectionData::forForm($this->getRecord()->data),
+            'diversity' => DiversitySectionData::forForm($this->getRecord()->data),
+            'faq' => FaqSectionData::forForm($this->getRecord()->data),
+            'newsletter' => NewsletterSectionData::forForm($this->getRecord()->data),
             default => null,
         };
 

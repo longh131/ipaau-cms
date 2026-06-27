@@ -20,6 +20,7 @@ class FrontendController extends Controller
     {
         return view('frontend.home', [
             'menuItems' => $this->menuService->getHeaderMenuItems(),
+            'sectionActive' => $this->pageComponentService->getHomeSectionActiveMap(),
             'hero' => $this->pageComponentService->getHeroData(),
             'footnoteCards' => $this->pageComponentService->getFootnoteCardsData(),
             'membership' => $this->pageComponentService->getMembershipData(),
@@ -27,6 +28,11 @@ class FrontendController extends Controller
             'cpdIntro' => $this->pageComponentService->getCpdIntroData(),
             'tabbedContent' => $this->pageComponentService->getTabbedContentData(),
             'testimonials' => $this->pageComponentService->getTestimonialsData(),
+            'aboutIntro' => $this->pageComponentService->getAboutIntroData(),
+            'diversity' => $this->pageComponentService->getDiversityData(),
+            'ctaSection' => $this->pageComponentService->getCtaSectionData(),
+            'faq' => $this->pageComponentService->getFaqData(),
+            'newsletter' => $this->pageComponentService->getNewsletterData(),
             'articles' => [],
             'categories' => [],
         ]);

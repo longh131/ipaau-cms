@@ -2,10 +2,15 @@
 
 namespace App\Support;
 
+use App\Support\HomeSection\AboutIntroSectionData;
 use App\Support\HomeSection\CpdIntroSectionData;
+use App\Support\HomeSection\CtaSectionData;
+use App\Support\HomeSection\DiversitySectionData;
+use App\Support\HomeSection\FaqSectionData;
 use App\Support\HomeSection\FootnoteCardsSectionData;
 use App\Support\HomeSection\HeroSectionData;
 use App\Support\HomeSection\MembershipSectionData;
+use App\Support\HomeSection\NewsletterSectionData;
 use App\Support\HomeSection\StatsSectionData;
 use App\Support\HomeSection\TabbedContentSectionData;
 use App\Support\HomeSection\TestimonialsSectionData;
@@ -27,12 +32,19 @@ class HomeSectionTypes
         'cpd-intro',
         'tabbed-content',
         'testimonials',
+        'about-intro',
+        'diversity',
+        'cta-section',
+        'faq',
+        'newsletter',
     ];
 
     /** @var array<int, string> */
     public const BASIC_CONTENT_TYPES = [
         'hero',
         'membership',
+        'about-intro',
+        'cta-section',
     ];
 
     public static function definitions(): array
@@ -75,28 +87,28 @@ class HomeSectionTypes
             ],
             'about-intro' => [
                 'label' => '关于 IPA',
-                'description' => '机构简介与价值主张',
-                'fields' => ['title', 'body', 'cta_text', 'cta_url'],
+                'description' => '小标题、大标题、正文与 CTA 按钮（可多个，蓝底/白底）',
+                'fields' => ['tagline', 'title_lines', 'description', 'buttons'],
             ],
             'diversity' => [
                 'label' => '多元与包容',
-                'description' => 'DEI 相关宣传内容',
-                'fields' => ['title', 'body'],
+                'description' => '上方配图（圆角）+ 下方居中标题 HTML，支持渐变 span',
+                'fields' => ['image', 'title'],
             ],
             'cta-section' => [
-                'label' => '行动号召',
-                'description' => '中部 CTA 横幅',
-                'fields' => ['title', 'body', 'cta_text', 'cta_url', 'image'],
+                'label' => '塑造未来',
+                'description' => '左图右文：小标题、大标题、正文、按钮与配图',
+                'fields' => ['tagline', 'title_lines', 'description', 'image', 'buttons'],
             ],
             'faq' => [
                 'label' => '常见问题',
-                'description' => 'FAQ 手风琴列表',
+                'description' => 'FAQ 手风琴：问题与答案，可添加多项',
                 'fields' => ['items'],
             ],
             'newsletter' => [
                 'label' => '邮件订阅',
-                'description' => 'Newsletter 注册表单文案',
-                'fields' => ['title', 'subtitle', 'button_text'],
+                'description' => '左：标题与正文 HTML；右：固定订阅表单，提交按钮可自定义',
+                'fields' => ['title', 'content', 'button_text'],
             ],
         ];
     }
@@ -137,6 +149,11 @@ class HomeSectionTypes
             'cpd-intro' => CpdIntroSectionData::emptyStorage(),
             'tabbed-content' => TabbedContentSectionData::emptyStorage(),
             'testimonials' => TestimonialsSectionData::emptyStorage(),
+            'about-intro' => AboutIntroSectionData::defaultStorage(),
+            'diversity' => DiversitySectionData::defaultStorage(),
+            'cta-section' => CtaSectionData::defaultStorage(),
+            'faq' => FaqSectionData::defaultStorage(),
+            'newsletter' => NewsletterSectionData::defaultStorage(),
             default => array_fill_keys(static::definitions()[$key]['fields'] ?? [], null),
         };
     }

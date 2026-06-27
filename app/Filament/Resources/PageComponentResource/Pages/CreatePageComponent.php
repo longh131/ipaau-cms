@@ -5,7 +5,11 @@ namespace App\Filament\Resources\PageComponentResource\Pages;
 use App\Filament\Resources\PageComponentResource;
 use App\Support\HomeSection\BasicContentSectionData;
 use App\Support\HomeSection\CpdIntroSectionData;
+use App\Support\HomeSection\CtaSectionData;
+use App\Support\HomeSection\DiversitySectionData;
+use App\Support\HomeSection\FaqSectionData;
 use App\Support\HomeSection\FootnoteCardsSectionData;
+use App\Support\HomeSection\NewsletterSectionData;
 use App\Support\HomeSection\StatsSectionData;
 use App\Support\HomeSection\TabbedContentSectionData;
 use App\Support\HomeSection\TestimonialsSectionData;
@@ -43,7 +47,10 @@ class CreatePageComponent extends CreateRecord
         $stored = is_array($data['data'] ?? null) ? $data['data'] : [];
 
         if (in_array($type, HomeSectionTypes::BASIC_CONTENT_TYPES, true)) {
-            $data['data'] = BasicContentSectionData::forStorage($stored);
+            $data['data'] = match ($type) {
+                'cta-section' => CtaSectionData::forStorage($stored),
+                default => BasicContentSectionData::forStorage($stored),
+            };
         }
 
         if ($type === 'footnote-cards') {
@@ -64,6 +71,18 @@ class CreatePageComponent extends CreateRecord
 
         if ($type === 'testimonials') {
             $data['data'] = TestimonialsSectionData::forStorage($stored);
+        }
+
+        if ($type === 'diversity') {
+            $data['data'] = DiversitySectionData::forStorage($stored);
+        }
+
+        if ($type === 'faq') {
+            $data['data'] = FaqSectionData::forStorage($stored);
+        }
+
+        if ($type === 'newsletter') {
+            $data['data'] = NewsletterSectionData::forStorage($stored);
         }
 
         return $data;

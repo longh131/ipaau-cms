@@ -2,8 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\NewsletterSubscriptionController;
 
 Route::get('/', [FrontendController::class, 'home'])->name('home');
+Route::post('/newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('newsletter.subscribe');
 Route::redirect('/home-exported.html', '/');
 Route::get('/test-menu', function () {
     return view('frontend.test');

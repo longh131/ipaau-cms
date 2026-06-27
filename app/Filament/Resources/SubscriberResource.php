@@ -39,8 +39,24 @@ class SubscriberResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label('姓名')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('手机号')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('邮箱'),
+                    ->label('邮箱')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('company')
+                    ->label('公司')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('job_title')
+                    ->label('现任职务')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('education')
+                    ->label('第一高等学历')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('subscribed_at')
                     ->label('订阅时间')
                     ->dateTime(),

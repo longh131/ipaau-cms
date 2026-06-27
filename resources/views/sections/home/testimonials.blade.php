@@ -8,7 +8,7 @@
         <section
           data-type="testimonialCarousel"
           data-index="6"
-          class="py-12 overflow-hidden bg-[color:var(--bg-color)]"
+          class="testimonial-carousel-section py-12 overflow-hidden bg-[color:var(--bg-color)] relative"
           style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -17,11 +17,13 @@
             color: var(--ipa-color-light);
           "
         >
+          @include('partials.testimonials.carousel-halo')
           <div
-            class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12"
+            class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12 relative z-[1]"
           >
             <div class="testimonial-carousel">
-              <div class="swiper swiper-initialized swiper-horizontal swiper-backface-hidden">
+              <div class="testimonial-carousel__stage">
+                <div class="swiper swiper-initialized swiper-horizontal swiper-backface-hidden">
                 <div class="swiper-wrapper" aria-live="off">
                   @foreach ($items as $index => $item)
                   <x-testimonial-slide :item="$item" :index="$index" :total="$total" />
@@ -46,27 +48,16 @@
                 </div>
                 @endif
                 <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
               </div>
-              @if($total > 1)
-              <section class="flex justify-center mt-6" aria-label="Autoplay controls">
-                <button
-                  type="button"
-                  class="testimonial-card__navigation-autoplay-button"
-                  aria-pressed="true"
-                  aria-label="Pause autoplay"
-                  title="Pause autoplay"
+              <section class="flex justify-center mt-6" aria-label="更多会员风采">
+                <a
+                  href="{{ url('/category/member-stories-content') }}"
+                  class="testimonial-card__navigation-autoplay-button inline-block no-underline"
                 >
-                  <span aria-hidden="true">Pause Autoplay</span>
-                  <span class="sr-only">Pause autoplay</span>
-                </button>
-                <span
-                  class="sr-only"
-                  aria-live="polite"
-                  aria-atomic="true"
-                  style="position: absolute; left: -9999px"
-                >Autoplay is running</span>
+                  更多会员风采
+                </a>
               </section>
-              @endif
             </div>
           </div>
         </section>
