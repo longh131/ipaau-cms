@@ -77,8 +77,8 @@
                 <x-menu :menuItems="$menuItems" variant="mobile" />
             </div>
             <div id="mobile-navigation-footer" class="w-full mt-auto basis-max grow-0 shrink-0">
-                @foreach($menuItems as $item)
-                    @include('partials.header.menu-decorator', ['item' => $item])
+                @foreach($menuItems as $index => $item)
+                    @include('partials.header.menu-decorator', ['item' => $item, 'menuIndex' => $index])
                 @endforeach
             </div>
         </div>

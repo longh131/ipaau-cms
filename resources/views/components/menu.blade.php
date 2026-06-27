@@ -83,7 +83,9 @@
                                     </li>
                                 @endforeach
                             </ul>
-                            @include('partials.header.menu-decorator', ['item' => $item])
+                            @if($variant === 'desktop')
+                                @include('partials.header.menu-decorator', ['item' => $item])
+                            @endif
                         </div>
                     </div>
                 @endif

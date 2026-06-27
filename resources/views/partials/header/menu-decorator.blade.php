@@ -4,7 +4,13 @@
     $hasText = filled($promo['text'] ?? null);
 @endphp
 
-<div data-type="menu-decorator" @class(['empty:hidden' => ! $hasImage && ! $hasText])>
+<div
+    data-type="menu-decorator"
+    @if(isset($menuIndex))
+        data-menu-idx="{{ $menuIndex }}"
+    @endif
+    @class(['empty:hidden' => ! $hasImage && ! $hasText])
+>
     @if($hasImage)
         <div>
             <img src="{{ $promo['image'] }}" alt="{{ $promo['image_alt'] ?? '' }}" />

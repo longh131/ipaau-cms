@@ -391,3 +391,34 @@ section.diversity-section {
   font-size: inherit !important;
   line-height: inherit !important;
 }
+
+/* 桌面 megamenu：各二级列同时展示三级链接 */
+@media (min-width: 1280px) {
+  [data-type="desktop-navigation"] [data-level="0"].active [data-type="megamenu-level-2"] {
+    display: block;
+  }
+}
+
+/* 移动端：推广图显示在底部 footer，面板内隐藏 */
+@media (max-width: 1279px) {
+  [data-type="mobile-navigation"] [data-type="megamenu-panel"] [data-type="menu-decorator"] {
+    display: none !important;
+  }
+
+  #mobile-navigation-footer [data-type="menu-decorator"] {
+    display: none;
+  }
+
+  #mobile-navigation-footer [data-type="menu-decorator"].active {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  #mobile-navigation-footer [data-type="menu-decorator"].active {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}

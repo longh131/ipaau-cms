@@ -33,6 +33,57 @@
         return subMenuItem.querySelector('[data-type="megamenu-level-2"]');
     }
 
+    function isDesktopMenu() {
+        return window.innerWidth >= 1280;
+    }
+
+    function setSubMenuLinksState(subMenuItem, isAccessible) {
+        const panel = getSubMenuPanel(subMenuItem);
+        if (!panel) {
+            return;
+        }
+
+        panel.querySelectorAll('a').forEach(function(link) {
+            link.tabIndex = isAccessible ? 0 : -1;
+
+            if (isAccessible) {
+                link.removeAttribute('aria-hidden');
+            } else {
+                link.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }
+
+    function setMegamenuLevel1LinksState(menuItem, isAccessible) {
+        menuItem.querySelectorAll('[data-type="megamenu-level-1"] a').forEach(function(link) {
+            link.tabIndex = isAccessible ? 0 : -1;
+
+            if (isAccessible) {
+                link.removeAttribute('aria-hidden');
+            } else {
+                link.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }
+
+    // 桌面端：多列同时展示各列的三级菜单（与 React 版一致）
+    function showAllDesktopLevel2Panels(menuItem) {
+        getSubMenuItems(menuItem).forEach(function(subMenuItem) {
+            const panel = getSubMenuPanel(subMenuItem);
+
+            subMenuItem.classList.remove('inactive');
+            subMenuItem.classList.add('active');
+
+            if (!panel) {
+                return;
+            }
+
+            panel.classList.remove('hidden', 'inactive');
+            panel.classList.add('block', 'active');
+            setSubMenuLinksState(subMenuItem, true);
+        });
+    }
+
     // 切换菜单状态
     function toggleMenu(menuItem, index) {
         const panel = getMenuPanel(menuItem);
@@ -54,23 +105,37 @@
         menuItem.classList.add('active');
         panel.classList.remove('hidden');
         panel.classList.add('block');
+        setMegamenuLevel1LinksState(menuItem, true);
 
-        // 自动打开第一个子菜单
         const subMenuItems = getSubMenuItems(menuItem);
-        if (subMenuItems.length > 0) {
-            openSubMenu(subMenuItems[0], 0);
+        if (subMenuItems.length === 0) {
+            return;
         }
+
+        if (isDesktopMenu()) {
+            showAllDesktopLevel2Panels(menuItem);
+            activeSubMenuIndex = -1;
+            return;
+        }
+
+        // 移动端：默认展开第一项
+        openSubMenu(subMenuItems[0], 0);
     }
 
-    // 打开子菜单
+    // 打开子菜单（主要用于移动端手风琴）
     function openSubMenu(subMenuItem, index) {
         const panel = getSubMenuPanel(subMenuItem);
         if (!panel) return;
 
+        if (isDesktopMenu()) {
+            showAllDesktopLevel2Panels(subMenuItem.closest('[data-level="0"]'));
+            return;
+        }
+
         // 关闭同级其他子菜单
         const parentUl = subMenuItem.parentElement;
         const siblings = parentUl.querySelectorAll('li');
-        siblings.forEach((sibling, idx) => {
+        siblings.forEach(function(sibling, idx) {
             if (idx !== index) {
                 closeSubMenu(sibling);
             }
@@ -81,10 +146,9 @@
         subMenuItem.classList.remove('inactive');
         subMenuItem.classList.add('active');
 
-        if (panel) {
-            panel.classList.remove('hidden');
-            panel.classList.add('block');
-        }
+        panel.classList.remove('hidden', 'inactive');
+        panel.classList.add('block', 'active');
+        setSubMenuLinksState(subMenuItem, true);
     }
 
     // 关闭子菜单
@@ -94,15 +158,16 @@
         subMenuItem.classList.add('inactive');
 
         if (panel) {
-            panel.classList.remove('block');
-            panel.classList.add('hidden');
+            panel.classList.remove('block', 'active');
+            panel.classList.add('hidden', 'inactive');
+            setSubMenuLinksState(subMenuItem, false);
         }
     }
 
     // 关闭所有菜单
     function closeAllMenus() {
         const menuItems = getMenuItems();
-        menuItems.forEach(menuItem => {
+        menuItems.forEach(function(menuItem) {
             const panel = getMenuPanel(menuItem);
             menuItem.classList.remove('active');
             menuItem.classList.add('inactive');
@@ -112,9 +177,11 @@
                 panel.classList.add('hidden');
             }
 
+            setMegamenuLevel1LinksState(menuItem, false);
+
             // 关闭所有子菜单
             const subMenuItems = getSubMenuItems(menuItem);
-            subMenuItems.forEach(subMenuItem => {
+            subMenuItems.forEach(function(subMenuItem) {
                 closeSubMenu(subMenuItem);
             });
         });
@@ -154,9 +221,11 @@
 
                 if (subLink && subLink.getAttribute('data-children') === 'true') {
                     subLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openSubMenu(subMenuItem, subIndex);
+                        if (!isDesktopMenu()) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openSubMenu(subMenuItem, subIndex);
+                        }
                     });
                 }
             });
@@ -245,7 +314,74 @@
                 mobileNav.style.maxHeight = '2000px'; // 足够大的值
             } else {
                 mobileNav.style.maxHeight = '0px';
+                resetAllMobileLevel0();
+                updateMobileFooterDecorator(null);
             }
+        }
+    }
+
+    function getMobileLevel0Items() {
+        return document.querySelectorAll('[data-type="mobile-navigation"] [data-level="0"]');
+    }
+
+    function updateMobileFooterDecorator(menuIndex) {
+        const footer = document.getElementById('mobile-navigation-footer');
+        if (!footer) return;
+
+        footer.querySelectorAll('[data-type="menu-decorator"]').forEach(function(decorator) {
+            const idx = decorator.getAttribute('data-menu-idx');
+            const isActive = menuIndex !== null && idx === String(menuIndex);
+            decorator.classList.toggle('active', isActive);
+            decorator.classList.toggle('inactive', !isActive);
+        });
+    }
+
+    function openMobileLevel0(menuItem, index) {
+        const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
+        if (!panel) return;
+
+        menuItem.classList.remove('inactive');
+        menuItem.classList.add('active');
+        panel.classList.remove('hidden');
+        panel.classList.add('block');
+        setMegamenuLevel1LinksState(menuItem, true);
+        updateMobileFooterDecorator(index);
+    }
+
+    function closeMobileLevel0(menuItem) {
+        const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
+        menuItem.classList.remove('active');
+        menuItem.classList.add('inactive');
+
+        if (panel) {
+            panel.classList.remove('block');
+            panel.classList.add('hidden');
+            resetMobileLevel2Menus(panel);
+        }
+
+        setMegamenuLevel1LinksState(menuItem, false);
+    }
+
+    function resetAllMobileLevel0() {
+        getMobileLevel0Items().forEach(function(menuItem) {
+            closeMobileLevel0(menuItem);
+        });
+    }
+
+    function toggleMobileLevel0(menuItem, index) {
+        const willOpen = menuItem.classList.contains('inactive');
+
+        getMobileLevel0Items().forEach(function(item) {
+            if (item !== menuItem) {
+                closeMobileLevel0(item);
+            }
+        });
+
+        if (willOpen) {
+            openMobileLevel0(menuItem, index);
+        } else {
+            closeMobileLevel0(menuItem);
+            updateMobileFooterDecorator(null);
         }
     }
 
@@ -261,30 +397,28 @@
             });
         }
 
-        // 移动端菜单项点击事件（展开二级菜单）
-        const mobileMenuItems = document.querySelectorAll('[data-type="mobile-navigation"] [data-level="0"]');
-        mobileMenuItems.forEach((menuItem) => {
-            const button = menuItem.querySelector('[data-type="menu-wrapper-0"] button');
+        // 一级菜单：点击标题或 + 按钮展开二级列表
+        getMobileLevel0Items().forEach(function(menuItem) {
+            const wrapper = menuItem.querySelector('[data-type="menu-wrapper-0"]');
+            if (!wrapper) return;
+
+            const button = wrapper.querySelector('button');
+            const link = wrapper.querySelector('a');
+            const index = link ? link.getAttribute('data-idx') : null;
+
+            function handleLevel0Toggle(e) {
+                if (window.innerWidth >= 1280) return;
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMobileLevel0(menuItem, index !== null ? Number(index) : null);
+            }
+
             if (button) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                button.addEventListener('click', handleLevel0Toggle);
+            }
 
-                    const panel = menuItem.querySelector('[data-type="megamenu-panel"]');
-                    const willOpen = menuItem.classList.contains('inactive');
-
-                    menuItem.classList.toggle('inactive');
-                    menuItem.classList.toggle('active');
-
-                    if (panel) {
-                        panel.classList.toggle('hidden', !willOpen);
-                        panel.classList.toggle('block', willOpen);
-
-                        if (!willOpen) {
-                            resetMobileLevel2Menus(panel);
-                        }
-                    }
-                });
+            if (link && menuItem.getAttribute('data-children') === 'true') {
+                link.addEventListener('click', handleLevel0Toggle);
             }
         });
 
@@ -299,10 +433,10 @@
             menuItem.classList.add('inactive');
         });
 
-        container.querySelectorAll('[data-type="megamenu-level-2"]').forEach((panel) => {
+        container.querySelectorAll('[data-type="megamenu-level-2"]').forEach(function(panel) {
             panel.classList.remove('active', 'max-xl:block', 'block');
             panel.classList.add('inactive', 'max-xl:hidden');
-            panel.querySelectorAll('a').forEach((link) => {
+            panel.querySelectorAll('a').forEach(function(link) {
                 link.setAttribute('tabindex', '-1');
                 link.setAttribute('aria-hidden', 'true');
             });
@@ -313,12 +447,11 @@
         menuItem.classList.toggle('active', isOpen);
         menuItem.classList.toggle('inactive', !isOpen);
         level2Panel.classList.toggle('active', isOpen);
+        level2Panel.classList.toggle('inactive', !isOpen);
         level2Panel.classList.toggle('max-xl:block', isOpen);
         level2Panel.classList.toggle('max-xl:hidden', !isOpen);
-        level2Panel.classList.toggle('hidden', !isOpen);
-        level2Panel.classList.toggle('block', isOpen);
 
-        level2Panel.querySelectorAll('a').forEach((link) => {
+        level2Panel.querySelectorAll('a').forEach(function(link) {
             link.setAttribute('tabindex', isOpen ? '0' : '-1');
             link.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
         });
@@ -328,24 +461,26 @@
         const mobileNav = document.querySelector('[data-type="mobile-navigation"]');
         if (!mobileNav) return;
 
-        mobileNav.querySelectorAll('[data-type="megamenu-level-1"] > li').forEach((menuItem) => {
+        mobileNav.querySelectorAll('[data-type="megamenu-level-1"] > li').forEach(function(menuItem) {
             const wrapper = menuItem.querySelector('[data-type="menu-wrapper-1"]');
             const level2Panel = menuItem.querySelector('[data-type="megamenu-level-2"]');
             if (!wrapper || !level2Panel) return;
 
             const button = wrapper.querySelector('button');
-            const link = wrapper.querySelector('a[data-children="true"]');
             if (!button) return;
 
-            function toggleLevel2() {
-                const isOpen = level2Panel.classList.contains('max-xl:block');
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const isOpen = level2Panel.classList.contains('active');
 
                 if (isOpen) {
                     setMobileLevel2Open(menuItem, level2Panel, false);
                     return;
                 }
 
-                menuItem.parentElement.querySelectorAll(':scope > li').forEach((sibling) => {
+                menuItem.parentElement.querySelectorAll(':scope > li').forEach(function(sibling) {
                     if (sibling === menuItem) return;
                     const siblingPanel = sibling.querySelector('[data-type="megamenu-level-2"]');
                     if (siblingPanel) {
@@ -354,22 +489,7 @@
                 });
 
                 setMobileLevel2Open(menuItem, level2Panel, true);
-            }
-
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleLevel2();
             });
-
-            if (link) {
-                link.addEventListener('click', function(e) {
-                    if (window.innerWidth >= 1280) return;
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleLevel2();
-                });
-            }
         });
     }
 
