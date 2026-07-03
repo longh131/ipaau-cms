@@ -11,10 +11,11 @@ use App\Models\Page;
  * 菜单项链接规范（与前台路由命名一致，供后台保存与未来前台解析共用）。
  *
  * URL 规范：
- * - 单页：GET /page/{slug}      → route: page.show
- * - 栏目：GET /category/{slug}  → route: category.show
- * - 文章：GET /article/{slug}   → route: article.show
+ * - 单页栏目：GET /category/{slug}  → route: category.show（正文来自 pages 表）
+ * - 文章栏目：GET /category/{slug}  → route: category.show（文章列表）
+ * - 文章：GET /article/{slug}       → route: article.show
  * - 外链：menu_items.url 存完整 URL
+ * - /page/{slug} 保留兼容，301 跳转到 /category/{slug}
  */
 class MenuItemLink
 {
@@ -27,7 +28,7 @@ class MenuItemLink
     public const TYPE_ARTICLE = 'article';
 
     public const ROUTE_MAP = [
-        self::TYPE_PAGE => 'page.show',
+        self::TYPE_PAGE => 'category.show',
         self::TYPE_CATEGORY => 'category.show',
         self::TYPE_ARTICLE => 'article.show',
     ];
@@ -49,8 +50,9 @@ class MenuItemLink
         }
 
         return match ($item->route) {
-            self::ROUTE_MAP[self::TYPE_PAGE] => self::TYPE_PAGE,
-            self::ROUTE_MAP[self::TYPE_CATEGORY] => self::TYPE_CATEGORY,
+            'page.show', 'category.show' => filled(Page::where('slug', $slug)->value('id'))
+                ? self::TYPE_PAGE
+                : self::TYPE_CATEGORY,
             self::ROUTE_MAP[self::TYPE_ARTICLE] => self::TYPE_ARTICLE,
             default => self::TYPE_URL,
         };
@@ -65,8 +67,8 @@ class MenuItemLink
         }
 
         return match ($item->route) {
-            self::ROUTE_MAP[self::TYPE_PAGE] => Page::where('slug', $slug)->value('id'),
-            self::ROUTE_MAP[self::TYPE_CATEGORY] => Category::where('slug', $slug)->value('id'),
+            'page.show', 'category.show' => Page::where('slug', $slug)->value('id')
+                ?: Category::where('slug', $slug)->value('id'),
             self::ROUTE_MAP[self::TYPE_ARTICLE] => Article::where('slug', $slug)->value('id'),
             default => null,
         };

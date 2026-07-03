@@ -1,6 +1,12 @@
 @php
-    /** @var array{items: array<int, array{number: string, title: string, content: string}>} $stats */
+    /** @var array{items: array<int, array{number_type: string, number: string, number_image: ?string, title: string, content: string}>} $stats */
     $stats = $stats ?? ['items' => []];
+    $itemCount = count($stats['items']);
+    $gridClass = match (true) {
+        $itemCount >= 4 => 'grid-cols-2 lg:grid-cols-4',
+        $itemCount === 3 => 'grid-cols-2 lg:grid-cols-3',
+        default => 'grid-cols-2',
+    };
 @endphp
 @if(! empty($stats['items']))
         <section
@@ -19,13 +25,15 @@
             class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12"
           >
             <div class="container mx-auto px-4">
-              <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-10">
+              <div @class(['grid gap-4 lg:gap-10', $gridClass])>
                 @foreach ($stats['items'] as $index => $item)
                 <x-stat-card
-                  :number="$item['number']"
-                  :title="$item['title']"
-                  :content="$item['content']"
-                  :wide-on-mobile="$index === 2 && count($stats['items']) === 3"
+                  :number-type="$item['number_type'] ?? 'text'"
+                  :number="$item['number'] ?? ''"
+                  :number-image="$item['number_image'] ?? null"
+                  :title="$item['title'] ?? ''"
+                  :content="$item['content'] ?? ''"
+                  :wide-on-mobile="$index === 2 && $itemCount === 3"
                 />
                 @endforeach
               </div>

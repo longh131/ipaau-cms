@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PageResource\Forms\DefaultPageForm;
+use App\Models\Category;
 use App\Models\Page;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
@@ -27,29 +31,74 @@ class PageResource extends Resource
 
     protected static ?string $pluralModelLabel = '页面';
 
+    /**
+     * @return array<int, string>
+     */
+    public static function pageCategoryOptions(?int $pageId = null): array
+    {
+        return Category::pageSelectOptions($pageId);
+    }
+
     public static function form(Schema $schema): Schema
     {
+        $defaultTemplateFields = collect(DefaultPageForm::schema())
+            ->map(fn ($component) => $component->visible(
+                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_DEFAULT,
+            ))
+            ->all();
+
         return $schema
             ->components([
+                Forms\Components\Select::make('category_id')
+                    ->label('所属单页栏目')
+                    ->options(function (): array {
+                        $livewire = \Livewire\Livewire::current();
+                        $pageId = null;
+
+                        if ($livewire && method_exists($livewire, 'getRecord')) {
+                            $pageId = $livewire->getRecord()?->getKey();
+                        }
+
+                        return static::pageCategoryOptions(is_numeric($pageId) ? (int) $pageId : null);
+                    })
+                    ->searchable()
+                    ->required()
+                    ->live()
+                    ->helperText('仅显示栏目类型为「单页」且尚未绑定其他页面的栏目')
+                    ->afterStateUpdated(function (?string $state, Set $set, Get $get): void {
+                        if (blank($state)) {
+                            return;
+                        }
+
+                        $category = Category::query()->find($state);
+
+                        if (! $category) {
+                            return;
+                        }
+
+                        $set('slug', $category->slug);
+
+                        if (blank($get('title'))) {
+                            $set('title', $category->name);
+                        }
+                    }),
                 Forms\Components\TextInput::make('title')
-                    ->label('标题')
-                    ->required(),
+                    ->label('页面标题')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('用于 SEO 及后台识别，默认可与栏目标题一致；前台 H1 请在正文区块中自行添加'),
                 Forms\Components\TextInput::make('slug')
                     ->label('URL 标识')
+                    ->disabled()
+                    ->dehydrated()
+                    ->helperText('自动使用所绑定栏目的别名，前台地址：/category/{别名}'),
+                Forms\Components\Select::make('template')
+                    ->label('页面模板')
+                    ->options(Page::TEMPLATE_OPTIONS)
+                    ->default(Page::TEMPLATE_DEFAULT)
                     ->required()
-                    ->unique(ignoreRecord: true),
-                Forms\Components\RichEditor::make('content')
-                    ->label('内容')
-                    ->required()
-                    ->columnSpanFull()
-                    ->toolbarButtons([
-                        ['bold', 'italic', 'underline', 'strike'],
-                        ['h2', 'h3', 'blockquote', 'codeBlock'],
-                        ['bulletList', 'orderedList'],
-                        ['link', 'attachFiles'],
-                        ['undo', 'redo'],
-                        ['source-ai'],
-                    ]),
+                    ->live(),
+                ...$defaultTemplateFields,
                 Forms\Components\TextInput::make('meta_title')
                     ->label('SEO 标题')
                     ->columnSpanFull(),
@@ -59,6 +108,7 @@ class PageResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
+                    ->numeric()
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->label('是否启用')
@@ -71,18 +121,30 @@ class PageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('标题'),
+                    ->label('标题')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('所属栏目')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('URL 标识'),
+                    ->label('URL 标识')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('template')
+                    ->label('模板')
+                    ->formatStateUsing(fn (?string $state): string => Page::TEMPLATE_OPTIONS[$state] ?? $state ?? ''),
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->label('排序'),
+                    ->label('排序')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('是否启用')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('创建时间')
-                    ->dateTime(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('更新时间')
+                    ->dateTime()
+                    ->sortable(),
             ])
+            ->defaultSort('sort_order')
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('是否启用'),

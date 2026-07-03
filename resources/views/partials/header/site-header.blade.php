@@ -3,7 +3,7 @@
         $menuItems = $menuItems ?? app(\App\Services\MenuService::class)->getHeaderMenuItems();
     @endphp
 
-    @include('partials.header.blob-home')
+    @include('partials.header.'.($headerBlobPartial ?? 'blob-home'))
 
     <div class="mx-auto h-full flex lg:grid lg:grid-cols-[minmax(0,min-content)_minmax(0,auto)_minmax(0,max-content)_minmax(0,max-content)] justify-between lg:justify-normal lg:gap-x-2 no-wrap items-stretch px-4 xl:px-10">
         <div

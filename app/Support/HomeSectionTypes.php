@@ -67,7 +67,7 @@ class HomeSectionTypes
             ],
             'stats' => [
                 'label' => '数据统计',
-                'description' => '最多 3 项关键数字卡片（数字、标题、内容）',
+                'description' => '最多 4 项关键数字卡片；数字支持文字或图片，渐变背景',
                 'fields' => ['items'],
             ],
             'cpd-intro' => [

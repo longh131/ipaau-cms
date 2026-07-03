@@ -1,5 +1,23 @@
 /* About IPA section pages: about-the-ipa, recognition, contact-us */
 
+.max-w-4xl {
+  max-width: 56rem;
+}
+
+body.cms-about-page #main {
+  position: relative;
+  z-index: 1;
+}
+
+body.cms-about-page .footer-main {
+  position: relative;
+  z-index: 1;
+}
+
+.cms-page-content:empty {
+  min-height: 12rem;
+}
+
 .about-section .about-rich-text h1,
 .about-section .about-rich-text h3,
 .about-section .about-rich-text h4 {
@@ -24,6 +42,21 @@
   text-decoration: underline;
 }
 
+/* 内容页正文：统一加大一档（约 text-xl → text-2xl） */
+.cms-page-content,
+.about-section .about-rich-text {
+  font-size: 1.25rem;
+  line-height: 1.75;
+}
+
+@media (min-width: 1024px) {
+  .cms-page-content,
+  .about-section .about-rich-text {
+    font-size: 1.5rem;
+    line-height: 1.65;
+  }
+}
+
 .about-copy-block__item {
   padding: 0.5rem 0;
 }
@@ -38,6 +71,88 @@
 
 .about-copy-block__item .cta-content {
   text-align: center;
+}
+
+/* CMS 正文区块 */
+.cms-body-block--highlight p {
+  margin-bottom: 0;
+}
+
+.cms-rich-text__title {
+  color: inherit;
+}
+
+.cms-rich-text__body p:last-child {
+  margin-bottom: 0;
+}
+
+.cms-body-block--cta {
+  margin-top: 0.25rem;
+}
+
+.cms-body-block--tabs,
+.cms-body-block--carousel,
+.cms-body-block--media-split,
+.cms-body-block--faq,
+.cms-body-block--stats,
+.cms-body-block--narrow {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.cms-body-block--stats > section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.pt-18 {
+  padding-top: 4.5rem;
+}
+
+.cms-breadcrumb {
+  margin-bottom: 0;
+}
+
+.cms-page-content-section--with-breadcrumb {
+  padding-top: 0;
+}
+
+.cms-page-content-section--with-breadcrumb > .cms-body-block--media-split:first-child,
+.cms-page-content-section--with-breadcrumb > .cms-body-block--narrow:first-child {
+  padding-top: 0.5rem;
+}
+
+.cms-page-content-section--with-breadcrumb .cms-body-block--media-split:first-child {
+  padding-bottom: 0.5rem;
+}
+
+.cms-page-content-section--with-breadcrumb .cms-body-block--media-split:first-child > .inner > .container {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.cms-page-content-section--with-breadcrumb > .cms-body-block--narrow:first-child > .inner > .container {
+  padding-top: 0.75rem;
+}
+
+.cms-page-content-section > .cms-body-block--narrow + .cms-body-block--narrow {
+  padding-top: 0;
+}
+
+.cms-page-content-section > .cms-body-block--narrow + .cms-body-block--narrow > .inner > .container {
+  padding-top: 0;
+}
+
+.cms-page-content[data-rte="true"] a.cta,
+.cms-page-content-section .cms-body-block--cta a.cta {
+  text-decoration: none;
+}
+
+.cms-page-content[data-rte="true"] a.cta:hover,
+.cms-page-content-section .cms-body-block--cta a.cta:hover {
+  text-decoration: underline;
 }
 
 .about-cta__image {
@@ -60,6 +175,12 @@
   margin-right: auto;
   aspect-ratio: 1491.082 / 1572.087;
   background-color: transparent;
+  max-width: 100%;
+}
+
+.about-cta--image-right .about-cta__image--acorn {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 640px) {
@@ -129,40 +250,26 @@
   display: block;
 }
 
-.about-testimonial-slide {
-  display: none;
+/* CMS 文字轮播：复用首页结构，仅居中文字 */
+.testimonial-carousel--text-only .testimonial-card__layout {
+  grid-template-columns: 1fr;
 }
 
-.about-testimonial-slide--active {
-  display: block;
+.testimonial-carousel--text-only .testimonial-card__copy {
+  max-width: 56rem;
+  margin-inline: auto;
 }
 
-.about-testimonial-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  border: 0;
-  background: oklch(0.85 0 0);
-  cursor: pointer;
-}
-
-.about-testimonial-dot--active {
-  background: oklch(0.4867 0.1803 336.11);
-}
-
-.about-representation {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    oklch(0.96 0.02 280),
-    transparent
-  );
-  border-radius: 24px;
-  padding: 2rem 1rem;
+.testimonial-carousel--text-only .testimonial-card__figure--text-only {
+  padding-inline: 1rem;
 }
 
 @media (min-width: 768px) {
-  .about-representation {
-    padding: 3rem 2rem;
+  .testimonial-carousel--text-only .testimonial-card__figure--text-only {
+    padding-inline: 2rem;
   }
+}
+
+.cms-body-block--carousel.testimonial-carousel-section .testimonial-carousel__halo-fade {
+  height: min(200px, 35%);
 }

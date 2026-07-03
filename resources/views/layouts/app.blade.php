@@ -29,7 +29,9 @@
             href="#main"
         >Skip to main content</a>
 
-        @include('partials.header.site-header')
+        @include('partials.header.site-header', [
+            'headerBlobPartial' => $headerBlobPartial ?? 'blob-home',
+        ])
 
         <main id="main">
             @yield('content')

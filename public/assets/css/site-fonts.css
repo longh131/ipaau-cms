@@ -422,3 +422,84 @@ section.diversity-section {
     gap: 1.5rem;
   }
 }
+
+/* 数据统计：卡片内渐变背景，正方形 */
+[data-type="statsCards"] .stats-card {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border: 2px solid transparent;
+  background-color: transparent;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)),
+    url("/assets/img/stats-card-bg.jpg"),
+    linear-gradient(to right, rgb(201, 60, 159), rgb(240, 95, 34));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: auto, cover, auto;
+  background-position: center, center, center;
+  background-clip: padding-box, padding-box, border-box;
+  background-origin: padding-box, padding-box, border-box;
+}
+
+[data-type="statsCards"] .stats-card__image {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+}
+
+/* CMS 单页正文 */
+.cms-page-content h2,
+.cms-page-content h3 {
+  font-family: "Apex Serif", "ApexSerif", Georgia, serif;
+  color: oklch(0.3152 0.1176 262.41);
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cms-page-content h2 {
+  font-size: 2rem;
+  line-height: 1.25;
+}
+
+.cms-page-content h3 {
+  font-size: 1.625rem;
+  line-height: 1.3;
+}
+
+.cms-page-content p {
+  margin-bottom: 1rem;
+}
+
+.cms-page-content ul,
+.cms-page-content ol {
+  margin: 0 0 1rem 1.25rem;
+}
+
+.cms-page-content a {
+  color: oklch(0.4867 0.1803 336.11);
+  text-decoration: underline;
+}
+
+.cms-page-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+}
+
+[data-type="statsCards"] .stats-card__number {
+  font-size: 3rem;
+  line-height: 1.05;
+}
+
+@media (min-width: 1024px) {
+  [data-type="statsCards"] .stats-card__number {
+    font-size: 3.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  [data-type="statsCards"] .stats-card__number {
+    font-size: 110px;
+  }
+
+  [data-type="statsCards"] .stats-card__number--spaced {
+    margin-bottom: -0.5rem;
+  }
+}

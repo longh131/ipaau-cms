@@ -7,7 +7,10 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
+use App\Support\BreadcrumbBuilder;
+use App\Support\PageTemplate\PageTemplateRegistry;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class FrontendController extends Controller
 {
@@ -53,18 +56,10 @@ class FrontendController extends Controller
 
         switch ($type) {
             case 'page':
-                $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
-
-                return view('frontend.page', compact('page'));
+                return redirect()->route('category.show', $slug, 301);
 
             case 'category':
-                $category = Category::where('slug', $slug)->where('is_active', true)->firstOrFail();
-                $articles = Article::where('category_id', $category->id)
-                    ->where('is_active', true)
-                    ->orderBy('published_at', 'desc')
-                    ->paginate(10);
-
-                return view('frontend.category', compact('category', 'articles'));
+                return $this->renderCategory($slug);
 
             case 'article':
                 $article = Article::where('slug', $slug)->where('is_active', true)->firstOrFail();
@@ -74,5 +69,55 @@ class FrontendController extends Controller
             default:
                 abort(404);
         }
+    }
+
+    private function renderCategory(string $slug): View
+    {
+        $category = Category::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        if ($category->type === 'page') {
+            $page = Page::query()
+                ->with('category')
+                ->where('category_id', $category->id)
+                ->where('is_active', true)
+                ->firstOrFail();
+
+            return $this->renderPage($page);
+        }
+
+        $articles = Article::query()
+            ->where('category_id', $category->id)
+            ->where('is_active', true)
+            ->orderByDesc('published_at')
+            ->paginate(10);
+
+        return view('frontend.categories.articles', [
+            'category' => $category,
+            'articles' => $articles,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+        ]);
+    }
+
+    private function renderPage(Page $page): View
+    {
+        $page->loadMissing('category');
+
+        $view = 'frontend.pages.'.($page->template ?: Page::TEMPLATE_DEFAULT);
+
+        if (! view()->exists($view)) {
+            $view = 'frontend.pages.default';
+        }
+
+        return view($view, [
+            'page' => $page,
+            'category' => $page->category,
+            'pageView' => PageTemplateRegistry::forFrontend($page->data, $page->template, $page),
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($page->category, $page->displayTitle()),
+            'bodyClass' => 'cms-about-page',
+            'headerBlobPartial' => 'blob-about',
+        ]);
     }
 }

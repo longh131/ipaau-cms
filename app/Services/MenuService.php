@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use App\Support\MediaUrl;
+
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Support\MenuItemLink;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class MenuService
 {
@@ -83,7 +84,7 @@ class MenuService
         $promoUrl = $this->resolveLinkUrl($item->megamenu_promo_url);
 
         return [
-            'image' => $this->resolveAssetUrl($this->normalizeStoredPath($item->icon)),
+            'image' => MediaUrl::resolve($this->normalizeStoredPath($item->icon)),
             'image_alt' => $item->megamenu_image_alt ?: $item->title,
             'text' => $item->megamenu_promo_text,
             'url' => $promoUrl,
@@ -97,11 +98,9 @@ class MenuService
             return null;
         }
 
-        if (is_array($path)) {
-            $path = reset($path) ?: null;
-        }
+        $normalized = MediaUrl::normalizeStoredPath($path);
 
-        return is_string($path) ? $path : null;
+        return $normalized !== '' ? $normalized : null;
     }
 
     private function resolveLinkUrl(?string $url): ?string
@@ -132,28 +131,5 @@ class MenuService
         }
 
         return $default;
-    }
-
-    private function resolveAssetUrl(?string $path): ?string
-    {
-        if (blank($path)) {
-            return null;
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '//')) {
-            return $path;
-        }
-
-        $normalized = ltrim($path, '/');
-
-        if (str_starts_with($normalized, 'assets/')) {
-            return asset($normalized);
-        }
-
-        if (Storage::disk('public')->exists($normalized)) {
-            return Storage::disk('public')->url($normalized);
-        }
-
-        return asset('storage/'.$normalized);
     }
 }
