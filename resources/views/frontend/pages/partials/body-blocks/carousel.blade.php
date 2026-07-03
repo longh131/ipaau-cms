@@ -16,8 +16,6 @@
             color: var(--ipa-color-light);
         "
     >
-        @include('partials.testimonials.carousel-halo')
-
         <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12 relative z-[1]">
             @if(filled($block['heading'] ?? null))
                 <div class="text-center about-rich-text">

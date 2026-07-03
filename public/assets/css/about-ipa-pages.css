@@ -9,6 +9,31 @@ body.cms-about-page #main {
   z-index: 1;
 }
 
+/*
+ * 延续 header blob：fixed + 加高，首屏不变，滚动时色晕多覆盖一段。
+ * blob 在 header 内（site-header → blob-about），此处只覆盖 CMS 内页样式。
+ */
+body.cms-about-page header .blobBackground {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  translate: -50%;
+  width: 100vw;
+  height: min(220vh, 2600px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+body.cms-about-page header .blobBackground::before {
+  background: linear-gradient(
+    to top,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.75) 12%,
+    rgba(255, 255, 255, 0.2) 28%,
+    transparent 42%
+  );
+}
+
 body.cms-about-page .footer-main {
   position: relative;
   z-index: 1;
@@ -268,8 +293,4 @@ body.cms-about-page .footer-main {
   .testimonial-carousel--text-only .testimonial-card__figure--text-only {
     padding-inline: 2rem;
   }
-}
-
-.cms-body-block--carousel.testimonial-carousel-section .testimonial-carousel__halo-fade {
-  height: min(200px, 35%);
 }
