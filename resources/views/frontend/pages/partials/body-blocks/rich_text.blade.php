@@ -6,7 +6,7 @@
 @if($hasTitle || $hasHtml)
     <div class="about-rich-text text-left cms-body-block cms-body-block--rich-text">
         @if($hasTitle)
-            <h3 class="cms-rich-text__title font-apex-book text-display-xl lg:text-display-2xl mb-0">
+            <h3 class="cms-rich-text__title font-apex-book text-display-xl lg:text-display-2xl mb-0 text-center">
                 <span class="text-secondary">{{ $block['title'] }}</span>
             </h3>
         @endif

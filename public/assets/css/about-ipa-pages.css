@@ -105,6 +105,7 @@ body.cms-about-page .footer-main {
 
 .cms-rich-text__title {
   color: inherit;
+  text-align: center;
 }
 
 .cms-rich-text__body p:last-child {
@@ -275,22 +276,51 @@ body.cms-about-page .footer-main {
   display: block;
 }
 
-/* CMS 文字轮播：复用首页结构，仅居中文字 */
+/* CMS 文字轮播：仅收紧卡片内文字上方留白 */
+.testimonial-carousel--text-only .testimonial-card__wrapper {
+  padding-top: 0.75em;
+  padding-bottom: 2em;
+  padding-inline: 1em;
+}
+
 .testimonial-carousel--text-only .testimonial-card__layout {
   grid-template-columns: 1fr;
 }
 
 .testimonial-carousel--text-only .testimonial-card__copy {
+  width: 100%;
   max-width: 56rem;
   margin-inline: auto;
 }
 
 .testimonial-carousel--text-only .testimonial-card__figure--text-only {
-  padding-inline: 1rem;
+  flex-shrink: 1;
+  flex-basis: auto;
+  width: 100%;
+  padding-inline: 1em;
 }
 
 @media (min-width: 768px) {
+  .testimonial-carousel--text-only .testimonial-card__wrapper {
+    padding-top: 1em;
+    padding-bottom: 2.5em;
+    padding-inline: 2em;
+  }
+
   .testimonial-carousel--text-only .testimonial-card__figure--text-only {
-    padding-inline: 2rem;
+    padding-inline: 2em;
+  }
+}
+
+@media (min-width: 1280px) {
+  .testimonial-carousel--text-only .testimonial-card__wrapper {
+    padding-top: 1.125em;
+    padding-bottom: 3em;
+    padding-inline: 4em;
+  }
+
+  .testimonial-carousel--text-only .testimonial-card__figure--text-only {
+    max-width: calc(100% - 70px);
+    padding-inline: 4em;
   }
 }

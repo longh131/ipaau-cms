@@ -49,7 +49,7 @@
                             itemprop="reviewBody"
                             class="testimonial-card__quote font-apex-book text-secondary text-xl md:text-display-xs xl:text-display-lg w-full max-w-full mx-auto"
                         >
-                            &ldquo;{{ $quote }}&rdquo;
+                            {{ $quote }}
                         </blockquote>
                     @endif
 

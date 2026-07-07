@@ -3630,18 +3630,38 @@ section[data-type=newsletter] {
     background-position: center;
     background-repeat: no-repeat;
   }
-section[data-type=testimonialCarousel] > .\!container {
-    max-width: unset !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    width: 100% !important;
-  }
+section[data-type=testimonialCarousel] > .\!container,
 section[data-type=testimonialCarousel] > .container {
-    max-width: unset !important;
+    width: 100% !important;
+    margin-inline: auto;
+    max-width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    width: 100% !important;
   }
+@media(min-width: 640px){
+  section[data-type=testimonialCarousel] > .\!container,
+  section[data-type=testimonialCarousel] > .container {
+    max-width: 640px !important;
+  }
+}
+@media(min-width: 768px){
+  section[data-type=testimonialCarousel] > .\!container,
+  section[data-type=testimonialCarousel] > .container {
+    max-width: 768px !important;
+  }
+}
+@media(min-width: 1024px){
+  section[data-type=testimonialCarousel] > .\!container,
+  section[data-type=testimonialCarousel] > .container {
+    max-width: 1024px !important;
+  }
+}
+@media(min-width: 1280px){
+  section[data-type=testimonialCarousel] > .\!container,
+  section[data-type=testimonialCarousel] > .container {
+    max-width: 1280px !important;
+  }
+}
 section[data-type=testimonialCarousel] > .\!container.inner {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
@@ -4328,11 +4348,11 @@ iframe[data-processed=true]{
     flex-direction: column;
   }
 .footer-main .footer-copyright-text {
-    border-top: 1px solid #F2F2F2;
-    color: #595959;
-    font-size: 16px;
-    padding: 2em 1em;
-  }
+  border-top: 1px solid #F2F2F2;
+  color: #595959;
+  font-size: 16px;
+  padding: 2em 1em;
+}
 #footer-disclaimer {
     color: #595959;
     font-size: 16px;

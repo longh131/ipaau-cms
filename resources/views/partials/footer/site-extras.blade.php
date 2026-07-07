@@ -12,8 +12,8 @@
         </div>
     </div>
 </div>
-<svg class="decorator-svg">
-    <clippath id="invertshallowconvex-path" clipPathUnits="objectBoundingBox">
+<svg class="decorator-svg" aria-hidden="true" focusable="false">
+    <clipPath id="invertshallowconvex-path" clipPathUnits="objectBoundingBox">
         <path d="M1,0.739 C0.623,1,0.283,1,0,0.836 V0 H1 V0.739"></path>
-    </clippath>
+    </clipPath>
 </svg>

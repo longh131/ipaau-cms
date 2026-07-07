@@ -88,6 +88,15 @@ body {
   min-height: 0;
 }
 
+/* clipPath 定义用 SVG：不能 display:none，但需移出文档流（默认约 150px 高） */
+.decorator-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /* 会员推荐：光晕在 section 层全宽；顶部白→色渐变 */
 section[data-type="testimonialCarousel"].testimonial-carousel-section {
   position: relative;
