@@ -83,9 +83,10 @@
     const divNode = Node.create({
         name: 'div',
         group: 'block',
-        content: 'inline*',
+        content: 'block*',
+        defining: false,
         parseHTML() {
-            return [{ tag: 'div' }]
+            return [{ tag: 'div', priority: 60 }]
         },
         renderHTML({ HTMLAttributes }) {
             return ['div', HTMLAttributes, 0]

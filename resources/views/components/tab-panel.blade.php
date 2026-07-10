@@ -41,7 +41,7 @@
             "
         >
             <h3
-                class="text-display-lg lg:text-display-xl"
+                class="cms-section-title"
                 style="text-align: left"
             >
                 {{ $tab['title'] }}

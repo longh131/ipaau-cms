@@ -6,9 +6,12 @@ use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
 use App\Services\SiteSettingsService;
+use App\Support\RichContent;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\RichEditorTool;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -40,6 +43,18 @@ class AppServiceProvider extends ServiceProvider
             $editor
                 ->plugins([
                     InlineStylePlugin::make(),
+                ])
+                ->resizableImages(true)
+                ->fileAttachmentsDisk(RichContent::fileAttachmentsDisk())
+                ->fileAttachmentsDirectory(RichContent::fileAttachmentsDirectory())
+                ->fileAttachmentsVisibility(RichContent::fileAttachmentsVisibility())
+                ->tools([
+                    RichEditorTool::make('attachFiles')
+                        ->label('插入图片')
+                        ->action(arguments: '{ alt: $getEditor().getAttributes(\'image\')?.alt, id: $getEditor().getAttributes(\'image\')?.id, src: $getEditor().getAttributes(\'image\')?.src }')
+                        ->activeKey('image')
+                        ->icon(Heroicon::Photo)
+                        ->iconAlias('forms:components.rich-editor.toolbar.attach-files'),
                 ])
                 ->enableToolbarButtons(['source-ai']);
         });

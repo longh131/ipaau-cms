@@ -6,6 +6,7 @@
 @endphp
 @if($hasContent)
         <section
+          id="newsletter-section"
           data-type="newsletter"
           data-index="13"
           class="py-12 overflow-hidden bg-[color:var(--bg-color)]"
@@ -42,11 +43,9 @@
                       "
                     >
                       <div>
-                        <h4
-                          class="text-display-xl lg:text-display-2xl text-display-lg lg:text-display-xl"
-                        >
+                        <h3 class="cms-section-title">
                           {{ $newsletter['title'] }}
-                        </h4>
+                        </h3>
                       </div>
                     </div>
                     @endif

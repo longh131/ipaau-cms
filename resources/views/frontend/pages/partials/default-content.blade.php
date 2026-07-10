@@ -1,6 +1,6 @@
 @php
     $bodyBlocks = $pageView['body_blocks'] ?? [];
-    $fullWidthBlockTypes = ['tabs', 'carousel', 'media_split', 'faq', 'stats'];
+    $fullWidthBlockTypes = ['tabs', 'carousel', 'media_split', 'content_columns', 'faq', 'stats', 'card_list_curated'];
     $hasBreadcrumbs = $hasBreadcrumbs ?? false;
 @endphp
 

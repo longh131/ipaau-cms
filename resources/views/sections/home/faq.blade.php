@@ -29,10 +29,10 @@
                 "
                 >HAVE A QUESTION?</span
               >
-              <h1
+              <h3
                 data-type="section-title"
                 data-rte="true"
-                class="font-apex-book"
+                class="font-apex-book cms-section-title"
                 style="
                   --ipa-color-light: oklch(0.3152 0.1176 262.41);
                   --ipa-color-dark: oklch(0.9011 0.0552 218.07);
@@ -40,11 +40,11 @@
                 "
               >
                 <div style="text-align: center">
-                  <span class="text-display-2xl text-secondary"
+                  <span class="text-secondary"
                     >Frequently Asked Questions</span
                   >
                 </div>
-              </h1>
+              </h3>
               <div
                 class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
                 data-type="section-description"
@@ -96,9 +96,9 @@
                     ><span class="sr-only">Open Accordion</span>
                   </div>
                 </button>
-                @if(filled($item['answer'] ?? null))
-                <div data-rte="true" class="mb-6 hidden">
-                  <div>{!! $item['answer'] !!}</div>
+                @if(filled(strip_tags((string) ($item['answer'] ?? ''))))
+                <div data-rte="true" class="cms-page-content mb-6 hidden">
+                  {!! $item['answer'] !!}
                 </div>
                 @endif
               </li>

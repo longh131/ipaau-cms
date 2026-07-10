@@ -26,6 +26,10 @@ class PageBodyBlocks
 
     public const TYPE_STATS = 'stats';
 
+    public const TYPE_CONTENT_COLUMNS = 'content_columns';
+
+    public const TYPE_CARD_LIST_CURATED = 'card_list_curated';
+
     /** @var array<string, string> */
     public const TYPE_OPTIONS = [
         self::TYPE_RICH_TEXT => '富文本段落',
@@ -34,8 +38,10 @@ class PageBodyBlocks
         self::TYPE_TABS => '选项卡板块',
         self::TYPE_CAROUSEL => '轮播',
         self::TYPE_MEDIA_SPLIT => '图文分栏',
+        self::TYPE_CONTENT_COLUMNS => '左右内容分栏',
         self::TYPE_FAQ => '手风琴 FAQ',
         self::TYPE_STATS => '数字统计',
+        self::TYPE_CARD_LIST_CURATED => '精选卡片列表',
     ];
 
     /** @var array<string, string> */
@@ -48,6 +54,13 @@ class PageBodyBlocks
     public const IMAGE_SHAPE_OPTIONS = [
         'acorn' => '橡果形（About 页默认）',
         'rectangle' => '圆角矩形',
+    ];
+
+    /** @var array<string, string> */
+    public const TITLE_ALIGN_OPTIONS = [
+        'left' => '居左',
+        'center' => '居中',
+        'right' => '居右',
     ];
 
     /** @var array<string, string> */
@@ -83,7 +96,8 @@ class PageBodyBlocks
                 self::TYPE_RICH_TEXT => [
                     'type' => self::TYPE_RICH_TEXT,
                     'title' => trim((string) ($block['title'] ?? '')),
-                    'html' => (string) ($block['html'] ?? ''),
+                    'title_align' => static::normalizeTitleAlign((string) ($block['title_align'] ?? 'center')),
+                    'html' => $block['html'] ?? '',
                 ],
                 self::TYPE_HIGHLIGHT => [
                     'type' => self::TYPE_HIGHLIGHT,
@@ -92,7 +106,7 @@ class PageBodyBlocks
                 ],
                 self::TYPE_CTA_GROUP => [
                     'type' => self::TYPE_CTA_GROUP,
-                    'buttons' => self::normalizeButtons($block['buttons'] ?? []),
+                    'buttons' => self::normalizeButtonsForForm($block['buttons'] ?? []),
                 ],
                 self::TYPE_TABS => [
                     'type' => self::TYPE_TABS,
@@ -103,7 +117,11 @@ class PageBodyBlocks
                     'heading' => trim((string) ($block['heading'] ?? '')),
                     'slides' => self::normalizeCarouselSlides($block['slides'] ?? []),
                 ],
-                self::TYPE_MEDIA_SPLIT => self::normalizeMediaSplitBlock($block),
+                self::TYPE_MEDIA_SPLIT => self::normalizeMediaSplitBlockForForm($block),
+                self::TYPE_CONTENT_COLUMNS => [
+                    'type' => self::TYPE_CONTENT_COLUMNS,
+                    'columns' => self::normalizeContentColumns($block['columns'] ?? []),
+                ],
                 self::TYPE_FAQ => [
                     'type' => self::TYPE_FAQ,
                     'tagline' => trim((string) ($block['tagline'] ?? '')),
@@ -114,6 +132,11 @@ class PageBodyBlocks
                 self::TYPE_STATS => [
                     'type' => self::TYPE_STATS,
                     'items' => StatsSectionData::forForm(['items' => $block['items'] ?? []])['items'],
+                ],
+                self::TYPE_CARD_LIST_CURATED => [
+                    'type' => self::TYPE_CARD_LIST_CURATED,
+                    'section_title' => trim((string) ($block['section_title'] ?? '')),
+                    'items' => self::normalizeCardListItems($block['items'] ?? []),
                 ],
                 default => null,
             };
@@ -135,6 +158,10 @@ class PageBodyBlocks
         $blocks = static::forForm($blocks);
 
         $blocks = array_map(function (array $block): array {
+            if ($block['type'] === self::TYPE_CTA_GROUP || $block['type'] === self::TYPE_MEDIA_SPLIT) {
+                $block['buttons'] = self::normalizeButtons($block['buttons'] ?? []);
+            }
+
             if ($block['type'] === self::TYPE_TABS) {
                 $block['tabs'] = TabbedContentSectionData::forStorage(['tabs' => $block['tabs']])['tabs'];
             }
@@ -169,6 +196,7 @@ class PageBodyBlocks
                 [
                     'type' => self::TYPE_RICH_TEXT,
                     'title' => '',
+                    'title_align' => 'center',
                     'html' => (string) $legacyContent,
                 ],
             ];
@@ -181,6 +209,7 @@ class PageBodyBlocks
                 self::TYPE_RICH_TEXT => [
                     'type' => self::TYPE_RICH_TEXT,
                     'title' => $block['title'],
+                    'title_align' => $block['title_align'],
                     'html' => RichContent::toHtml($block['html']),
                 ],
                 self::TYPE_HIGHLIGHT => [
@@ -211,6 +240,22 @@ class PageBodyBlocks
                     'content_html' => RichContent::toHtml($block['content']),
                     'buttons' => $block['buttons'],
                 ],
+                self::TYPE_CONTENT_COLUMNS => [
+                    'type' => self::TYPE_CONTENT_COLUMNS,
+                    'columns' => collect($block['columns'] ?? [])
+                        ->map(fn (array $column): array => [
+                            'title' => $column['title'],
+                            'content_html' => RichContent::toHtml($column['content'] ?? ''),
+                            'button' => self::normalizeOptionalButton([
+                                'label' => $column['button_label'] ?? ($column['button']['label'] ?? ''),
+                                'url' => $column['button_url'] ?? ($column['button']['url'] ?? ''),
+                                'style' => $column['button_style'] ?? ($column['button']['style'] ?? 'primary'),
+                                'target' => $column['button_target'] ?? ($column['button']['target'] ?? ''),
+                            ]),
+                        ])
+                        ->values()
+                        ->all(),
+                ],
                 self::TYPE_FAQ => [
                     'type' => self::TYPE_FAQ,
                     'tagline' => $block['tagline'],
@@ -221,6 +266,11 @@ class PageBodyBlocks
                 self::TYPE_STATS => [
                     'type' => self::TYPE_STATS,
                     'items' => StatsSectionData::forFrontend(['items' => $block['items']])['items'],
+                ],
+                self::TYPE_CARD_LIST_CURATED => [
+                    'type' => self::TYPE_CARD_LIST_CURATED,
+                    'section_title' => $block['section_title'],
+                    'items' => $block['items'],
                 ],
                 default => null,
             };
@@ -298,8 +348,12 @@ class PageBodyBlocks
                 || filled($block['title'] ?? null)
                 || filled(strip_tags(RichContent::toHtml($block['content'] ?? '')))
                 || ($block['buttons'] ?? []) !== [],
+            self::TYPE_CONTENT_COLUMNS => collect($block['columns'] ?? [])
+                ->contains(fn (array $column): bool => static::contentColumnHasContent($column)),
             self::TYPE_FAQ => ($block['items'] ?? []) !== [],
             self::TYPE_STATS => ($block['items'] ?? []) !== [],
+            self::TYPE_CARD_LIST_CURATED => filled($block['section_title'] ?? null)
+                || ($block['items'] ?? []) !== [],
             default => false,
         };
     }
@@ -316,6 +370,13 @@ class PageBodyBlocks
         return array_key_exists($gradient, self::GRADIENT_OPTIONS)
             ? $gradient
             : 'purple-reverse';
+    }
+
+    public static function normalizeTitleAlign(string $align): string
+    {
+        return array_key_exists($align, self::TITLE_ALIGN_OPTIONS)
+            ? $align
+            : 'center';
     }
 
     /**
@@ -354,6 +415,69 @@ class PageBodyBlocks
                 'target' => $target,
             ];
         }
+
+        return $normalized;
+    }
+
+    /**
+     * 后台表单用：保留尚未填全的按钮项，便于继续编辑。
+     *
+     * @return array<int, array{label: string, url: string, style: string, target: string}>
+     */
+    protected static function normalizeButtonsForForm(mixed $buttons): array
+    {
+        if (! is_array($buttons)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($buttons as $button) {
+            if (! is_array($button)) {
+                continue;
+            }
+
+            $label = trim((string) ($button['label'] ?? ''));
+            $url = trim((string) ($button['url'] ?? ''));
+
+            if ($label === '' && $url === '') {
+                continue;
+            }
+
+            $style = (string) ($button['style'] ?? 'primary');
+            $style = in_array($style, ['primary', 'secondary'], true) ? $style : 'primary';
+
+            $target = (string) ($button['target'] ?? '');
+            $target = $target === '_blank' ? '_blank' : '';
+
+            $normalized[] = [
+                'label' => $label,
+                'url' => $url,
+                'style' => $style,
+                'target' => $target,
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param  array<string, mixed>  $block
+     * @return array{
+     *     type: string,
+     *     image_position: string,
+     *     image_shape: string,
+     *     image: string,
+     *     tagline: string,
+     *     title: string,
+     *     content: string,
+     *     buttons: array<int, array{label: string, url: string, style: string, target: string}>
+     * }
+     */
+    protected static function normalizeMediaSplitBlockForForm(array $block): array
+    {
+        $normalized = self::normalizeMediaSplitBlock($block);
+        $normalized['buttons'] = self::normalizeButtonsForForm($block['buttons'] ?? []);
 
         return $normalized;
     }
@@ -422,8 +546,172 @@ class PageBodyBlocks
             'image' => MediaUrl::normalizeStoredPath($block['image'] ?? ''),
             'tagline' => trim((string) ($block['tagline'] ?? '')),
             'title' => trim((string) ($block['title'] ?? '')),
-            'content' => (string) ($block['content'] ?? ''),
+            'content' => $block['content'] ?? '',
             'buttons' => self::normalizeButtons($block['buttons'] ?? []),
         ];
+    }
+
+    /**
+     * @return array<int, array{
+     *     title: string,
+     *     content: mixed,
+     *     button: ?array{label: string, url: string, style: string, target: string}
+     * }>
+     */
+    protected static function normalizeContentColumns(mixed $columns): array
+    {
+        if (! is_array($columns)) {
+            return [self::emptyContentColumn(), self::emptyContentColumn()];
+        }
+
+        $normalized = [];
+
+        foreach ($columns as $column) {
+            if (! is_array($column)) {
+                continue;
+            }
+
+            $normalized[] = self::normalizeContentColumn($column);
+
+            if (count($normalized) >= 2) {
+                break;
+            }
+        }
+
+        while (count($normalized) < 2) {
+            $normalized[] = self::emptyContentColumn();
+        }
+
+        return array_slice($normalized, 0, 2);
+    }
+
+    /**
+     * @param  array<string, mixed>  $column
+     * @return array{
+     *     title: string,
+     *     content: mixed,
+     *     button_label: string,
+     *     button_url: string,
+     *     button_style: string,
+     *     button_target: string
+     * }
+     */
+    protected static function normalizeContentColumn(array $column): array
+    {
+        $buttonLabel = trim((string) ($column['button_label'] ?? ($column['button']['label'] ?? '')));
+        $buttonUrl = trim((string) ($column['button_url'] ?? ($column['button']['url'] ?? '')));
+        $buttonStyle = (string) ($column['button_style'] ?? ($column['button']['style'] ?? 'primary'));
+        $buttonStyle = in_array($buttonStyle, ['primary', 'secondary'], true) ? $buttonStyle : 'primary';
+        $buttonTarget = (string) ($column['button_target'] ?? ($column['button']['target'] ?? ''));
+        $buttonTarget = $buttonTarget === '_blank' ? '_blank' : '';
+
+        return [
+            'title' => trim((string) ($column['title'] ?? '')),
+            'content' => $column['content'] ?? '',
+            'button_label' => $buttonLabel,
+            'button_url' => $buttonUrl,
+            'button_style' => $buttonStyle,
+            'button_target' => $buttonTarget,
+        ];
+    }
+
+    /**
+     * @return array{
+     *     title: string,
+     *     content: mixed,
+     *     button_label: string,
+     *     button_url: string,
+     *     button_style: string,
+     *     button_target: string
+     * }
+     */
+    protected static function emptyContentColumn(): array
+    {
+        return [
+            'title' => '',
+            'content' => '',
+            'button_label' => '',
+            'button_url' => '',
+            'button_style' => 'primary',
+            'button_target' => '',
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $column
+     */
+    protected static function contentColumnHasContent(array $column): bool
+    {
+        return filled($column['title'] ?? null)
+            || filled(strip_tags(RichContent::toHtml($column['content'] ?? '')))
+            || self::normalizeOptionalButton([
+                'label' => $column['button_label'] ?? ($column['button']['label'] ?? ''),
+                'url' => $column['button_url'] ?? ($column['button']['url'] ?? ''),
+                'style' => $column['button_style'] ?? ($column['button']['style'] ?? 'primary'),
+                'target' => $column['button_target'] ?? ($column['button']['target'] ?? ''),
+            ]) !== null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $button
+     * @return array{label: string, url: string, style: string, target: string}|null
+     */
+    protected static function normalizeOptionalButton(array $button): ?array
+    {
+        $label = trim((string) ($button['label'] ?? ''));
+        $url = trim((string) ($button['url'] ?? ''));
+
+        if ($label === '' || $url === '') {
+            return null;
+        }
+
+        $style = (string) ($button['style'] ?? 'primary');
+        $style = in_array($style, ['primary', 'secondary'], true) ? $style : 'primary';
+
+        $target = (string) ($button['target'] ?? '');
+        $target = $target === '_blank' ? '_blank' : '';
+
+        return [
+            'label' => $label,
+            'url' => $url,
+            'style' => $style,
+            'target' => $target,
+        ];
+    }
+
+    /**
+     * @return array<int, array{title: string, url: string, target: string}>
+     */
+    protected static function normalizeCardListItems(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $title = trim((string) ($item['title'] ?? ''));
+            $url = trim((string) ($item['url'] ?? ''));
+
+            if ($title === '' && $url === '') {
+                continue;
+            }
+
+            $target = (string) ($item['target'] ?? '');
+            $target = $target === '_blank' ? '_blank' : '';
+
+            $normalized[] = [
+                'title' => $title,
+                'url' => $url,
+                'target' => $target,
+            ];
+        }
+
+        return $normalized;
     }
 }

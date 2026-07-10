@@ -7,6 +7,9 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Support\PageTemplate\PageBodyBlocks;
 use App\Support\PageTemplate\PageTemplateRegistry;
+use App\Support\PageTemplate\Templates\BasicContentPageData;
+use App\Support\PageTemplate\Templates\GeneralSecondaryPageData;
+use App\Support\PageTemplate\Templates\GovernancePageData;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Validation\ValidationException;
 
@@ -56,13 +59,34 @@ class CreatePage extends CreateRecord
 
         $template = (string) ($data['template'] ?? Page::TEMPLATE_DEFAULT);
         $data['data'] = PageTemplateRegistry::forStorage(is_array($data['data'] ?? null) ? $data['data'] : [], $template);
-        $data['content'] = PageBodyBlocks::legacyContentSnapshot($data['data']['body_blocks'] ?? null);
+        $data['content'] = match ($template) {
+            Page::TEMPLATE_BASIC_CONTENT => BasicContentPageData::contentSnapshot($data['data']),
+            Page::TEMPLATE_GOVERNANCE => GovernancePageData::contentSnapshot($data['data']),
+            Page::TEMPLATE_GENERAL_SECONDARY => GeneralSecondaryPageData::contentSnapshot($data['data']),
+            default => PageBodyBlocks::legacyContentSnapshot($data['data']['body_blocks'] ?? null),
+        };
 
-        $bodyBlocks = $data['data']['body_blocks'] ?? [];
-
-        if ($template === Page::TEMPLATE_DEFAULT && ! PageBodyBlocks::hasContent($bodyBlocks)) {
+        if ($template === Page::TEMPLATE_DEFAULT && ! PageBodyBlocks::hasContent($data['data']['body_blocks'] ?? null)) {
             throw ValidationException::withMessages([
                 'data.body_blocks' => '请至少添加一个正文区块。',
+            ]);
+        }
+
+        if ($template === Page::TEMPLATE_BASIC_CONTENT && ! BasicContentPageData::hasContent($data['data'])) {
+            throw ValidationException::withMessages([
+                'data.body' => '请填写标题、摘要或正文中的至少一项。',
+            ]);
+        }
+
+        if ($template === Page::TEMPLATE_GOVERNANCE && ! GovernancePageData::hasContent($data['data'])) {
+            throw ValidationException::withMessages([
+                'data.summary' => '请填写标题、摘要或下方模块中的至少一项。',
+            ]);
+        }
+
+        if ($template === Page::TEMPLATE_GENERAL_SECONDARY && ! GeneralSecondaryPageData::hasContent($data['data'])) {
+            throw ValidationException::withMessages([
+                'data.sections' => '请填写标题、摘要或至少添加一个有效板块。',
             ]);
         }
 

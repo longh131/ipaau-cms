@@ -20,7 +20,7 @@
 @if($hasImage || $hasText)
     <section
         data-type="ctaSection"
-        class="cms-body-block cms-body-block--media-split py-8 lg:py-12 overflow-hidden about-section bg-[color:var(--bg-color)]"
+        class="cms-body-block cms-body-block--media-split overflow-hidden about-section bg-[color:var(--bg-color)]"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -30,7 +30,7 @@
         "
     >
         <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
-            <div class="container mx-auto px-4 py-8 lg:py-16">
+            <div class="container mx-auto px-4">
                 <div
                     @class([
                         'grid grid-cols-1 items-center gap-14 lg:gap-20 about-cta',

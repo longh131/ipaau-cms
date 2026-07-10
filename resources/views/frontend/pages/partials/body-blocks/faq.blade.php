@@ -14,9 +14,9 @@
 @if(! empty($items))
     <section
         data-type="accordion"
-        class="cms-body-block cms-body-block--faq py-8 lg:py-12 centered bg-[color:var(--bg-color)]"
+        class="cms-body-block cms-body-block--faq centered bg-[color:var(--bg-color)]"
         style="
-            --bg-color: #ffffff;
+            --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
             --ipa-color-dark: oklch(1 0 0);
             --light-or-dark: light;
@@ -38,10 +38,10 @@
                     @endif
 
                     @if(filled($block['title'] ?? null))
-                        <h2
+                        <h3
                             data-type="section-title"
-                            class="font-apex-book text-display-2xl text-secondary mt-4 mb-0"
-                        >{{ $block['title'] }}</h2>
+                            class="font-apex-book cms-section-title text-secondary mt-4 mb-0"
+                        >{{ $block['title'] }}</h3>
                     @endif
 
                     @if(filled($block['intro'] ?? null))
@@ -81,9 +81,9 @@
                                 <span class="sr-only">Open Accordion</span>
                             </div>
                         </button>
-                        @if(filled($item['answer'] ?? null))
-                            <div data-rte="true" class="mb-6 hidden">
-                                <div>{!! $item['answer'] !!}</div>
+                        @if(filled(strip_tags((string) ($item['answer'] ?? ''))))
+                            <div data-rte="true" class="cms-page-content mb-6 hidden">
+                                {!! $item['answer'] !!}
                             </div>
                         @endif
                     </li>

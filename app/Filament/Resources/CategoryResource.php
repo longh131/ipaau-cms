@@ -3,11 +3,16 @@
 namespace App\Filament\Resources;
 
 use Illuminate\Support\Facades\Schema as SchemaFacade;
+use App\Filament\Resources\ArticleResource;
+use App\Filament\Resources\CategoryResource\RelationManagers\ArticlesRelationManager;
 use App\Models\Category;
 use App\Models\Setting;
+use App\Support\ArticleExtraFields;
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
@@ -76,7 +81,26 @@ class CategoryResource extends Resource
                 Forms\Components\Select::make('type')
                     ->label('类型')
                     ->options(static::getEnabledTypeOptions())
-                    ->required(),
+                    ->required()
+                    ->live(),
+                Forms\Components\Select::make('list_template')
+                    ->label('列表模板')
+                    ->options(CategoryListTemplateRegistry::OPTIONS)
+                    ->default(CategoryListTemplateRegistry::TEMPLATE_SIMPLE)
+                    ->helperText('仅对「文章」类型栏目生效，决定前台列表展示样式')
+                    ->visible(fn (Get $get): bool => $get('type') === 'article')
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('article_extra_field_schema')
+                    ->label('文章扩展字段')
+                    ->helperText('定义该栏目下文章的额外字段；前台按模板输出')
+                    ->schema(ArticleExtraFields::categorySchemaRepeaterFields())
+                    ->columns(2)
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): string => filled($state['label'] ?? null)
+                        ? (string) $state['label']
+                        : ((string) ($state['key'] ?? '字段')))
+                    ->visible(fn (Get $get): bool => $get('type') === 'article')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
                     ->default(0),
@@ -134,6 +158,13 @@ class CategoryResource extends Resource
                     ->options(static::getEnabledTypeOptions()),
             ])
             ->actions([
+                Actions\Action::make('articles')
+                    ->label('文章')
+                    ->icon(Heroicon::DocumentText)
+                    ->url(fn (Category $record): string => ArticleResource::getUrl('index', [
+                        'category_id' => $record->getKey(),
+                    ]))
+                    ->visible(fn (Category $record): bool => $record->type === 'article'),
                 Actions\EditAction::make()
                     ->label('编辑'),
                 Actions\DeleteAction::make()
@@ -153,6 +184,13 @@ class CategoryResource extends Resource
             'index' => \App\Filament\Resources\CategoryResource\Pages\ListCategories::route('/'),
             'create' => \App\Filament\Resources\CategoryResource\Pages\CreateCategory::route('/create'),
             'edit' => \App\Filament\Resources\CategoryResource\Pages\EditCategory::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            ArticlesRelationManager::class,
         ];
     }
 }

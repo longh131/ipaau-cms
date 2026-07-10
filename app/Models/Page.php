@@ -12,9 +12,18 @@ class Page extends Model
 
     public const TEMPLATE_DEFAULT = 'default';
 
+    public const TEMPLATE_BASIC_CONTENT = 'basic_content';
+
+    public const TEMPLATE_GOVERNANCE = 'governance';
+
+    public const TEMPLATE_GENERAL_SECONDARY = 'general_secondary';
+
     /** @var array<string, string> */
     public const TEMPLATE_OPTIONS = [
         self::TEMPLATE_DEFAULT => '默认正文页',
+        self::TEMPLATE_BASIC_CONTENT => '基本正文页',
+        self::TEMPLATE_GOVERNANCE => '治理正文页',
+        self::TEMPLATE_GENERAL_SECONDARY => '通用二级页',
     ];
 
     protected $fillable = [

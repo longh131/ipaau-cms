@@ -2,6 +2,8 @@
 
 namespace App\Support\HomeSection;
 
+use App\Support\RichContent;
+
 class FaqSectionData
 {
     /**
@@ -57,7 +59,7 @@ class FaqSectionData
 
             $normalized = static::normalizeItem($item);
 
-            if ($normalized['question'] === '' && $normalized['answer'] === '') {
+            if ($normalized['question'] === '' && blank(RichContent::toHtml($normalized['answer']))) {
                 continue;
             }
 
@@ -103,6 +105,10 @@ class FaqSectionData
         return [
             'items' => collect($form['items'])
                 ->filter(fn (array $item) => filled($item['question']))
+                ->map(fn (array $item): array => [
+                    'question' => $item['question'],
+                    'answer' => RichContent::toHtml($item['answer']),
+                ])
                 ->values()
                 ->all(),
         ];
@@ -114,9 +120,15 @@ class FaqSectionData
      */
     private static function normalizeItem(array $item): array
     {
+        $answer = $item['answer'] ?? $item['content'] ?? $item['body'] ?? '';
+
+        if (is_string($answer)) {
+            $answer = trim($answer);
+        }
+
         return [
             'question' => trim((string) ($item['question'] ?? $item['title'] ?? '')),
-            'answer' => trim((string) ($item['answer'] ?? $item['content'] ?? $item['body'] ?? '')),
+            'answer' => $answer,
         ];
     }
 }

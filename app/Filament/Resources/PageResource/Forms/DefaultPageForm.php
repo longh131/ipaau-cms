@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PageResource\Forms;
 
 use App\Support\PageTemplate\PageBodyBlocks;
+use App\Support\RichContent;
 use Filament\Forms;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -39,18 +40,20 @@ class DefaultPageForm
                                 ->maxLength(255)
                                 ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
                                 ->columnSpanFull(),
-                            Forms\Components\RichEditor::make('html')
-                                ->label('段落内容')
+                            Forms\Components\Select::make('title_align')
+                                ->label('标题对齐')
+                                ->options(PageBodyBlocks::TITLE_ALIGN_OPTIONS)
+                                ->default('center')
                                 ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
-                                ->columnSpanFull()
-                                ->toolbarButtons([
-                                    ['bold', 'italic', 'underline', 'strike'],
-                                    ['h2', 'h3', 'blockquote'],
-                                    ['bulletList', 'orderedList'],
-                                    ['link', 'attachFiles'],
-                                    ['undo', 'redo'],
-                                    ['source-ai'],
-                                ]),
+                                ->columnSpanFull(),
+                            RichContent::configureFileAttachments(
+                                Forms\Components\RichEditor::make('html')
+                                    ->label('段落内容')
+                                    ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
+                                    ->columnSpanFull()
+                                    ->toolbarButtons(RichContent::pageToolbar())
+                                    ->helperText(RichContent::imageUploadHelperText()),
+                            ),
                             Forms\Components\Textarea::make('text')
                                 ->label('强调文字')
                                 ->rows(3)
@@ -63,42 +66,7 @@ class DefaultPageForm
                                 ->default('purple-reverse')
                                 ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_HIGHLIGHT)
                                 ->columnSpanFull(),
-                            Forms\Components\Repeater::make('buttons')
-                                ->label('按钮')
-                                ->helperText('保存后，这一组按钮会作为独立一行显示在前后区块之间')
-                                ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CTA_GROUP)
-                                ->schema([
-                                    Forms\Components\TextInput::make('label')
-                                        ->label('按钮文字')
-                                        ->required()
-                                        ->maxLength(120),
-                                    Forms\Components\TextInput::make('url')
-                                        ->label('链接')
-                                        ->required()
-                                        ->placeholder('https:// 或 /category/...')
-                                        ->maxLength(2048),
-                                    Forms\Components\Select::make('style')
-                                        ->label('样式')
-                                        ->options([
-                                            'primary' => '蓝底白字（主按钮）',
-                                            'secondary' => '白底蓝字（次按钮）',
-                                        ])
-                                        ->default('primary')
-                                        ->required(),
-                                    Forms\Components\Select::make('target')
-                                        ->label('打开方式')
-                                        ->options([
-                                            '' => '当前窗口',
-                                            '_blank' => '新窗口',
-                                        ])
-                                        ->default(''),
-                                ])
-                                ->minItems(1)
-                                ->maxItems(6)
-                                ->reorderable()
-                                ->addActionLabel('添加按钮')
-                                ->columns(2)
-                                ->columnSpanFull(),
+                            BodyBlockFormSchemas::bodyBlockButtonsRepeater(),
                             ...collect(BodyBlockFormSchemas::tabsRepeaterFields())
                                 ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_TABS))
                                 ->all(),
@@ -108,11 +76,17 @@ class DefaultPageForm
                             ...collect(BodyBlockFormSchemas::mediaSplitFields())
                                 ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_MEDIA_SPLIT))
                                 ->all(),
+                            ...collect(BodyBlockFormSchemas::contentColumnsFields())
+                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CONTENT_COLUMNS))
+                                ->all(),
                             ...collect(BodyBlockFormSchemas::faqFields())
                                 ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_FAQ))
                                 ->all(),
                             ...collect(BodyBlockFormSchemas::statsFields())
                                 ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_STATS))
+                                ->all(),
+                            ...collect(BodyBlockFormSchemas::cardListCuratedFields())
+                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CARD_LIST_CURATED))
                                 ->all(),
                         ])
                         ->itemLabel(function (array $state): ?string {
@@ -128,8 +102,16 @@ class DefaultPageForm
                                 PageBodyBlocks::TYPE_TABS => '选项卡（'.count($state['tabs'] ?? []).' 项）',
                                 PageBodyBlocks::TYPE_CAROUSEL => '轮播：'.Str::limit((string) ($state['heading'] ?? '会员推荐'), 20),
                                 PageBodyBlocks::TYPE_MEDIA_SPLIT => '图文分栏：'.Str::limit((string) ($state['title'] ?? ''), 20),
+                                PageBodyBlocks::TYPE_CONTENT_COLUMNS => '左右分栏：'.Str::limit(
+                                    (string) (($state['columns'][0]['title'] ?? '') ?: ($state['columns'][1]['title'] ?? '')),
+                                    24,
+                                ),
                                 PageBodyBlocks::TYPE_FAQ => 'FAQ（'.count($state['items'] ?? []).' 项）',
                                 PageBodyBlocks::TYPE_STATS => '数字统计（'.count($state['items'] ?? []).' 项）',
+                                PageBodyBlocks::TYPE_CARD_LIST_CURATED => '精选卡片列表：'.Str::limit(
+                                    (string) (($state['section_title'] ?? '') ?: (collect($state['items'] ?? [])->first()['title'] ?? '')),
+                                    24,
+                                ),
                                 default => '正文区块',
                             };
                         })

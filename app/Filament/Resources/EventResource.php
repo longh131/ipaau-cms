@@ -44,6 +44,7 @@ class EventResource extends Resource
                     ->toolbarButtons([
                         ['bold', 'italic', 'underline', 'strike'],
                         ['h2', 'h3', 'blockquote', 'codeBlock'],
+                        ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
                         ['link', 'attachFiles'],
                         ['undo', 'redo'],

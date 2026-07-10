@@ -28,7 +28,7 @@
     >
         <div class="inner container px-4 md:px-10 mx-auto">
             <header class="max-w-4xl mx-auto mb-10 lg:mb-14">
-                <h1 class="font-apex-book text-display-xl lg:text-display-2xl text-secondary">
+                <h1 class="font-apex-book cms-section-title text-secondary">
                     {{ $category->name }}
                 </h1>
             </header>

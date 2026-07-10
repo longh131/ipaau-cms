@@ -7,7 +7,7 @@
 @if(! empty($tabs))
     <section
         data-type="tabbedContent"
-        class="cms-body-block cms-body-block--tabs py-8 lg:py-12 bg-[color:var(--bg-color)]"
+        class="cms-body-block cms-body-block--tabs bg-[color:var(--bg-color)]"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);

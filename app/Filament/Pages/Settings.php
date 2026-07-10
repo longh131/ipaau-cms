@@ -251,6 +251,7 @@ class Settings extends Page implements HasForms
         return [
             ['bold', 'italic', 'underline', 'link', 'textColor'],
             ['h2', 'h3', 'bulletList', 'orderedList'],
+            ['alignStart', 'alignCenter', 'alignEnd'],
             ['undo', 'redo'],
             ['source-ai'],
         ];

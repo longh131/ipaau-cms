@@ -3,13 +3,19 @@
 namespace App\Support\PageTemplate;
 
 use App\Models\Page;
+use App\Support\PageTemplate\Templates\BasicContentPageData;
 use App\Support\PageTemplate\Templates\DefaultPageData;
+use App\Support\PageTemplate\Templates\GeneralSecondaryPageData;
+use App\Support\PageTemplate\Templates\GovernancePageData;
 
 class PageTemplateRegistry
 {
     /** @var array<string, class-string> */
     private const DATA_CLASSES = [
         Page::TEMPLATE_DEFAULT => DefaultPageData::class,
+        Page::TEMPLATE_BASIC_CONTENT => BasicContentPageData::class,
+        Page::TEMPLATE_GOVERNANCE => GovernancePageData::class,
+        Page::TEMPLATE_GENERAL_SECONDARY => GeneralSecondaryPageData::class,
     ];
 
     public static function dataClass(string $template): ?string

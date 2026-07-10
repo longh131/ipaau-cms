@@ -7,7 +7,7 @@
 @if($total > 0)
     <section
         data-type="testimonialCarousel"
-        class="cms-body-block cms-body-block--carousel testimonial-carousel-section py-12 overflow-hidden bg-[color:var(--bg-color)] relative"
+        class="cms-body-block cms-body-block--carousel testimonial-carousel-section overflow-hidden bg-[color:var(--bg-color)] relative"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -19,7 +19,7 @@
         <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12 relative z-[1]">
             @if(filled($block['heading'] ?? null))
                 <div class="text-center about-rich-text">
-                    <h4 class="text-display-lg lg:text-display-xl mb-0">
+                    <h3 class="cms-section-title mb-0 text-secondary">
                         <span class="text-secondary text-warm-plum">{{ $block['heading'] }}</span>
                     </h4>
                 </div>

@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PageResource\Forms\BasicContentPageForm;
 use App\Filament\Resources\PageResource\Forms\DefaultPageForm;
+use App\Filament\Resources\PageResource\Forms\GeneralSecondaryPageForm;
+use App\Filament\Resources\PageResource\Forms\GovernancePageForm;
 use App\Models\Category;
 use App\Models\Page;
 use Filament\Actions;
@@ -47,6 +50,24 @@ class PageResource extends Resource
             ))
             ->all();
 
+        $basicContentTemplateFields = collect(BasicContentPageForm::schema())
+            ->map(fn ($component) => $component->visible(
+                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_BASIC_CONTENT,
+            ))
+            ->all();
+
+        $governanceTemplateFields = collect(GovernancePageForm::schema())
+            ->map(fn ($component) => $component->visible(
+                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_GOVERNANCE,
+            ))
+            ->all();
+
+        $generalSecondaryTemplateFields = collect(GeneralSecondaryPageForm::schema())
+            ->map(fn ($component) => $component->visible(
+                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_GENERAL_SECONDARY,
+            ))
+            ->all();
+
         return $schema
             ->components([
                 Forms\Components\Select::make('category_id')
@@ -86,7 +107,7 @@ class PageResource extends Resource
                     ->label('页面标题')
                     ->required()
                     ->maxLength(255)
-                    ->helperText('用于 SEO 及后台识别，默认可与栏目标题一致；前台 H1 请在正文区块中自行添加'),
+                    ->helperText('用于 SEO 及后台识别；默认正文页的前台 H1 请在正文区块中添加，基本正文页请在下方「标题」字段填写'),
                 Forms\Components\TextInput::make('slug')
                     ->label('URL 标识')
                     ->disabled()
@@ -99,6 +120,9 @@ class PageResource extends Resource
                     ->required()
                     ->live(),
                 ...$defaultTemplateFields,
+                ...$basicContentTemplateFields,
+                ...$governanceTemplateFields,
+                ...$generalSecondaryTemplateFields,
                 Forms\Components\TextInput::make('meta_title')
                     ->label('SEO 标题')
                     ->columnSpanFull(),

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,12 +17,15 @@ class Category extends Model
         'slug',
         'parent_id',
         'type',
+        'list_template',
+        'article_extra_field_schema',
         'sort_order',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'article_extra_field_schema' => 'array',
     ];
 
     public static function getTypeOptions(): array
@@ -39,6 +43,11 @@ class Category extends Model
             'faq' => '常见问题',
             'form' => '表单',
         ];
+    }
+
+    public static function defaultListTemplate(): string
+    {
+        return CategoryListTemplateRegistry::TEMPLATE_SIMPLE;
     }
 
     public function articles(): HasMany

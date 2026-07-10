@@ -8,7 +8,9 @@ use App\Models\Page;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
 use App\Support\BreadcrumbBuilder;
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
 use App\Support\PageTemplate\PageTemplateRegistry;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -62,9 +64,7 @@ class FrontendController extends Controller
                 return $this->renderCategory($slug);
 
             case 'article':
-                $article = Article::where('slug', $slug)->where('is_active', true)->firstOrFail();
-
-                return view('frontend.article', compact('article'));
+                return $this->renderArticle($slug);
 
             default:
                 abort(404);
@@ -91,13 +91,39 @@ class FrontendController extends Controller
         $articles = Article::query()
             ->where('category_id', $category->id)
             ->where('is_active', true)
+            ->orderByDesc('is_sticky')
             ->orderByDesc('published_at')
-            ->paginate(10);
+            ->orderByDesc('sort_order')
+            ->paginate(12);
 
-        return view('frontend.categories.articles', [
+        return view(CategoryListTemplateRegistry::viewFor($category), [
             'category' => $category,
             'articles' => $articles,
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'listFields' => \App\Support\ArticleExtraFields::listFields($category->article_extra_field_schema),
+        ]);
+    }
+
+    private function renderArticle(string $slug): View|RedirectResponse
+    {
+        $article = Article::query()
+            ->with('category')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        if (filled($article->redirect_url)) {
+            return redirect()->away($article->redirect_url);
+        }
+
+        return view('frontend.article', [
+            'article' => $article,
+            'category' => $article->category,
+            'breadcrumbs' => BreadcrumbBuilder::forArticle($article),
+            'extraFieldItems' => \App\Support\ArticleExtraFields::forFrontend(
+                $article->extra_fields,
+                $article->category?->article_extra_field_schema,
+            ),
         ]);
     }
 

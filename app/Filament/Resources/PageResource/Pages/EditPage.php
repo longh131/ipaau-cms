@@ -24,6 +24,34 @@ class EditPage extends EditRecord
         $data['data'] = PageTemplateRegistry::forForm($rawData, $template);
 
         if ($template !== Page::TEMPLATE_DEFAULT) {
+            if ($template === Page::TEMPLATE_BASIC_CONTENT) {
+                $data['data']['heading'] = trim((string) ($data['data']['heading'] ?? ''));
+
+                if (blank($data['data']['body'] ?? null) && filled($this->getRecord()->content)) {
+                    $data['data']['body'] = $this->getRecord()->content;
+                }
+
+                if (blank($data['data']['heading'])) {
+                    $data['data']['heading'] = $this->getRecord()->displayTitle();
+                }
+            }
+
+            if ($template === Page::TEMPLATE_GOVERNANCE) {
+                $data['data']['heading'] = trim((string) ($data['data']['heading'] ?? ''));
+
+                if (blank($data['data']['heading'])) {
+                    $data['data']['heading'] = $this->getRecord()->displayTitle();
+                }
+            }
+
+            if ($template === Page::TEMPLATE_GENERAL_SECONDARY) {
+                $data['data']['heading'] = trim((string) ($data['data']['heading'] ?? ''));
+
+                if (blank($data['data']['heading'])) {
+                    $data['data']['heading'] = $this->getRecord()->displayTitle();
+                }
+            }
+
             return $data;
         }
 

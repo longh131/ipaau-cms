@@ -28,11 +28,10 @@ class FaqSectionForm
                                 ->required()
                                 ->maxLength(500)
                                 ->columnSpanFull(),
-                            Forms\Components\Textarea::make('answer')
+                            Forms\Components\RichEditor::make('answer')
                                 ->label('答案')
-                                ->rows(4)
-                                ->helperText('支持 HTML 链接，如 <a href="/path">链接文字</a>')
-                                ->columnSpanFull(),
+                                ->columnSpanFull()
+                                ->toolbarButtons(\App\Filament\Resources\PageResource\Forms\BodyBlockFormSchemas::faqAnswerToolbar()),
                         ])
                         ->minItems(0)
                         ->maxItems(30)

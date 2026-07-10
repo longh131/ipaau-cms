@@ -17,7 +17,7 @@
             @endif
 
             @if(filled($block['title'] ?? null))
-                <h3 class="text-display-xl lg:text-display-2xl">
+                <h3 class="cms-section-title text-secondary">
                     <span class="text-secondary">{{ $block['title'] }}</span>
                 </h3>
             @endif

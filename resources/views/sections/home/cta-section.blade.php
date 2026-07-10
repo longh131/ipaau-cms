@@ -73,7 +73,7 @@
                       "
                     >
                       @foreach ($ctaSection['title_lines'] as $line)
-                      <h3 class="text-display-lg lg:text-display-xl">
+                      <h3 class="cms-section-title">
                         {{ $line }}
                       </h3>
                       @endforeach

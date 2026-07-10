@@ -35,7 +35,7 @@
                   @endif
                   @if(! empty($hero['title_lines']))
                   <div
-                    data-type="section-title"
+                    data-type="hero-title"
                     data-rte="true"
                     class="font-apex-book"
                     style="

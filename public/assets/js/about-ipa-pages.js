@@ -1,6 +1,34 @@
 document.addEventListener('DOMContentLoaded', function () {
   initAboutTabs();
+  initNewsListCurated();
 });
+
+function initNewsListCurated() {
+  document.querySelectorAll('.cms-news-list-curated--expandable').forEach(function (section) {
+    var toggle = section.querySelector('.cms-news-list-curated__toggle');
+    if (!toggle || toggle.dataset.bound === 'true') {
+      return;
+    }
+
+    toggle.dataset.bound = 'true';
+
+    toggle.addEventListener('click', function (event) {
+      event.preventDefault();
+
+      section.querySelectorAll('.cms-news-list-curated__item--hidden').forEach(function (item) {
+        item.classList.remove('cms-news-list-curated__item--hidden');
+      });
+
+      section.classList.add('is-expanded');
+      toggle.setAttribute('aria-expanded', 'true');
+
+      var actions = section.querySelector('.cms-news-list-curated__actions');
+      if (actions) {
+        actions.hidden = true;
+      }
+    });
+  });
+}
 
 function initAboutTabs() {
   document.querySelectorAll('section[data-type="tabbedContent"].about-tabbed-section').forEach(function (section) {

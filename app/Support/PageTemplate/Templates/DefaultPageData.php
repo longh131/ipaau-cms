@@ -53,8 +53,9 @@ class DefaultPageData
      */
     public static function forFrontend(?array $data, Page $page): array
     {
+        $data = is_array($data) ? $data : [];
         $form = static::forForm($data);
-        $bodyBlocks = PageBodyBlocks::forFrontend($form['body_blocks'], $page->content);
+        $bodyBlocks = PageBodyBlocks::forFrontend($data['body_blocks'] ?? null, $page->content);
 
         return [
             'body_blocks' => $bodyBlocks,

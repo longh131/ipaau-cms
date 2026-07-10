@@ -56,12 +56,12 @@
                     "
                   >
                     @foreach ($membership['title_lines'] as $line)
-                    <h2
-                      class="text-display-xl lg:text-display-2xl"
+                    <h3
+                      class="cms-section-title"
                       style="text-align: left"
                     >
                       {{ $line }}
-                    </h2>
+                    </h3>
                     @endforeach
                   </div>
                   @endif
