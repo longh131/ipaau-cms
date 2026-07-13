@@ -49,6 +49,8 @@ class MenuItemLink
             return self::TYPE_URL;
         }
 
+        $slug = self::slugFromParams($item->route_params);
+
         return match ($item->route) {
             'page.show', 'category.show' => filled(Page::where('slug', $slug)->value('id'))
                 ? self::TYPE_PAGE

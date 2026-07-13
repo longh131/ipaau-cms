@@ -88,6 +88,9 @@ class DefaultPageForm
                             ...collect(BodyBlockFormSchemas::cardListCuratedFields())
                                 ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CARD_LIST_CURATED))
                                 ->all(),
+                            ...collect(BodyBlockFormSchemas::newsListFields())
+                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_NEWS_LIST))
+                                ->all(),
                         ])
                         ->itemLabel(function (array $state): ?string {
                             $type = (string) ($state['type'] ?? '');
@@ -109,6 +112,10 @@ class DefaultPageForm
                                 PageBodyBlocks::TYPE_FAQ => 'FAQ（'.count($state['items'] ?? []).' 项）',
                                 PageBodyBlocks::TYPE_STATS => '数字统计（'.count($state['items'] ?? []).' 项）',
                                 PageBodyBlocks::TYPE_CARD_LIST_CURATED => '精选卡片列表：'.Str::limit(
+                                    (string) (($state['section_title'] ?? '') ?: (collect($state['items'] ?? [])->first()['title'] ?? '')),
+                                    24,
+                                ),
+                                PageBodyBlocks::TYPE_NEWS_LIST => '新闻列表：'.Str::limit(
                                     (string) (($state['section_title'] ?? '') ?: (collect($state['items'] ?? [])->first()['title'] ?? '')),
                                     24,
                                 ),

@@ -6,6 +6,7 @@ use App\Support\HomeSection\FaqSectionData;
 use App\Support\HomeSection\StatsSectionData;
 use App\Support\HomeSection\TabbedContentSectionData;
 use App\Support\MediaUrl;
+use App\Support\PageTemplate\GeneralSecondarySections;
 use App\Support\RichContent;
 
 class PageBodyBlocks
@@ -30,6 +31,8 @@ class PageBodyBlocks
 
     public const TYPE_CARD_LIST_CURATED = 'card_list_curated';
 
+    public const TYPE_NEWS_LIST = 'news_list';
+
     /** @var array<string, string> */
     public const TYPE_OPTIONS = [
         self::TYPE_RICH_TEXT => '富文本段落',
@@ -42,6 +45,7 @@ class PageBodyBlocks
         self::TYPE_FAQ => '手风琴 FAQ',
         self::TYPE_STATS => '数字统计',
         self::TYPE_CARD_LIST_CURATED => '精选卡片列表',
+        self::TYPE_NEWS_LIST => '新闻列表',
     ];
 
     /** @var array<string, string> */
@@ -138,6 +142,7 @@ class PageBodyBlocks
                     'section_title' => trim((string) ($block['section_title'] ?? '')),
                     'items' => self::normalizeCardListItems($block['items'] ?? []),
                 ],
+                self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forForm([$block]))->first(),
                 default => null,
             };
 
@@ -172,6 +177,10 @@ class PageBodyBlocks
 
             if ($block['type'] === self::TYPE_STATS) {
                 $block['items'] = StatsSectionData::forStorage(['items' => $block['items']])['items'];
+            }
+
+            if ($block['type'] === self::TYPE_NEWS_LIST) {
+                return GeneralSecondarySections::forStorage([$block])[0] ?? $block;
             }
 
             return $block;
@@ -272,6 +281,7 @@ class PageBodyBlocks
                     'section_title' => $block['section_title'],
                     'items' => $block['items'],
                 ],
+                self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forFrontend([$block]))->first(),
                 default => null,
             };
 
@@ -303,6 +313,24 @@ class PageBodyBlocks
         $parts = [];
 
         foreach (static::forStorage($blocks) as $block) {
+            if ($block['type'] === self::TYPE_NEWS_LIST) {
+                if (filled($block['section_title'] ?? null)) {
+                    $parts[] = '<h2>'.e($block['section_title']).'</h2>';
+                }
+
+                foreach ($block['items'] ?? [] as $item) {
+                    if (filled($item['title'] ?? null)) {
+                        $parts[] = '<h3>'.e($item['title']).'</h3>';
+                    }
+
+                    if (filled($item['summary'] ?? null)) {
+                        $parts[] = '<p>'.e($item['summary']).'</p>';
+                    }
+                }
+
+                continue;
+            }
+
             if ($block['type'] !== self::TYPE_RICH_TEXT) {
                 continue;
             }
@@ -323,7 +351,7 @@ class PageBodyBlocks
     public static function needsAboutPageScripts(?array $blocks): bool
     {
         foreach (static::forStorage($blocks) as $block) {
-            if (($block['type'] ?? null) === self::TYPE_TABS) {
+            if (($block['type'] ?? null) === self::TYPE_TABS || ($block['type'] ?? null) === self::TYPE_NEWS_LIST) {
                 return true;
             }
         }
@@ -354,6 +382,7 @@ class PageBodyBlocks
             self::TYPE_STATS => ($block['items'] ?? []) !== [],
             self::TYPE_CARD_LIST_CURATED => filled($block['section_title'] ?? null)
                 || ($block['items'] ?? []) !== [],
+            self::TYPE_NEWS_LIST => GeneralSecondarySections::forStorage([$block]) !== [],
             default => false,
         };
     }

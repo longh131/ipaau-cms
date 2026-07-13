@@ -802,9 +802,3 @@ section[data-type="accordion"] [data-rte="true"].cms-page-content a:not(.cta):ho
     margin-bottom: -0.5rem;
   }
 }
-
-/* 首页选项卡：切换按钮名称斜体 */
-section[data-type="tabbedContent"] .tab,
-section[data-type="tabbedContent"] .tab span {
-  font-style: italic;
-}
