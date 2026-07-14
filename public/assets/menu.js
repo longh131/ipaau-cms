@@ -839,20 +839,25 @@
                 if (!autoplayButton) return;
 
                 const playing = isAutoplayEnabled;
+                const pauseLabel = '点击暂停';
+                const resumeLabel = '点击继续';
+                const label = playing ? pauseLabel : resumeLabel;
+                const liveText = playing ? '轮播进行中' : '轮播已暂停';
+
                 autoplayButton.setAttribute('aria-pressed', playing ? 'true' : 'false');
-                autoplayButton.setAttribute('aria-label', playing ? 'Pause autoplay' : 'Resume autoplay');
-                autoplayButton.title = playing ? 'Pause autoplay' : 'Resume autoplay';
+                autoplayButton.setAttribute('aria-label', label);
+                autoplayButton.title = label;
 
                 const visibleSpan = autoplayButton.querySelector('span[aria-hidden="true"]');
                 const srSpan = autoplayButton.querySelector('span.sr-only');
                 if (visibleSpan) {
-                    visibleSpan.textContent = playing ? 'Pause Autoplay' : 'Resume Autoplay';
+                    visibleSpan.textContent = label;
                 }
                 if (srSpan) {
-                    srSpan.textContent = playing ? 'Pause autoplay' : 'Resume autoplay';
+                    srSpan.textContent = label;
                 }
                 if (autoplayLiveRegion) {
-                    autoplayLiveRegion.textContent = playing ? 'Autoplay is running' : 'Autoplay is paused';
+                    autoplayLiveRegion.textContent = liveText;
                 }
             }
 

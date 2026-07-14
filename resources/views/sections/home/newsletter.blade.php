@@ -51,7 +51,7 @@
                     @endif
                     @if(filled($newsletter['content_html'] ?? null))
                     <div
-                      class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
+                      class="text-[color:var(--ipa-color)] mt-8 text-xl font-din cms-page-content"
                       data-type="section-description"
                       data-rte="true"
                       style="

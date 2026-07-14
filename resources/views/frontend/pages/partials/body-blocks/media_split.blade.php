@@ -15,12 +15,17 @@
         || filled($block['title'] ?? null)
         || filled(strip_tags((string) ($block['content_html'] ?? '')))
         || ! empty($block['buttons'] ?? []);
+    $layout = $layout ?? 'default';
+    $isGeneralSecondary = $layout === 'general_secondary';
 @endphp
 
 @if($hasImage || $hasText)
     <section
         data-type="ctaSection"
-        class="cms-body-block cms-body-block--media-split overflow-hidden about-section bg-[color:var(--bg-color)]"
+        @class([
+            'cms-body-block cms-body-block--media-split overflow-hidden about-section bg-[color:var(--bg-color)]',
+            'cms-governance-module cms-general-secondary-module' => $isGeneralSecondary,
+        ])
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -38,33 +43,19 @@
                         'lg:grid-cols-[1fr_40%] about-cta--image-right' => ! $imageLeft,
                     ])
                 >
-                    @if($imageLeft)
-                        @include('frontend.pages.partials.body-blocks.partials.media-split-image', [
-                            'block' => $block,
-                            'hasImage' => $hasImage,
-                            'imageShape' => $imageShape,
-                            'imageLeft' => true,
-                        ])
-                        @include('frontend.pages.partials.body-blocks.partials.media-split-text', [
-                            'block' => $block,
-                            'hasText' => $hasText,
-                            'hasImage' => $hasImage,
-                            'imageLeft' => true,
-                        ])
-                    @else
-                        @include('frontend.pages.partials.body-blocks.partials.media-split-text', [
-                            'block' => $block,
-                            'hasText' => $hasText,
-                            'hasImage' => $hasImage,
-                            'imageLeft' => false,
-                        ])
-                        @include('frontend.pages.partials.body-blocks.partials.media-split-image', [
-                            'block' => $block,
-                            'hasImage' => $hasImage,
-                            'imageShape' => $imageShape,
-                            'imageLeft' => false,
-                        ])
-                    @endif
+                    {{-- 与原版 CtaSection 一致：图片始终在 DOM 中靠前，靠 grid 列定位控制左右 --}}
+                    @include('frontend.pages.partials.body-blocks.partials.media-split-image', [
+                        'block' => $block,
+                        'hasImage' => $hasImage,
+                        'imageShape' => $imageShape,
+                        'imageLeft' => $imageLeft,
+                    ])
+                    @include('frontend.pages.partials.body-blocks.partials.media-split-text', [
+                        'block' => $block,
+                        'hasText' => $hasText,
+                        'hasImage' => $hasImage,
+                        'imageLeft' => $imageLeft,
+                    ])
                 </div>
             </div>
         </div>

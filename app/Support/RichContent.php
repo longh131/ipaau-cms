@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Filament\Forms\StateCasts\JsonDocumentStateCast;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
@@ -35,7 +36,7 @@ class RichContent
     {
         return [
             ['bold', 'italic', 'underline', 'strike'],
-            ['h2', 'h3', 'blockquote'],
+            ['h2', 'h3', 'h4', 'blockquote'],
             ['alignStart', 'alignCenter', 'alignEnd'],
             ['bulletList', 'orderedList'],
             ['link'],
@@ -53,6 +54,45 @@ class RichContent
             ->fileAttachmentsDisk(static::fileAttachmentsDisk())
             ->fileAttachmentsDirectory(static::fileAttachmentsDirectory())
             ->fileAttachmentsVisibility(static::fileAttachmentsVisibility());
+    }
+
+    /**
+     * 用于 Repeater / 多层嵌套表单：Livewire 状态存 JSON 字符串，避免 TipTap 深层路径。
+     */
+    public static function nestedRichEditor(
+        string $name,
+        string $label,
+        ?array $toolbar = null,
+        ?string $helperText = null,
+    ): RichEditor {
+        $editor = static::configureFileAttachments(
+            RichEditor::make($name)
+                ->label($label)
+                ->json()
+                ->toolbarButtons($toolbar ?? static::pageToolbar())
+                ->helperText($helperText ?? static::imageUploadHelperText()),
+        );
+
+        return $editor
+            ->stateCast(fn (RichEditor $component): JsonDocumentStateCast => new JsonDocumentStateCast($component));
+    }
+
+    /**
+     * 表单回填时将文档转为 JSON 字符串，配合 nestedRichEditor 使用。
+     */
+    public static function encodeDocumentForForm(mixed $state): ?string
+    {
+        $normalized = static::normalizeState($state);
+
+        if ($normalized === null) {
+            return null;
+        }
+
+        if (is_string($normalized)) {
+            return $normalized;
+        }
+
+        return json_encode(static::normalizeDocument($normalized), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
     }
 
     public static function imageUploadHelperText(): string
@@ -105,45 +145,92 @@ class RichContent
      */
     public static function normalizeDocument(array $document): array
     {
-        if (($document['type'] ?? null) !== 'doc') {
+        if (($document['type'] ?? null) === 'doc') {
+            $document = json_decode(json_encode($document), true);
+
+            if (isset($document['content']) && is_array($document['content'])) {
+                $document['content'] = array_map(
+                    fn (mixed $node): mixed => is_array($node) ? static::normalizeNode($node) : $node,
+                    $document['content'],
+                );
+            }
+
             return $document;
         }
 
-        $document = json_decode(json_encode($document), true);
+        return static::normalizeNode($document);
+    }
 
-        foreach ($document['content'] ?? [] as $index => $node) {
-            if (! is_array($node)) {
-                continue;
-            }
+    /**
+     * @param  array<string, mixed>  $node
+     * @return array<string, mixed>
+     */
+    protected static function normalizeNode(array $node): array
+    {
+        if (isset($node['attrs'])) {
+            $attrs = $node['attrs'];
 
-            $type = $node['type'] ?? null;
+            if (! is_array($attrs) || array_is_list($attrs)) {
+                unset($node['attrs']);
+            } else {
+                $style = trim((string) ($attrs['style'] ?? ''));
+                $textAlign = $attrs['textAlign'] ?? null;
 
-            if (! in_array($type, ['heading', 'paragraph'], true)) {
-                continue;
-            }
+                if (filled($textAlign)) {
+                    if (! str_contains($style, 'text-align')) {
+                        $style = trim($style === '' ? '' : $style.'; ').'text-align: '.$textAlign;
+                    }
 
-            $attrs = is_array($node['attrs'] ?? null) ? $node['attrs'] : [];
-            $style = trim((string) ($attrs['style'] ?? ''));
-            $textAlign = $attrs['textAlign'] ?? null;
-
-            if (filled($textAlign)) {
-                if (! str_contains($style, 'text-align')) {
-                    $style = trim($style === '' ? '' : $style.'; ').'text-align: '.$textAlign;
+                    unset($attrs['textAlign']);
                 }
 
-                unset($attrs['textAlign']);
-            }
+                if ($style !== '') {
+                    $attrs['style'] = $style;
+                } else {
+                    unset($attrs['style']);
+                }
 
-            if ($style !== '') {
-                $attrs['style'] = $style;
-            } else {
-                unset($attrs['style']);
+                if ($attrs === []) {
+                    unset($node['attrs']);
+                } else {
+                    $node['attrs'] = $attrs;
+                }
             }
-
-            $document['content'][$index]['attrs'] = $attrs;
         }
 
-        return $document;
+        if (isset($node['content']) && is_array($node['content'])) {
+            $node['content'] = array_map(
+                fn (mixed $child): mixed => is_array($child) ? static::normalizeNode($child) : $child,
+                $node['content'],
+            );
+        }
+
+        if (isset($node['marks']) && is_array($node['marks'])) {
+            $node['marks'] = array_map(function (mixed $mark): mixed {
+                if (! is_array($mark)) {
+                    return $mark;
+                }
+
+                if (isset($mark['attrs']) && (! is_array($mark['attrs']) || array_is_list($mark['attrs']))) {
+                    unset($mark['attrs']);
+                }
+
+                return $mark;
+            }, $node['marks']);
+        }
+
+        return $node;
+    }
+
+    /**
+     * TipTap DOMSerializer requires node attrs to be objects; empty JSON arrays break rendering.
+     *
+     * @param  array<string, mixed>  $document
+     * @return array<string, mixed>
+     */
+    protected static function documentForRenderer(array $document): array
+    {
+        return static::normalizeDocument($document);
     }
 
     public static function toHtml(mixed $state): string
@@ -162,8 +249,12 @@ class RichContent
             return static::plainTextToHtml($state);
         }
 
+        if (! is_array($state)) {
+            return '';
+        }
+
         return static::normalizeHtmlLineBreaks(
-            RichContentRenderer::make($state)
+            RichContentRenderer::make(static::documentForRenderer($state))
                 ->plugins(static::plugins())
                 ->fileAttachmentsDisk(static::fileAttachmentsDisk())
                 ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
@@ -223,7 +314,7 @@ class RichContent
         }
 
         if (is_array($state) && ($state['type'] ?? null) === 'doc') {
-            return $state;
+            return static::normalizeDocument($state);
         }
 
         if (! is_string($state)) {
@@ -239,6 +330,10 @@ class RichContent
         if (str_starts_with($trimmed, '{') || str_starts_with($trimmed, '[')) {
             $decoded = json_decode($trimmed, true);
 
+            if (is_array($decoded) && ($decoded['type'] ?? null) === 'doc') {
+                return static::normalizeDocument($decoded);
+            }
+
             if (is_array($decoded)) {
                 return $decoded;
             }
@@ -250,5 +345,18 @@ class RichContent
     protected static function looksLikeHtml(string $value): bool
     {
         return (bool) preg_match('/<\s*(p|a|br|ul|ol|li|strong|em|span|div|h[1-6]|blockquote|img)\b/i', $value);
+    }
+
+    public static function hasVisibleHtml(?string $html): bool
+    {
+        if (blank($html)) {
+            return false;
+        }
+
+        if (preg_match('/<img\b/i', $html)) {
+            return true;
+        }
+
+        return filled(trim(strip_tags($html)));
     }
 }

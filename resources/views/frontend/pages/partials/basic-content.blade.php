@@ -10,7 +10,7 @@
     <section
         data-type="basicContent"
         @class([
-            'pb-12 cms-page-content-section cms-basic-content-section',
+            'cms-page-content-section cms-basic-content-section',
             'cms-page-content-section--with-breadcrumb' => $hasBreadcrumbs,
             'pt-28' => ! $hasBreadcrumbs,
         ])
@@ -43,5 +43,7 @@
                 </div>
             @endif
         </div>
+
+        @include('frontend.pages.partials.page-content-footer-spacer')
     </section>
 @endif

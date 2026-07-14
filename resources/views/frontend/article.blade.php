@@ -17,7 +17,7 @@
     <section
         data-type="articleDetail"
         @class([
-            'pb-12 cms-page-content-section cms-basic-content-section',
+            'cms-page-content-section cms-basic-content-section',
             'cms-page-content-section--with-breadcrumb' => ! empty($breadcrumbs ?? []),
             'pt-28' => empty($breadcrumbs ?? []),
         ])

@@ -172,6 +172,14 @@ body.cms-about-page .footer-main {
 /* CMS 正文页：区块间距统一由父级控制 */
 .cms-page-content-section {
   --cms-block-gap: 100px;
+  padding-bottom: 0;
+}
+
+.cms-page-content-footer-spacer {
+  height: 50px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
 }
 
 .cms-page-content-section > .cms-body-block {
@@ -184,12 +192,17 @@ body.cms-about-page .footer-main {
 }
 
 .cms-body-block--tabs,
+.cms-tabbed-content--no-image,
 .cms-body-block--carousel,
 .cms-body-block--media-split,
 .cms-body-block--content-columns,
 .cms-body-block--faq,
 .cms-body-block--stats,
+.cms-body-block--testimonials,
+.cms-body-block--newsletter,
+.cms-body-block--html-body,
 .cms-body-block--card-list,
+.cms-body-block--news-list,
 .cms-body-block--narrow {
   width: 100%;
   max-width: none;
@@ -200,6 +213,24 @@ body.cms-about-page .footer-main {
 .cms-body-block--stats > section {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.cms-body-block--testimonials > section,
+.cms-body-block--newsletter > section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.cms-general-secondary-page .testimonial-carousel-section--plain {
+  overflow: visible;
+}
+
+.cms-general-secondary-page .testimonial-carousel-section--plain .testimonial-carousel__halo {
+  display: none;
+}
+
+.cms-general-secondary-page .testimonial-carousel-section--plain .testimonial-card__wrapper {
+  background: transparent;
 }
 
 .pt-18 {
@@ -432,6 +463,11 @@ body.cms-about-page .footer-main {
   margin-top: 1.5rem;
 }
 
+.cms-governance-header__summary + .cms-governance-header__actions,
+.cms-governance-header__title + .cms-governance-header__actions {
+  margin-top: 2rem;
+}
+
 .cms-governance-header__summary {
   font-size: 1.25rem;
   line-height: 1.75;
@@ -579,6 +615,19 @@ body.cms-about-page .footer-main {
   --cms-card-list-width: 426px;
 }
 
+.cms-news-list-curated__panel {
+  width: 100%;
+  max-width: 100%;
+}
+
+.cms-news-list-curated__panel--gray {
+  background-color: var(--bg-color);
+}
+
+.cms-news-list-curated__inner {
+  width: 100%;
+}
+
 .cms-news-list-curated__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -589,6 +638,25 @@ body.cms-about-page .footer-main {
   .cms-news-list-curated__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+.cms-news-list-curated--general-secondary .cms-news-list-curated__grid {
+  gap: 3rem 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .cms-news-list-curated--general-secondary .cms-news-list-curated__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.cms-news-list-icon-item {
+  background-color: transparent;
+}
+
+.cms-news-list-icon-item__icon-image {
+  display: block;
+  max-width: 100%;
 }
 
 .cms-news-list-curated__item--hidden {
@@ -622,5 +690,58 @@ body.cms-about-page .footer-main {
 .cms-governance-columns .cms-page-content a:not(.cta):hover,
 .cms-governance-content-block .cms-page-content a:not(.cta):hover,
 .cms-governance-content-block__body a:not(.cta):hover {
+  text-decoration: underline;
+}
+
+/* 左右结构：右侧富文本带图标列表时对齐 member-requirements 样式 */
+.cms-left-right-layout__tagline {
+  color: #992785;
+  font-weight: 400;
+}
+
+[data-type="basicContentWithColumns"].cms-left-right-layout [class*="lg:grid-cols-2"] [data-rte="true"] div:has(> img[width="24"][height="24"]) {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+[data-type="basicContentWithColumns"].cms-left-right-layout [class*="lg:grid-cols-2"] [data-rte="true"] div:has(> img[width="24"][height="24"]) img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+[data-type="basicContentWithColumns"].cms-left-right-layout [class*="lg:grid-cols-2"] [data-rte="true"] div:has(> img[width="24"][height="24"]):not(:first-child) {
+  margin-top: 1.5rem;
+}
+
+.cms-tabbed-content--no-image .cms-tabbed-content__tab-list {
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .cms-tabbed-content--no-image .cms-tabbed-content__tab-list {
+    margin-bottom: 4rem;
+  }
+}
+
+.cms-tabbed-content--no-image .cms-tabbed-content__panel {
+  width: 100%;
+  max-width: none;
+}
+
+.cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+}
+
+.cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body a:not(.cta) {
+  color: #0d2c6c;
+  text-decoration: none;
+}
+
+.cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body a:not(.cta):hover {
   text-decoration: underline;
 }

@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\PageResource\Forms;
 
 use App\Filament\Forms\ImageUpload;
+use App\Support\PageTemplate\GeneralSecondarySections;
 use App\Support\PageTemplate\PageBodyBlocks;
 use App\Support\RichContent;
 use Filament\Forms;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 
@@ -126,13 +128,7 @@ class BodyBlockFormSchemas
                 ->label('大标题')
                 ->maxLength(255)
                 ->columnSpanFull(),
-            RichContent::configureFileAttachments(
-                Forms\Components\RichEditor::make('content')
-                    ->label('正文内容')
-                    ->columnSpanFull()
-                    ->toolbarButtons(RichContent::pageToolbar())
-                    ->helperText(RichContent::imageUploadHelperText()),
-            ),
+            RichContent::nestedRichEditor('content', '正文内容'),
         ];
     }
 
@@ -142,17 +138,13 @@ class BodyBlockFormSchemas
     public static function contentColumnsFields(): array
     {
         return [
-            Forms\Components\Repeater::make('columns')
-                ->label('左右分栏')
-                ->helperText('固定左栏、右栏两列；每栏含标题、富文本与可选按钮')
+            Fieldset::make('左栏')
+                ->statePath('left_column')
                 ->schema(self::contentColumnSchema())
-                ->defaultItems(2)
-                ->minItems(2)
-                ->maxItems(2)
-                ->reorderable(false)
-                ->addable(false)
-                ->deletable(false)
-                ->itemLabel(fn (array $state, string $uuid, ?int $index = null): string => $index === 1 ? '右栏' : '左栏')
+                ->columnSpanFull(),
+            Fieldset::make('右栏')
+                ->statePath('right_column')
+                ->schema(self::contentColumnSchema())
                 ->columnSpanFull(),
         ];
     }
@@ -167,13 +159,7 @@ class BodyBlockFormSchemas
                 ->label('标题')
                 ->maxLength(255)
                 ->columnSpanFull(),
-            RichContent::configureFileAttachments(
-                Forms\Components\RichEditor::make('content')
-                    ->label('内容')
-                    ->columnSpanFull()
-                    ->toolbarButtons(RichContent::pageToolbar())
-                    ->helperText(RichContent::imageUploadHelperText()),
-            ),
+            RichContent::nestedRichEditor('content', '内容'),
             Forms\Components\TextInput::make('button_label')
                 ->label('按钮文字')
                 ->maxLength(120)
@@ -210,6 +196,12 @@ class BodyBlockFormSchemas
     public static function generalSecondaryContentBlockFields(): array
     {
         return [
+            Forms\Components\TextInput::make('tagline')
+                ->label('小标题')
+                ->placeholder('例如：ABOUT THE IPA')
+                ->helperText('样式与首页 Hero 主视觉小标题一致')
+                ->maxLength(255)
+                ->columnSpanFull(),
             Forms\Components\TextInput::make('title')
                 ->label('标题')
                 ->placeholder('例如：Strategic Plan')
@@ -220,13 +212,87 @@ class BodyBlockFormSchemas
                 ->options(PageBodyBlocks::TITLE_ALIGN_OPTIONS)
                 ->default('left')
                 ->columnSpanFull(),
-            RichContent::configureFileAttachments(
-                Forms\Components\RichEditor::make('content')
-                    ->label('内容')
-                    ->columnSpanFull()
-                    ->toolbarButtons(RichContent::pageToolbar())
-                    ->helperText(RichContent::imageUploadHelperText()),
-            ),
+            RichContent::nestedRichEditor('content', '内容'),
+            self::sectionButtonsRepeater(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function generalSecondaryLeftRightLayoutFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('title')
+                ->label('大标题')
+                ->placeholder('例如：Professional Indemnity Insurance')
+                ->helperText('显示在左侧顶部，前台以渐变样式呈现')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Select::make('title_gradient')
+                ->label('大标题渐变')
+                ->options(PageBodyBlocks::GRADIENT_OPTIONS)
+                ->default('purple-reverse')
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('tagline')
+                ->label('小标题')
+                ->placeholder('例如：Insurance Requirements')
+                ->helperText('显示在大标题下方，颜色 #992785，字号与大标题相同、非粗体')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            RichContent::nestedRichEditor('content', '右侧内容'),
+            self::sectionButtonsRepeater(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function generalSecondaryTabbedContentFields(): array
+    {
+        return [
+            Forms\Components\Repeater::make('tabs')
+                ->label('选项卡列表')
+                ->helperText('与首页「选项卡内容」类似，但无右侧图片；内容为富文本，前台占满整行宽度。至少填写「切换按钮名称」才会显示该卡。')
+                ->schema([
+                    Forms\Components\TextInput::make('tab_label')
+                        ->label('切换按钮名称')
+                        ->required()
+                        ->maxLength(80)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('tagline')
+                        ->label('小标题')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('title')
+                        ->label('大标题')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    RichContent::nestedRichEditor('content', '内容'),
+                    Forms\Components\TextInput::make('button_label')
+                        ->label('链接按钮名称')
+                        ->maxLength(120),
+                    Forms\Components\TextInput::make('button_url')
+                        ->label('链接按钮地址')
+                        ->placeholder('/articles/ 或 https://')
+                        ->maxLength(2048),
+                ])
+                ->minItems(1)
+                ->maxItems(8)
+                ->reorderable()
+                ->addActionLabel('添加选项卡')
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function generalSecondaryMediaSplitFields(): array
+    {
+        return [
+            ...self::mediaSplitFields(),
             self::sectionButtonsRepeater(),
         ];
     }
@@ -297,10 +363,7 @@ class BodyBlockFormSchemas
                         ->required()
                         ->maxLength(500)
                         ->columnSpanFull(),
-                    Forms\Components\RichEditor::make('answer')
-                        ->label('答案')
-                        ->columnSpanFull()
-                        ->toolbarButtons(self::faqAnswerToolbar()),
+                    RichContent::nestedRichEditor('answer', '答案', self::faqAnswerToolbar()),
                 ])
                 ->minItems(1)
                 ->maxItems(30)
@@ -369,6 +432,89 @@ class BodyBlockFormSchemas
         ];
     }
 
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function testimonialsFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('section_title')
+                ->label('大标题')
+                ->placeholder('例如：Hear from our Members')
+                ->helperText('显示在轮播上方')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('items')
+                ->label('推荐列表')
+                ->helperText('与首页「会员推荐」相同；轮播展示，标题支持换行')
+                ->schema([
+                    Forms\Components\Textarea::make('title')
+                        ->label('标题')
+                        ->rows(3)
+                        ->helperText('可换行，每行单独显示')
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('content')
+                        ->label('内容')
+                        ->rows(5)
+                        ->columnSpanFull(),
+                    ImageUpload::make(
+                        'image',
+                        'page-components/testimonials',
+                        '图片',
+                        '建议正方形头像（如 400×400）',
+                    )->columnSpanFull(),
+                ])
+                ->minItems(1)
+                ->maxItems(12)
+                ->reorderable()
+                ->addActionLabel('添加推荐')
+                ->columnSpanFull(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function newsletterFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('title')
+                ->label('标题')
+                ->placeholder('例如：Subscribe to our newsletter')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            RichContent::nestedRichEditor(
+                'content',
+                '正文',
+                RichContent::pageToolbar(),
+                '与首页「邮件订阅」相同；左侧说明文字，右侧表单字段固定',
+            ),
+            Forms\Components\TextInput::make('button_text')
+                ->label('提交按钮文字')
+                ->default('提交')
+                ->maxLength(60)
+                ->columnSpanFull(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function htmlBodyFields(): array
+    {
+        return [
+            Forms\Components\Textarea::make('body')
+                ->label('正文（HTML 源码）')
+                ->rows(24)
+                ->helperText('直接粘贴或编写 HTML，保存后前台原样渲染；与基本正文页相同。')
+                ->columnSpanFull()
+                ->extraInputAttributes([
+                    'class' => 'font-mono text-sm',
+                    'spellcheck' => 'false',
+                ]),
+        ];
+    }
+
     public static function newsListFields(): array
     {
         return [
@@ -377,13 +523,13 @@ class BodyBlockFormSchemas
                 ->placeholder('例如：Latest News')
                 ->maxLength(255)
                 ->columnSpanFull(),
-            RichContent::configureFileAttachments(
-                Forms\Components\RichEditor::make('summary')
-                    ->label('摘要')
-                    ->columnSpanFull()
-                    ->toolbarButtons(RichContent::pageToolbar())
-                    ->helperText(RichContent::imageUploadHelperText()),
-            ),
+            Forms\Components\Select::make('section_background')
+                ->label('板块背景')
+                ->options(GeneralSecondarySections::NEWS_LIST_BACKGROUND_OPTIONS)
+                ->default(GeneralSecondarySections::NEWS_LIST_BG_GRAY)
+                ->required()
+                ->columnSpanFull(),
+            RichContent::nestedRichEditor('summary', '摘要'),
             Forms\Components\TextInput::make('view_more_label')
                 ->label('「查看更多」按钮文字')
                 ->default('查看更多')
@@ -421,6 +567,75 @@ class BodyBlockFormSchemas
                 ->maxItems(48)
                 ->reorderable()
                 ->addActionLabel('添加新闻')
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
+    }
+
+    public static function generalSecondaryNewsListFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('section_title')
+                ->label('板块标题')
+                ->placeholder('例如：Member Benefits')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Select::make('section_background')
+                ->label('板块背景')
+                ->options(GeneralSecondarySections::NEWS_LIST_BACKGROUND_OPTIONS)
+                ->default(GeneralSecondarySections::NEWS_LIST_BG_GRAY)
+                ->required()
+                ->columnSpanFull(),
+            RichContent::nestedRichEditor('summary', '摘要'),
+            Forms\Components\TextInput::make('view_more_label')
+                ->label('「查看更多」按钮文字')
+                ->default('查看更多')
+                ->maxLength(80)
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('items')
+                ->label('列表条目')
+                ->helperText('前台默认显示 4 条（2 列 × 2 行），其余通过「查看更多」展开；样式参考会员权益页 cardListCurated')
+                ->schema([
+                    ImageUpload::make(
+                        'icon',
+                        'page-components/pages/news-list-icons',
+                        '图标',
+                        '建议正方形 PNG/SVG，显示在标题上方',
+                    )->columnSpanFull(),
+                    Forms\Components\TextInput::make('title')
+                        ->label('标题')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('summary')
+                        ->label('概要')
+                        ->rows(3)
+                        ->maxLength(1000)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('link_title')
+                        ->label('链接标题')
+                        ->placeholder('例如：Learn more')
+                        ->helperText('显示在卡片底部链接文字；需同时填写链接地址')
+                        ->maxLength(120)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('url')
+                        ->label('链接')
+                        ->placeholder('https:// 或 /category/...')
+                        ->maxLength(2048)
+                        ->columnSpan(1),
+                    Forms\Components\Select::make('target')
+                        ->label('打开方式')
+                        ->options([
+                            '' => '当前窗口',
+                            '_blank' => '新窗口',
+                        ])
+                        ->default('_blank')
+                        ->columnSpan(1),
+                ])
+                ->minItems(1)
+                ->maxItems(48)
+                ->reorderable()
+                ->addActionLabel('添加条目')
                 ->columns(2)
                 ->columnSpanFull(),
         ];
@@ -522,10 +737,91 @@ class BodyBlockFormSchemas
     {
         return [
             ['bold', 'italic', 'underline'],
+            ['h4'],
             ['alignStart', 'alignCenter', 'alignEnd'],
             ['bulletList', 'orderedList'],
             ['link'],
             ['undo', 'redo'],
         ];
+    }
+
+    /**
+     * 默认正文页：按区块类型只挂载对应字段，避免 Repeater 项携带全部类型的空状态。
+     *
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function defaultPageBlockFields(?string $type): array
+    {
+        return match ($type) {
+            PageBodyBlocks::TYPE_RICH_TEXT => [
+                Forms\Components\TextInput::make('title')
+                    ->label('标题')
+                    ->placeholder('例如：Who We Are')
+                    ->helperText('可选；显示在正文上方，样式与 About 页章节标题一致')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('title_align')
+                    ->label('标题对齐')
+                    ->options(PageBodyBlocks::TITLE_ALIGN_OPTIONS)
+                    ->default('center')
+                    ->columnSpanFull(),
+                RichContent::nestedRichEditor('html', '段落内容'),
+            ],
+            PageBodyBlocks::TYPE_HIGHLIGHT => [
+                Forms\Components\Textarea::make('text')
+                    ->label('强调文字')
+                    ->rows(3)
+                    ->helperText('整句或关键词，前台以渐变样式显示')
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('gradient')
+                    ->label('渐变样式')
+                    ->options(PageBodyBlocks::GRADIENT_OPTIONS)
+                    ->default('purple-reverse')
+                    ->columnSpanFull(),
+            ],
+            PageBodyBlocks::TYPE_CTA_GROUP => [
+                self::bodyBlockButtonsRepeater()
+                    ->visible(true)
+                    ->helperText('保存后，这一组按钮会作为独立一行显示在前后区块之间'),
+            ],
+            PageBodyBlocks::TYPE_TABS => self::tabsRepeaterFields(),
+            PageBodyBlocks::TYPE_CAROUSEL => self::carouselFields(),
+            PageBodyBlocks::TYPE_MEDIA_SPLIT => [
+                ...self::mediaSplitFields(),
+                self::bodyBlockButtonsRepeater()
+                    ->visible(true)
+                    ->helperText('可选；需同时填写按钮文字与链接，保存后前台才会显示'),
+            ],
+            PageBodyBlocks::TYPE_CONTENT_COLUMNS => self::contentColumnsFields(),
+            PageBodyBlocks::TYPE_FAQ => self::faqFields(),
+            PageBodyBlocks::TYPE_STATS => self::statsFields(),
+            PageBodyBlocks::TYPE_CARD_LIST_CURATED => self::cardListCuratedFields(),
+            PageBodyBlocks::TYPE_NEWS_LIST => self::newsListFields(),
+            PageBodyBlocks::TYPE_HTML_BODY => self::htmlBodyFields(),
+            default => [],
+        };
+    }
+
+    /**
+     * 通用二级页：按板块类型只挂载对应字段，避免 Repeater 内多个 `content` 富文本共用 schema key。
+     *
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function generalSecondaryBlockFields(?string $type): array
+    {
+        return match ($type) {
+            GeneralSecondarySections::TYPE_CONTENT_BLOCK => self::generalSecondaryContentBlockFields(),
+            GeneralSecondarySections::TYPE_FAQ => self::faqFields(),
+            GeneralSecondarySections::TYPE_NEWS_LIST_A => self::newsListFields(),
+            GeneralSecondarySections::TYPE_NEWS_LIST => self::generalSecondaryNewsListFields(),
+            GeneralSecondarySections::TYPE_STATS => self::statsFields(),
+            GeneralSecondarySections::TYPE_TESTIMONIALS => self::testimonialsFields(),
+            GeneralSecondarySections::TYPE_NEWSLETTER => self::newsletterFields(),
+            GeneralSecondarySections::TYPE_HTML_BODY => self::htmlBodyFields(),
+            GeneralSecondarySections::TYPE_LEFT_RIGHT_LAYOUT => self::generalSecondaryLeftRightLayoutFields(),
+            GeneralSecondarySections::TYPE_TABBED_CONTENT => self::generalSecondaryTabbedContentFields(),
+            GeneralSecondarySections::TYPE_MEDIA_SPLIT => self::generalSecondaryMediaSplitFields(),
+            default => [],
+        };
     }
 }

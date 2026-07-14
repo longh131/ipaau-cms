@@ -7,6 +7,7 @@ use App\Support\HomeSection\StatsSectionData;
 use App\Support\HomeSection\TabbedContentSectionData;
 use App\Support\MediaUrl;
 use App\Support\PageTemplate\GeneralSecondarySections;
+use App\Support\PageTemplate\Templates\BasicContentPageData;
 use App\Support\RichContent;
 
 class PageBodyBlocks
@@ -33,6 +34,8 @@ class PageBodyBlocks
 
     public const TYPE_NEWS_LIST = 'news_list';
 
+    public const TYPE_HTML_BODY = 'html_body';
+
     /** @var array<string, string> */
     public const TYPE_OPTIONS = [
         self::TYPE_RICH_TEXT => '富文本段落',
@@ -46,6 +49,7 @@ class PageBodyBlocks
         self::TYPE_STATS => '数字统计',
         self::TYPE_CARD_LIST_CURATED => '精选卡片列表',
         self::TYPE_NEWS_LIST => '新闻列表',
+        self::TYPE_HTML_BODY => '正文（HTML 源码）',
     ];
 
     /** @var array<string, string> */
@@ -101,7 +105,7 @@ class PageBodyBlocks
                     'type' => self::TYPE_RICH_TEXT,
                     'title' => trim((string) ($block['title'] ?? '')),
                     'title_align' => static::normalizeTitleAlign((string) ($block['title_align'] ?? 'center')),
-                    'html' => $block['html'] ?? '',
+                    'html' => RichContent::encodeDocumentForForm($block['html'] ?? ''),
                 ],
                 self::TYPE_HIGHLIGHT => [
                     'type' => self::TYPE_HIGHLIGHT,
@@ -122,16 +126,19 @@ class PageBodyBlocks
                     'slides' => self::normalizeCarouselSlides($block['slides'] ?? []),
                 ],
                 self::TYPE_MEDIA_SPLIT => self::normalizeMediaSplitBlockForForm($block),
-                self::TYPE_CONTENT_COLUMNS => [
-                    'type' => self::TYPE_CONTENT_COLUMNS,
-                    'columns' => self::normalizeContentColumns($block['columns'] ?? []),
-                ],
+                self::TYPE_CONTENT_COLUMNS => static::normalizeContentColumnsBlockForForm($block),
                 self::TYPE_FAQ => [
                     'type' => self::TYPE_FAQ,
                     'tagline' => trim((string) ($block['tagline'] ?? '')),
                     'title' => trim((string) ($block['title'] ?? '')),
                     'intro' => trim((string) ($block['intro'] ?? '')),
-                    'items' => FaqSectionData::forForm(['items' => $block['items'] ?? []])['items'],
+                    'items' => collect(FaqSectionData::forForm(['items' => $block['items'] ?? []])['items'])
+                        ->map(function (array $item): array {
+                            $item['answer'] = RichContent::encodeDocumentForForm($item['answer'] ?? '');
+
+                            return $item;
+                        })
+                        ->all(),
                 ],
                 self::TYPE_STATS => [
                     'type' => self::TYPE_STATS,
@@ -143,6 +150,10 @@ class PageBodyBlocks
                     'items' => self::normalizeCardListItems($block['items'] ?? []),
                 ],
                 self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forForm([$block]))->first(),
+                self::TYPE_HTML_BODY => [
+                    'type' => self::TYPE_HTML_BODY,
+                    'body' => BasicContentPageData::normalizeBodyForForm($block['body'] ?? ''),
+                ],
                 default => null,
             };
 
@@ -181,6 +192,10 @@ class PageBodyBlocks
 
             if ($block['type'] === self::TYPE_NEWS_LIST) {
                 return GeneralSecondarySections::forStorage([$block])[0] ?? $block;
+            }
+
+            if ($block['type'] === self::TYPE_HTML_BODY) {
+                $block['body'] = trim((string) ($block['body'] ?? ''));
             }
 
             return $block;
@@ -251,19 +266,7 @@ class PageBodyBlocks
                 ],
                 self::TYPE_CONTENT_COLUMNS => [
                     'type' => self::TYPE_CONTENT_COLUMNS,
-                    'columns' => collect($block['columns'] ?? [])
-                        ->map(fn (array $column): array => [
-                            'title' => $column['title'],
-                            'content_html' => RichContent::toHtml($column['content'] ?? ''),
-                            'button' => self::normalizeOptionalButton([
-                                'label' => $column['button_label'] ?? ($column['button']['label'] ?? ''),
-                                'url' => $column['button_url'] ?? ($column['button']['url'] ?? ''),
-                                'style' => $column['button_style'] ?? ($column['button']['style'] ?? 'primary'),
-                                'target' => $column['button_target'] ?? ($column['button']['target'] ?? ''),
-                            ]),
-                        ])
-                        ->values()
-                        ->all(),
+                    'columns' => static::contentColumnsForFrontend($block),
                 ],
                 self::TYPE_FAQ => [
                     'type' => self::TYPE_FAQ,
@@ -282,6 +285,10 @@ class PageBodyBlocks
                     'items' => $block['items'],
                 ],
                 self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forFrontend([$block]))->first(),
+                self::TYPE_HTML_BODY => [
+                    'type' => self::TYPE_HTML_BODY,
+                    'body_html' => trim((string) ($block['body'] ?? '')),
+                ],
                 default => null,
             };
 
@@ -326,6 +333,14 @@ class PageBodyBlocks
                     if (filled($item['summary'] ?? null)) {
                         $parts[] = '<p>'.e($item['summary']).'</p>';
                     }
+                }
+
+                continue;
+            }
+
+            if ($block['type'] === self::TYPE_HTML_BODY) {
+                if (filled(strip_tags((string) ($block['body'] ?? '')))) {
+                    $parts[] = (string) $block['body'];
                 }
 
                 continue;
@@ -376,13 +391,14 @@ class PageBodyBlocks
                 || filled($block['title'] ?? null)
                 || filled(strip_tags(RichContent::toHtml($block['content'] ?? '')))
                 || ($block['buttons'] ?? []) !== [],
-            self::TYPE_CONTENT_COLUMNS => collect($block['columns'] ?? [])
-                ->contains(fn (array $column): bool => static::contentColumnHasContent($column)),
+            self::TYPE_CONTENT_COLUMNS => static::contentColumnHasContent(static::contentColumnFromBlock($block, 0))
+                || static::contentColumnHasContent(static::contentColumnFromBlock($block, 1)),
             self::TYPE_FAQ => ($block['items'] ?? []) !== [],
             self::TYPE_STATS => ($block['items'] ?? []) !== [],
             self::TYPE_CARD_LIST_CURATED => filled($block['section_title'] ?? null)
                 || ($block['items'] ?? []) !== [],
             self::TYPE_NEWS_LIST => GeneralSecondarySections::forStorage([$block]) !== [],
+            self::TYPE_HTML_BODY => filled(strip_tags((string) ($block['body'] ?? ''))),
             default => false,
         };
     }
@@ -506,9 +522,131 @@ class PageBodyBlocks
     protected static function normalizeMediaSplitBlockForForm(array $block): array
     {
         $normalized = self::normalizeMediaSplitBlock($block);
+        $normalized['content'] = RichContent::encodeDocumentForForm($normalized['content']);
         $normalized['buttons'] = self::normalizeButtonsForForm($block['buttons'] ?? []);
 
         return $normalized;
+    }
+
+    /**
+     * @param  array<string, mixed>  $section
+     * @return array<string, mixed>
+     */
+    public static function mediaSplitSectionForForm(array $section): array
+    {
+        return self::normalizeMediaSplitBlockForForm($section);
+    }
+
+    /**
+     * @param  array<string, mixed>  $section
+     * @return array<string, mixed>
+     */
+    public static function mediaSplitSectionForStorage(array $section): array
+    {
+        $section = self::normalizeMediaSplitBlockForForm($section);
+        $section['buttons'] = self::normalizeButtons($section['buttons'] ?? []);
+
+        return $section;
+    }
+
+    /**
+     * @param  array<string, mixed>  $section
+     * @return array<string, mixed>
+     */
+    public static function mediaSplitSectionForFrontend(array $section): array
+    {
+        return [
+            'type' => self::TYPE_MEDIA_SPLIT,
+            'image_position' => $section['image_position'],
+            'image_shape' => $section['image_shape'],
+            'image' => MediaUrl::resolve($section['image']),
+            'tagline' => $section['tagline'],
+            'title' => $section['title'],
+            'content_html' => RichContent::toHtml($section['content']),
+            'buttons' => $section['buttons'],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $section
+     */
+    public static function mediaSplitSectionHasContent(array $section): bool
+    {
+        return self::blockHasContent($section);
+    }
+
+    /**
+     * @param  array<string, mixed>  $block
+     * @return array{
+     *     type: string,
+     *     left_column: array<string, mixed>,
+     *     right_column: array<string, mixed>
+     * }
+     */
+    protected static function normalizeContentColumnsBlockForForm(array $block): array
+    {
+        return [
+            'type' => self::TYPE_CONTENT_COLUMNS,
+            'left_column' => static::normalizeContentColumnForForm(static::contentColumnFromBlock($block, 0)),
+            'right_column' => static::normalizeContentColumnForForm(static::contentColumnFromBlock($block, 1)),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $block
+     * @return array<string, mixed>
+     */
+    protected static function contentColumnFromBlock(array $block, int $index): array
+    {
+        $key = $index === 0 ? 'left_column' : 'right_column';
+
+        if (isset($block[$key]) && is_array($block[$key])) {
+            return $block[$key];
+        }
+
+        $columns = $block['columns'] ?? [];
+
+        return is_array($columns[$index] ?? null) ? $columns[$index] : [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $column
+     * @return array<string, mixed>
+     */
+    protected static function normalizeContentColumnForForm(array $column): array
+    {
+        $normalized = self::normalizeContentColumn($column);
+        $normalized['content'] = RichContent::encodeDocumentForForm($normalized['content']);
+
+        return $normalized;
+    }
+
+    /**
+     * @param  array<string, mixed>  $block
+     * @return array<int, array{
+     *     title: string,
+     *     content_html: string,
+     *     button: ?array{label: string, url: string, style: string, target: string}
+     * }>
+     */
+    protected static function contentColumnsForFrontend(array $block): array
+    {
+        return collect([
+            static::contentColumnFromBlock($block, 0),
+            static::contentColumnFromBlock($block, 1),
+        ])
+            ->map(fn (array $column): array => [
+                'title' => $column['title'] ?? '',
+                'content_html' => RichContent::toHtml($column['content'] ?? ''),
+                'button' => self::normalizeOptionalButton([
+                    'label' => $column['button_label'] ?? ($column['button']['label'] ?? ''),
+                    'url' => $column['button_url'] ?? ($column['button']['url'] ?? ''),
+                    'style' => $column['button_style'] ?? ($column['button']['style'] ?? 'primary'),
+                    'target' => $column['button_target'] ?? ($column['button']['target'] ?? ''),
+                ]),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

@@ -9,20 +9,31 @@ use App\Support\RichContent;
 class GeneralSecondaryPageData
 {
     /**
-     * @return array{heading: string, summary: string, sections: array<int, array<string, mixed>>}
+     * @return array{
+     *     heading: string,
+     *     summary: string,
+     *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
+     *     sections: array<int, array<string, mixed>>
+     * }
      */
     public static function emptyStorage(): array
     {
         return [
             'heading' => '',
             'summary' => '',
+            'buttons' => [],
             'sections' => [],
         ];
     }
 
     /**
      * @param  array<string, mixed>|null  $data
-     * @return array{heading: string, summary: string, sections: array<int, array<string, mixed>>}
+     * @return array{
+     *     heading: string,
+     *     summary: string,
+     *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
+     *     sections: array<int, array<string, mixed>>
+     * }
      */
     public static function forForm(?array $data): array
     {
@@ -30,14 +41,20 @@ class GeneralSecondaryPageData
 
         return [
             'heading' => trim((string) ($data['heading'] ?? '')),
-            'summary' => trim((string) ($data['summary'] ?? '')),
+            'summary' => RichContent::encodeDocumentForForm($data['summary'] ?? ''),
+            'buttons' => GeneralSecondarySections::buttonsForForm($data['buttons'] ?? []),
             'sections' => GeneralSecondarySections::forForm($data['sections'] ?? []),
         ];
     }
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array{heading: string, summary: string, sections: array<int, array<string, mixed>>}
+     * @return array{
+     *     heading: string,
+     *     summary: string,
+     *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
+     *     sections: array<int, array<string, mixed>>
+     * }
      */
     public static function forStorage(array $data): array
     {
@@ -46,6 +63,7 @@ class GeneralSecondaryPageData
         return [
             'heading' => $form['heading'],
             'summary' => $form['summary'],
+            'buttons' => GeneralSecondarySections::buttonsForStorage($form['buttons']),
             'sections' => GeneralSecondarySections::forStorage($form['sections']),
         ];
     }
@@ -55,6 +73,7 @@ class GeneralSecondaryPageData
      * @return array{
      *     heading: string,
      *     summary: string,
+     *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
      *     sections: array<int, array<string, mixed>>,
      *     has_content: bool
      * }
@@ -62,11 +81,12 @@ class GeneralSecondaryPageData
     public static function forFrontend(?array $data, Page $page): array
     {
         $form = static::forForm($data);
-        $heading = filled($form['heading']) ? $form['heading'] : $page->displayTitle();
+        $storage = static::forStorage($data ?? []);
 
         return [
-            'heading' => $heading,
-            'summary' => $form['summary'],
+            'heading' => $form['heading'],
+            'summary_html' => RichContent::toHtml($form['summary'] ?? ''),
+            'buttons' => $storage['buttons'],
             'sections' => GeneralSecondarySections::forFrontend($form['sections']),
             'has_content' => static::hasContent($form, $page),
         ];
@@ -79,15 +99,15 @@ class GeneralSecondaryPageData
     {
         $data = static::forForm($data);
 
-        if (filled($data['summary']) || filled($data['heading'])) {
+        if (static::summaryHasContent($data['summary'] ?? null) || filled($data['heading'])) {
             return true;
         }
 
-        if (GeneralSecondarySections::hasContent($data['sections'])) {
+        if (GeneralSecondarySections::buttonsForStorage($data['buttons'] ?? []) !== []) {
             return true;
         }
 
-        return filled($page?->displayTitle());
+        return GeneralSecondarySections::hasContent($data['sections']);
     }
 
     /**
@@ -98,12 +118,16 @@ class GeneralSecondaryPageData
         $form = static::forForm($data);
         $parts = [];
 
-        if (filled($form['summary'])) {
-            $parts[] = '<p>'.e($form['summary']).'</p>';
+        if (static::summaryHasContent($form['summary'] ?? null)) {
+            $parts[] = RichContent::toHtml($form['summary']);
         }
 
         foreach ($form['sections'] as $section) {
             if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_CONTENT_BLOCK) {
+                if (filled($section['tagline'] ?? null)) {
+                    $parts[] = '<p>'.e($section['tagline']).'</p>';
+                }
+
                 if (filled($section['title'] ?? null)) {
                     $parts[] = '<h2>'.e($section['title']).'</h2>';
                 }
@@ -129,7 +153,8 @@ class GeneralSecondaryPageData
                 }
             }
 
-            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_NEWS_LIST) {
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_NEWS_LIST_A
+                || ($section['type'] ?? '') === GeneralSecondarySections::TYPE_NEWS_LIST) {
                 if (filled($section['section_title'] ?? null)) {
                     $parts[] = '<h2>'.e($section['section_title']).'</h2>';
                 }
@@ -144,8 +169,105 @@ class GeneralSecondaryPageData
                     }
                 }
             }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_STATS) {
+                foreach ($section['items'] ?? [] as $item) {
+                    if (filled($item['title'] ?? null)) {
+                        $parts[] = '<h3>'.e($item['title']).'</h3>';
+                    }
+
+                    if (filled($item['content'] ?? null)) {
+                        $parts[] = '<p>'.e($item['content']).'</p>';
+                    }
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_TESTIMONIALS) {
+                if (filled($section['section_title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['section_title']).'</h2>';
+                }
+
+                foreach ($section['items'] ?? [] as $item) {
+                    if (filled($item['title'] ?? null)) {
+                        $parts[] = '<h3>'.e($item['title']).'</h3>';
+                    }
+
+                    if (filled($item['content'] ?? null)) {
+                        $parts[] = '<p>'.e($item['content']).'</p>';
+                    }
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_NEWSLETTER) {
+                if (filled($section['title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['title']).'</h2>';
+                }
+
+                $newsletterHtml = RichContent::toHtml($section['content'] ?? '');
+
+                if (filled(strip_tags($newsletterHtml))) {
+                    $parts[] = $newsletterHtml;
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_HTML_BODY) {
+                if (filled(strip_tags((string) ($section['body'] ?? '')))) {
+                    $parts[] = (string) $section['body'];
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_LEFT_RIGHT_LAYOUT) {
+                if (filled($section['tagline'] ?? null)) {
+                    $parts[] = '<p>'.e($section['tagline']).'</p>';
+                }
+
+                if (filled($section['title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['title']).'</h2>';
+                }
+
+                $html = RichContent::toHtml($section['content'] ?? '');
+
+                if (filled(strip_tags($html))) {
+                    $parts[] = $html;
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_TABBED_CONTENT) {
+                foreach ($section['tabs'] ?? [] as $tab) {
+                    if (filled($tab['tab_label'] ?? null)) {
+                        $parts[] = '<h3>'.e($tab['tab_label']).'</h3>';
+                    }
+
+                    if (filled($tab['title'] ?? null)) {
+                        $parts[] = '<h2>'.e($tab['title']).'</h2>';
+                    }
+
+                    $html = RichContent::toHtml($tab['content'] ?? '');
+
+                    if (RichContent::hasVisibleHtml($html)) {
+                        $parts[] = $html;
+                    }
+                }
+            }
+
+            if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_MEDIA_SPLIT) {
+                if (filled($section['title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['title']).'</h2>';
+                }
+
+                $html = RichContent::toHtml($section['content'] ?? '');
+
+                if (RichContent::hasVisibleHtml($html)) {
+                    $parts[] = $html;
+                }
+            }
         }
 
         return implode("\n", $parts);
+    }
+
+    public static function summaryHasContent(mixed $summary): bool
+    {
+        return RichContent::hasVisibleHtml(RichContent::toHtml($summary));
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\PageResource\Forms;
 
 use App\Support\PageTemplate\PageBodyBlocks;
-use App\Support\RichContent;
 use Filament\Forms;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ class DefaultPageForm
     {
         return [
             Section::make('正文区块')
-                ->description('页面内容由多个区块按顺序上下拼接显示，可自由组合段落、图文分栏、按钮、选项卡等。')
+                ->description('页面内容由多个区块按顺序上下拼接显示，可自由组合段落、图文分栏、按钮、选项卡、HTML 正文等。')
                 ->statePath('data')
                 ->schema([
                     Forms\Components\Repeater::make('body_blocks')
@@ -33,64 +33,10 @@ class DefaultPageForm
                                 ->required()
                                 ->live()
                                 ->columnSpanFull(),
-                            Forms\Components\TextInput::make('title')
-                                ->label('标题')
-                                ->placeholder('例如：Who We Are')
-                                ->helperText('可选；显示在正文上方，样式与 About 页章节标题一致')
-                                ->maxLength(255)
-                                ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
+                            Group::make()
+                                ->schema(fn (Get $get): array => BodyBlockFormSchemas::defaultPageBlockFields($get('type')))
+                                ->key(fn (Get $get): string => 'default-page-block-'.($get('type') ?? 'none'))
                                 ->columnSpanFull(),
-                            Forms\Components\Select::make('title_align')
-                                ->label('标题对齐')
-                                ->options(PageBodyBlocks::TITLE_ALIGN_OPTIONS)
-                                ->default('center')
-                                ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
-                                ->columnSpanFull(),
-                            RichContent::configureFileAttachments(
-                                Forms\Components\RichEditor::make('html')
-                                    ->label('段落内容')
-                                    ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_RICH_TEXT)
-                                    ->columnSpanFull()
-                                    ->toolbarButtons(RichContent::pageToolbar())
-                                    ->helperText(RichContent::imageUploadHelperText()),
-                            ),
-                            Forms\Components\Textarea::make('text')
-                                ->label('强调文字')
-                                ->rows(3)
-                                ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_HIGHLIGHT)
-                                ->helperText('整句或关键词，前台以渐变样式显示')
-                                ->columnSpanFull(),
-                            Forms\Components\Select::make('gradient')
-                                ->label('渐变样式')
-                                ->options(PageBodyBlocks::GRADIENT_OPTIONS)
-                                ->default('purple-reverse')
-                                ->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_HIGHLIGHT)
-                                ->columnSpanFull(),
-                            BodyBlockFormSchemas::bodyBlockButtonsRepeater(),
-                            ...collect(BodyBlockFormSchemas::tabsRepeaterFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_TABS))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::carouselFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CAROUSEL))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::mediaSplitFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_MEDIA_SPLIT))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::contentColumnsFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CONTENT_COLUMNS))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::faqFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_FAQ))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::statsFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_STATS))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::cardListCuratedFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_CARD_LIST_CURATED))
-                                ->all(),
-                            ...collect(BodyBlockFormSchemas::newsListFields())
-                                ->map(fn ($field) => $field->visible(fn (Get $get): bool => $get('type') === PageBodyBlocks::TYPE_NEWS_LIST))
-                                ->all(),
                         ])
                         ->itemLabel(function (array $state): ?string {
                             $type = (string) ($state['type'] ?? '');
@@ -106,7 +52,10 @@ class DefaultPageForm
                                 PageBodyBlocks::TYPE_CAROUSEL => '轮播：'.Str::limit((string) ($state['heading'] ?? '会员推荐'), 20),
                                 PageBodyBlocks::TYPE_MEDIA_SPLIT => '图文分栏：'.Str::limit((string) ($state['title'] ?? ''), 20),
                                 PageBodyBlocks::TYPE_CONTENT_COLUMNS => '左右分栏：'.Str::limit(
-                                    (string) (($state['columns'][0]['title'] ?? '') ?: ($state['columns'][1]['title'] ?? '')),
+                                    (string) (($state['left_column']['title'] ?? '')
+                                        ?: ($state['right_column']['title'] ?? '')
+                                        ?: ($state['columns'][0]['title'] ?? '')
+                                        ?: ($state['columns'][1]['title'] ?? '')),
                                     24,
                                 ),
                                 PageBodyBlocks::TYPE_FAQ => 'FAQ（'.count($state['items'] ?? []).' 项）',
@@ -117,6 +66,10 @@ class DefaultPageForm
                                 ),
                                 PageBodyBlocks::TYPE_NEWS_LIST => '新闻列表：'.Str::limit(
                                     (string) (($state['section_title'] ?? '') ?: (collect($state['items'] ?? [])->first()['title'] ?? '')),
+                                    24,
+                                ),
+                                PageBodyBlocks::TYPE_HTML_BODY => 'HTML 正文：'.Str::limit(
+                                    strip_tags((string) ($state['body'] ?? '')),
                                     24,
                                 ),
                                 default => '正文区块',

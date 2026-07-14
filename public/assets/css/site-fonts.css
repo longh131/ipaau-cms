@@ -713,8 +713,7 @@ section.diversity-section {
 
 /* CMS 单页正文 */
 .cms-page-content h2,
-.cms-page-content h3,
-.cms-page-content h4 {
+.cms-page-content h3 {
   font-family: "Apex Serif", "ApexSerif", Georgia, serif;
   color: oklch(0.3152 0.1176 262.41);
   margin-top: 1.75rem;
@@ -727,13 +726,29 @@ section.diversity-section {
 }
 
 .cms-page-content h3 {
-  font-size: 1.25rem;
-  line-height: 1.3;
+  font-size: var(--ipa-section-title-size);
+  line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+  .cms-page-content h3 {
+    font-size: var(--ipa-section-title-size-lg);
+  }
 }
 
 .cms-page-content h4 {
+  font-family: "Apex Serif", "ApexSerif", Georgia, serif;
   font-size: 1.125rem;
   line-height: 1.35;
+  font-weight: 400;
+  color: #992785;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cms-page-content h4 .text-warm-plum,
+[data-rte="true"] h4 .text-warm-plum {
+  color: #992785;
 }
 
 .cms-page-content p {

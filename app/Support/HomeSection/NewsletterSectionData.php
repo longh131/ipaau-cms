@@ -2,10 +2,12 @@
 
 namespace App\Support\HomeSection;
 
+use App\Support\RichContent;
+
 class NewsletterSectionData
 {
     /**
-     * @return array{title: string, content: string, button_text: string}
+     * @return array{title: string, content: mixed, button_text: string}
      */
     public static function emptyStorage(): array
     {
@@ -37,9 +39,9 @@ HTML,
 
     /**
      * @param  array<string, mixed>|null  $data
-     * @return array{title: string, content: string, button_text: string}
+     * @return array{title: string, content: array|string|null, button_text: string}
      */
-    public static function forForm(?array $data): array
+    public static function forForm(?array $data, bool $nestedEditor = false): array
     {
         $data = is_array($data) ? $data : [];
 
@@ -48,27 +50,35 @@ HTML,
         }
 
         $buttonText = trim((string) ($data['button_text'] ?? ''));
+        $content = $nestedEditor
+            ? RichContent::encodeDocumentForForm($data['content'] ?? '')
+            : RichContent::toDocument($data['content'] ?? '');
 
         return [
             'title' => trim((string) ($data['title'] ?? '')),
-            'content' => trim((string) ($data['content'] ?? '')),
+            'content' => $content,
             'button_text' => $buttonText !== '' ? $buttonText : '提交',
         ];
     }
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array{title: string, content: string, button_text: string}
+     * @return array{title: string, content: mixed, button_text: string}
      */
     public static function forStorage(array $data): array
     {
         $form = static::forForm($data);
+        $content = static::normalizeContentForStorage($data['content'] ?? '');
 
-        if ($form['title'] === '' && blank(trim(strip_tags($form['content'])))) {
+        if ($form['title'] === '' && blank(strip_tags(RichContent::toHtml($content)))) {
             return static::emptyStorage();
         }
 
-        return $form;
+        return [
+            'title' => $form['title'],
+            'content' => $content,
+            'button_text' => $form['button_text'],
+        ];
     }
 
     /**
@@ -77,12 +87,19 @@ HTML,
      */
     public static function forFrontend(?array $data): array
     {
-        $form = static::forForm($data);
+        $stored = is_array($data) ? $data : [];
+
+        if (static::isLegacyFormat($stored)) {
+            $stored = static::migrateLegacy($stored);
+        }
+
+        $buttonText = trim((string) ($stored['button_text'] ?? ''));
+        $contentHtml = RichContent::toHtml($stored['content'] ?? '');
 
         return [
-            'title' => $form['title'],
-            'content_html' => blank(trim(strip_tags($form['content']))) ? '' : $form['content'],
-            'button_text' => $form['button_text'],
+            'title' => trim((string) ($stored['title'] ?? '')),
+            'content_html' => blank(strip_tags($contentHtml)) ? '' : $contentHtml,
+            'button_text' => $buttonText !== '' ? $buttonText : '提交',
         ];
     }
 
@@ -112,5 +129,24 @@ HTML,
             'content' => $content,
             'button_text' => $buttonText !== '' ? $buttonText : '提交',
         ];
+    }
+
+    private static function normalizeContentForStorage(mixed $content): mixed
+    {
+        $normalized = RichContent::normalizeState($content);
+
+        if ($normalized === null) {
+            return '';
+        }
+
+        if (is_array($normalized) && ($normalized['type'] ?? null) === 'doc') {
+            return RichContent::normalizeDocument($normalized);
+        }
+
+        if (is_string($normalized)) {
+            return trim($normalized);
+        }
+
+        return $normalized;
     }
 }

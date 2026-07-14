@@ -1,5 +1,6 @@
 @php
     /** @var array{
+     *     tagline: string,
      *     title: string,
      *     title_align: string,
      *     content_html: string,
@@ -7,6 +8,7 @@
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>
      * } $block */
     $block = $block ?? [];
+    $tagline = trim((string) ($block['tagline'] ?? ''));
     $title = trim((string) ($block['title'] ?? ''));
     $titleAlign = (string) ($block['title_align'] ?? 'left');
     $contentHtml = (string) ($block['content_html'] ?? '');
@@ -16,6 +18,7 @@
         $buttons = [$block['button']];
     }
 
+    $hasTagline = filled($tagline);
     $hasTitle = filled($title);
     $hasContent = filled(strip_tags($contentHtml));
     $textAlignClass = match ($titleAlign) {
@@ -27,7 +30,7 @@
     $sectionClass = trim((string) ($sectionClass ?? 'py-12 cms-governance-module cms-governance-content-block'));
 @endphp
 
-@if($hasTitle || $hasContent || $buttons !== [])
+@if($hasTagline || $hasTitle || $hasContent || $buttons !== [])
     <section
         data-type="basicContentWithColumns"
         @class([$sectionClass])
@@ -36,6 +39,17 @@
             <div class="column-wrapper grid items-stretch grid-cols-1 {{ $textAlignClass }}">
                 <div class="column flex flex-col h-full pb-5">
                     <div class="w-full {{ $textAlignClass }}">
+                        @if($hasTagline)
+                            <span
+                                class="eyebrow-md block {{ $hasTitle ? 'mb-4' : '' }}"
+                                style="
+                                    --ipa-color-light: oklch(0.4867 0.1803 336.11);
+                                    --ipa-color-dark: oklch(0.8944 0.0357 331.62);
+                                    color: var(--ipa-color-light);
+                                "
+                            >{{ $tagline }}</span>
+                        @endif
+
                         @if($hasTitle)
                             <h3 class="cms-section-title mb-0 {{ $textAlignClass }}">
                                 <span class="text-secondary">{{ $title }}</span>
@@ -46,7 +60,7 @@
                             <div
                                 @class([
                                     'cms-page-content cms-governance-content-block__body text-[color:var(--ipa-color)] text-xl font-din text-primary cms-rich-text__body',
-                                    'mt-4' => $hasTitle,
+                                    'mt-4' => $hasTitle || $hasTagline,
                                     $textAlignClass,
                                 ])
                                 data-type="section-description"

@@ -5,7 +5,6 @@ namespace App\Filament\RichEditor\Plugins;
 use App\Filament\RichEditor\TipTap\DivNode;
 use App\Filament\RichEditor\TipTap\GenericSpanMark;
 use App\Filament\RichEditor\TipTap\InlineStyleExtension;
-use App\Filament\RichEditor\TipTap\StyledLink;
 use Filament\Forms\Components\RichEditor\Plugins\Contracts\RichContentPlugin;
 use Filament\Support\Facades\FilamentAsset;
 use Tiptap\Core\Extension;
@@ -42,14 +41,6 @@ class InlineStylePlugin implements RichContentPlugin
             app(InlineStyleExtension::class),
             app(DivNode::class),
             app(GenericSpanMark::class),
-            app(StyledLink::class, [
-                'options' => [
-                    'HTMLAttributes' => [],
-                    'allowedProtocols' => [
-                        'http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'callto', 'sms', 'cid', 'xmpp',
-                    ],
-                ],
-            ]),
         ];
     }
 

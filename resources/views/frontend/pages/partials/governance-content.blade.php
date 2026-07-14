@@ -22,7 +22,7 @@
     <section
         data-type="cmsPageContent"
         @class([
-            'pb-12 cms-page-content-section cms-governance-page',
+            'cms-page-content-section cms-governance-page',
             'cms-page-content-section--with-breadcrumb' => $hasBreadcrumbs,
             'pt-28' => ! $hasBreadcrumbs,
         ])
@@ -65,5 +65,7 @@
                 'cardItems' => $cardListItems,
             ])
         @endif
+
+        @include('frontend.pages.partials.page-content-footer-spacer')
     </section>
 @endif

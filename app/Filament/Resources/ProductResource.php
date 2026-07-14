@@ -43,7 +43,7 @@ class ProductResource extends Resource
                     ->columnSpanFull()
                     ->toolbarButtons([
                         ['bold', 'italic', 'underline', 'strike'],
-                        ['h2', 'h3', 'blockquote', 'codeBlock'],
+                        ['h2', 'h3', 'h4', 'blockquote', 'codeBlock'],
                         ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
                         ['link', 'attachFiles'],
