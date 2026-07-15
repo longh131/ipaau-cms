@@ -45,9 +45,11 @@
                     @endforeach
                 </div>
 
-                <div class="mt-10">
-                    {{ $articles->links() }}
-                </div>
+                @if($articles->hasPages())
+                    <nav class="cms-category-pagination mt-12" aria-label="文章分页">
+                        {{ $articles->links('frontend.partials.pagination.default') }}
+                    </nav>
+                @endif
             @endif
         </div>
     </section>

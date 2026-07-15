@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script>
+        $(function () {
+            $('.sort').click(function () {
+                $(this).next().toggle("300");
+            })
+            $('.sort').click();
+            $('.sort')[4].click();
+        })
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        *, body {
+            margin: 0px;
+            padding: 0px;
+            color: rgb(72, 78, 65);
+            font-size: 13px;
+            font-family: '微软雅黑';
+        }
+
+        .container {
+            width: 800px;
+            border: 1px solid #999999;
+            margin: 20px auto;
+            height: auto;
+            border-radius: 10px;
+            -webkit-box-shadow: 0px 0px 10px #888888;
+        }
+
+        .text-align-right {
+            text-align: right;
+            margin: 2px 0px;
+        }
+
+        a {
+            text-decoration: none;
+            color: rgb(224, 108, 8);
+            transition: all 0.5s;
+        }
+
+            a:hover {
+                color: #ff9900;
+                transition: all 0.5s;
+            }
+
+        #headContent {
+            FONT-SIZE: 12px;
+            FONT-FAMILY: Arial,微软雅黑;
+            COLOR: #484e41;
+            MARGIN: 15px;
+            text-align: right;
+        }
+
+        .youku {
+            BACKGROUND: url("http://ipaau.org.cn/images/template/youku.gif") no-repeat 8px -1px;
+            COLOR: #888888;
+            PADDING-LEFT: 32px;
+        }
+
+        .weibo {
+            BACKGROUND: url("http://ipaau.org.cn/images/template/weibo.gif") no-repeat 8px -1px;
+            COLOR: #888888;
+            PADDING-LEFT: 32px;
+            MARGIN-RIGHT: 10px;
+        }
+
+        .sort {
+            padding: 5px;
+            font-size: 16px;
+            border-bottom: 1px solid rgb(224, 108, 8);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+            .sort:hover {
+                color: #ff9900;
+                transition: all 0.5s;
+            }
+
+        .section {
+            display: inline;
+            width: 47%;
+            margin-left: 10px;
+            float: left;
+            height: 250px;
+        }
+
+        .sectiontitle {
+            font-size: 15px;
+            padding: 0px 3px;
+            color: rgb(0,83,128);
+            font-weight: bold;
+        }
+
+        .sectioncontent {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .sectiongroup {
+            cursor: pointer;
+            border-bottom: 1px solid rgb(224, 108, 8);
+            float: left;
+            height: auto;
+        }
+
+        .head {
+            height: 100px;
+        }
+    </style>
+    <style type="text/css"></style>
+    <script></script>
+    <style type="text/css" adt="123"></style>
+    <style type="text/css">
+        .adlesse-hidden {
+            display: none !important;
+        }
+
+        .adlesse-invisible {
+            visibility: hidden !important;
+        }
+
+        #adlesse_configPopup {
+            position: fixed;
+            background-color: #FFFFFF !important;
+            z-index: 5000 !important;
+            width: 1px;
+            height: 1px;
+        }
+
+        #adlesse_configPopup_overlay {
+            z-index: 4999 !important;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 0;
+            background: Black !important;
+        }
+
+        #adlesse_configPopup_iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <style type="text/css">
+        .adlesse-hidden {
+            display: none !important;
+        }
+
+        .adlesse-invisible {
+            visibility: hidden !important;
+        }
+
+        .adlesse-actionpanel {
+            padding: 0 !important;
+            margin: 0 !important;
+            position: absolute !important;
+            z-index: 9999 !important;
+            border: solid #000000 1px !important;
+            background: #ffffff !important;
+            font-family: sans-serif !important;
+            font-weight: normal !important;
+            font-size: 10px !important;
+            text-decoration: none !important;
+            color: #000000 !important;
+        }
+
+            .adlesse-actionpanel a {
+                padding: 0 !important;
+                margin: 0 !important;
+                background: none repeat scroll 0 0 transparent !important;
+                font-family: sans-serif !important;
+                font-weight: normal !important;
+                font-size: 10px !important;
+                text-decoration: none !important;
+                color: #000000 !important;
+                display: inline-block !important;
+            }
+
+                .adlesse-actionpanel a:hover {
+                    text-decoration: underline !important;
+                }
+
+        .adlesse-trans-65 {
+            opacity: 0.65;
+            filter: alpha(opacity=65);
+            -moz-opacity: 0.65;
+            filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=65);
+            -khtml-opacity: 0.65;
+            -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=65)';
+        }
+
+        .adlesse-rounded-corner {
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -khtml-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .adlesse-actionpanel-menu {
+            position: absolute !important;
+            z-index: 9999 !important;
+            background: #ffffff !important;
+            font-family: sans-serif !important;
+            font-weight: normal !important;
+            font-size: 10px !important;
+            text-decoration: none !important;
+            color: #000000 !important;
+            border: 1px solid #000000;
+            text-align: center !important;
+            padding: 0 !important;
+            margin: 5px !important;
+            margin-top: 1px !important;
+            min-width: 55px;
+        }
+
+        .adlesse-actionpanel-menu-h {
+            margin: 5px;
+            list-style-type: none;
+        }
+
+        .adlesse-actionpanel-menu-v {
+            list-style-type: none;
+        }
+
+        .adlesse-actionpanel-menu-h li {
+            background: #ffffff;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px;
+            zoom: 1;
+            *display: inline;
+            border-right: 1px solid #cccccc;
+        }
+
+        .adlesse-actionpanel-menu-v li {
+            background: #ffffff;
+            cursor: pointer;
+            padding: 3px;
+            border-bottom: 1px solid #000000;
+        }
+
+        .adlesse-widget-div {
+        }
+
+        .adlesse-widget-iframe {
+            border: 0px;
+        }
+    </style>
+</head>
+<body promptdialogcheckdone="1">
+    <div class="container">
+        <div id="headContent">
+            <p>您将于每月中旬收到IPA AU中国办公室提供的中国区会员电子通讯，感谢您对协会长久以来的支持与关注！</p>
+            <p>如电邮内容无法正常显示，请<a href="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/201403.html" target="_blank">点击这里</a>查看或进入<a href="http://ipaau.org.cn/login.asp" target="_blank">IPA AU会员专区</a>查看近期IPA AU会员电子通讯。</p>
+            <p>为使您顺利查阅电子通讯，请将<a href="mailto:china.cpe@ipaau.org.cn" target="_blank">china.cpe@ip<wbr>aau.org.cn</a>加入您的邮件白名单。</p>
+            <p>
+                关注IPA AU社交媒体：<a class="weibo" href="http://weibo.com/ipaau" rel="nofollow" target="_blank">微 博</a><a class="youku" href="http://i.youku.com/ipaausocialmedia" rel="nofollow" target="_blank">  优酷</a>
+            </p>
+        </div>
+        <div class="content">
+            <div class="head">
+                <span style="display: inline-block; width: 33%"><img src="http://www.ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/1.png" width="100%"></span>
+                <span style="float: right; padding: 10px">
+                    <p style="color: rgb(224,108,8) ;font-size: 30px;" align="right">
+                        中国区会员电子通讯总第 41 期
+                    </p>
+                    <p style="color: rgb(224,108,8) ;font-size: 30px;" align="right">20 14 年 03 月</p>
+                </span>
+            </div>
+            <a href="http://www.ipaau.org.cn/news/view.asp?id=423" target="_blank"><img src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/theme.jpg" alt="" width="100%"></a>
+            <div style="border-bottom: 1px solid rgb(224,108,8);padding: 3px 15px">
+                快速导航：<a href="http://ipaau.org.cn" target="_blank">中国官方网站</a> | <a href="http://ipaau.org.cn/member/interests" target="_blank">会员权益</a> | <a href="http://ipaau.org.cn/member/upgrade" target="_blank">会员升级</a> | <a href="http://ipaau.org.cn/pay/pay_au_cn.asp" target="_blank">我要续费</a> | <a href="http://ipaau.org.cn/login.asp" target="_blank">会员专区</a> | <a href="http://ipaau.org.cn/CPE/online" target="_blank">CPE讲座报名</a> | <a href="http://ipaau.org.cn/news/index.asp" target="_blank">新闻中心</a> | <a href="http://ipaau.org.cn/industry/index.asp" target="_blank">行业资讯</a> | <a href="http://ipaau.org.cn/read/technical-advantage.asp" target="_blank">澳大利亚会计专业技术更新</a> | <a href="http://ipaau.org.cn/read/chinese.asp" target="_blank">《公共会计师》会刊精选</a>
+                | <a href="http://pubacct.org.au/magazine-archive" target="_blank">《公共会计师》电子数码港（英文）</a>
+            </div>
+            <div class="sort">总部动态 HO UPDATE </div>
+            <div class="sectiongroup">
+                <div class="section" style="height: 170px">
+                    <div class="sectiontitle"><span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span><a href="http://ipaau.org.cn/news/view.asp?id=446" target="_blank" class="sectiontitle">	2014年澳大利亚会员资格对比报告（2014 Membership Benchmarking Report）出炉-IPA AU综合表现排名榜首
+</a></div>
+                    <div class="sectioncontent">
+                       此次年度调查结果显示，IPA AU凭借会员参与度与综合评分项目，在参与调查的十家澳大利亚会员资格协会中，以绝对优势击败持同等法律地位的澳大利亚其他两家专业会计师团体，稳居榜首。以下为调查部分亮点：IPA AU在会员参与度方面表现突出：得分7.78/10高分，……<a target="_blank" href="http://ipaau.org.cn/news/view.asp?id=446">（在线阅读）</a>。
+                    </div>
+                </div>
+                <div class="section" style=" height: 120px;">
+                    <div class="sectiontitle"><span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span><a href="http://ipaau.org.cn/industry/view.asp?id=1450" class="sectiontitle" target="_blank"> IPA AU 提案</a></div>
+                    <div class="sectioncontent">
+                        <p align="justify">澳大利亚税务执业人员理事会（TPB）- 职业行为守则</p>
+                     
+                        <p>取缔亏损转回条款                                       </p>
+       
+                        <p> 从澳洲员工福利税（FBT）开启去繁之旅       </p>
+                        ……
+                        <a target="_blank" href="http://ipaau.org.cn/industry/view.asp?id=1450">（在线阅读）</a>。
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="sectiontitle"><span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span><a class="sectiontitle" href="http://www.ipaau.org.cn/media/" style="border: none;" target="_blank">IPA AU在全球媒体</a></div>
+                    <div class="sectioncontent">
+                        <p>个体经营者                                                                   </p>
+                        <p>者担心SMSF监管过度                                                     </p>
+                        <p> AU理事会赞成APES230替代声明                                    </p>
+                        <p> AU突破APES230                                                        </p>
+                        <p>小企业是件大事                                                             </p>
+                        <p> AU反对最小化SMSF平衡                                               </p>
+                        <p>  IPA AU联合澳大利亚迪肯大学发起SME调研活动             </p>
+                        ……
+                        <a target="_blank" href="http://www.ipaau.org.cn/media/">（在线阅读）</a>。
+                    </div>
+                </div>
+                <div class="section" style="margin-top:-170px;height: 200px">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style="border: none; " class="sectiontitle" href="http://www.ipaau.org.cn/industry/view.asp?id=1461" target="_blank">澳大利亚取消企业雇主为员工支付产假薪水规定</a>
+                    </div>
+                    <div class="sectioncontent">
+                        IPA AU就《澳大利亚带薪产假修订法案2014》的正式发布向政府道贺。此次修订取消了雇主为员工支付产假期间薪水的规定。 “IPA AU之所以一直倡导该变更，是因为我们意识到，为雇员支付产假薪水属于澳大利亚政府行使工作范畴，而非企业雇主，” IPA AU全球执行总裁安德鲁﹒……
+                        <a target="_blank" href="http://ipaau.org.cn/industry/view.asp?id=1461">（在线阅读）</a>。
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="sort">会员CPE活动报道CPE REPORT</div>
+            <div class="sectiongroup">
+                <div class="section" style="height: 320px;">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style="border: none;" class="sectiontitle" href="http://www.ipaau.org.cn/active/view.asp?id=87" target="_blank">【CPE讲座-广州】《资本市场会计监管及其法律框架》后续教育讲座顺利举办</a>
+                    </div>
+                    <div class="sectioncontent">
+                        2014年1月12日下午，澳大利亚公共会计师协会（IPA AU）成功在广州大学（大学城校区）为会员举办了《资本市场会计监管及其法律框架》的CPE后续教育讲座，特别邀请了中国证监会会计部副处长夏文贤博士主讲……
+                        <a target="_blank" href="http://www.ipaau.org.cn/active/view.asp?id=87">（在线阅读）</a>。
+                        <img align="right" src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/image004.jpg" alt="【CPE讲座•广州】《资本市场会计监管及其法律框架》后续教育讲座顺利举办" width="55%">
+                    </div>
+                </div>
+
+                <div class="section" style="height: 290px">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style="border: none;" class="sectiontitle" href="http://www.ipaau.org.cn/active/view.asp?id=88" target="_blank">【沙龙聚会】马年春茗活动圆满举办</a>
+                    </div>
+                    <div class="sectioncontent">
+                        <p>2014年2月22日，澳大利亚公共会计师协会（IPA AU）在广州市东逸湾酒店成功举行了主题</p>
+                        <p>“ALL WELCOME BACK DINNER”的广州地区会员春茗活动……<a target="_blank" href="http://www.ipaau.org.cn/active/view.asp?id=88">（在线阅读）</a>。</p>
+                        <img src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/image005.png" alt="【CPE讲座•广州】《资本市场会计监管及其法律框架》后续教育讲座顺利举办" width="100%">
+                    </div>
+                </div>
+                <div style="clear: both;border-bottom: 1px solid rgb(224,108,8)"></div>
+                <div style="clear: both;  margin: 0px auto; width:100%;;  height: 161px;">
+                    <div style="width: 99%;margin: 0px auto;height: 30px; ">
+                        <div class="sectiontitle">
+                            <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                            <a style="border: none;" class="sectiontitle" href="http://ipaau.org.cn/CPE/world/" target="_blank">全球在线英文即时讲座预告</a>
+                        </div>
+                        <div style="padding: 25px;padding-top: 5px">
+                            <p><a href="http://ipaau.org.cn/CPE/world/" target="_blank">准备迎接SMSF新世界</a>	2014.04.02（周三）</p>
+                            <p><a href="http://ipaau.org.cn/CPE/world/" target="_blank">澳大利亚税收季度更新</a>	2014.04.03（周四）</p>
+                            <p style="margin-top:10px "><a href="http://ipaau.org.cn/CPE/world/" target="_blank">IPA AU全球CPE在线英文课程</a>作为协会原创独有资源，英文课程均由IPA AU聘请外籍专家讲师讲解，会员可与讲师进行即时在线互动。为鼓励中国区会员专业继续教育同世界接轨，开拓视野，IPA AU中国办公室每月挑选并录制精品课程，并提供中文讲义，中国区会员可登陆会员专区-IPA AU全球CPE在线课程免费学习。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sort">中国区资讯CHINESE DIVISION UPDATES</div>
+            <div class="sectiongroup">
+                <div class="section" style="height: 380px;">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style="border: none;" class="sectiontitle" href="http://www.ipaau.org.cn/news/view.asp?id=426" target="_blank">IPA AU 2014年为中注协会员特辟快速通道 !</a>
+                    </div>
+                    <div class="sectioncontent">
+                        <img src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/image006.png" alt="IPA AU 2014年为中注协会员特辟快速通道 !" width="100%">
+                    </div>
+                </div>
+                <div class="section" style="height: 380px;">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a href="http://ipaau.org.cn/news/view.asp?id=445" class="sectiontitle" target="_blank">2013-14年第三季度IPA AU专业能力水平测试报道</a>
+                    </div>
+                    <div class="sectioncontent">
+                        针对已经通过学历及职业能力评估资格申请人，IPA AU已于2014年03月22日（周六）举办2013-2014年第三季度专业能力水平测试，考试科目为《国际财务报告准则》和《国际会计师职业道德准则》。本次测试分别在成都、苏州、深圳、广州、福州五个城市设立考点。中国区首席代表陈荣女士对相关地区进行巡考……
+                        <a target="_blank" href="http://ipaau.org.cn/news/view.asp?id=445">（在线阅读）</a>。
+                        <img src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/image007.png" alt="IPA AU  2013-14年第三季度IPA AU专业能力水平测试报道" width="100%">
+                    </div>
+                </div>
+            </div>
+            <div class="sort">会员知识MEMBER KNOWLEDGE</div>
+            <div class="sectiongroup" style="width:100%;">
+                <div class="section" style="height: 240px; width: 97%">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style="border: none;" class="sectiontitle" href="http://www.ipaau.org.cn/read/technical-advantage.asp" target="_blank">澳大利亚会计专业技术更新（第273-274期）</a>
+                    </div>
+                    <div class="sectioncontent">
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">FoFA体制变更联合声明</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">澳洲财政部支持FoFA修订举措</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">政府就非法定政策表明立场</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">澳大利亚就员工持股计划及其启动征求意见</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">澳大利亚税收法规小范围修订</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">2014年员工福利税纳税申报截止日期更新通知</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">澳大利亚税务理事会发布PI保险更新指引</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">PI保险信息需及时向TPB更新</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">慈善法于2014年1月1日生效</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">TPB课程名单更新</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">ATO电联建筑企业</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">SPAA称澳洲税务总署数据显示SMSF借款依旧谨慎</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">政府就非法定政策表明立场</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">澳大利亚就员工持股计划及其启动征求意见</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">ATO被审核指出需变更流程和文化</a>
+                            <a style=" display: inline-block; width: 400px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=66" target="_blank">APESB发布估值服务指引</a>
+                        </p>
+                        <p>
+                            <a style=" display: inline-block;width: 300px;" href="http://www.ipaau.org.cn/read/technical-advantage-view.asp?id=65" target="_blank">2014及未来会计行业走势</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="section" style=" margin-top: 0px; height: 150px; width: 97%">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a style=" border: none;" class="sectiontitle" href="http://www.ipaau.org.cn/read/chinese.asp" target="_blank">《公共会计师》会刊精选</a>
+                    </div>
+                    <div class="sectioncontent">
+                        <p>
+                            <span style="color: #ff9900;font-weight: bold;font-size: 20px"></span>
+                            <b><a style="border: none;" href="http://www.ipaau.org.cn/read/chinese-view.asp?id=98" target="_blank">让客户正确对待财务</a></b>
+                            —新发布的信用报告规则会促使企业主在企业信用受到打击前，去清理他们个人的历史财务信息
+                        </p>
+                        <p>
+                            <span style="color: #ff9900;font-weight: bold;font-size: 20px"></span>
+                            <b> <a style="border: none;" href="http://www.ipaau.org.cn/read/chinese-view.asp?id=99" target="_blank">发现你的小众市场</a></b>—随着商品会计的消失与在线会计的出现，这对专攻会计的会计师来说既是压力也是机会
+                        </p>
+                        <p>
+                            <span style="color: #ff9900;font-weight: bold;font-size: 20px"></span>
+                            <b> <a style="border: none;" href="http://www.ipaau.org.cn/read/chinese-view.asp?id=100" target="_blank">获取个人信息</a></b>—有相当数量的商业人士无法做出恰当的财务决定，因此作为会计则需密切关注危险信号
+                        </p>
+                        <p align="right">原载自澳大利亚公共会计师协会《公共会计师》2014年02-03月号，</p>
+                        <p align="right">更多原创文章请登陆<a href="http://pubacct.org.au/" target="_blank">《公共会计师》数码港</a>查看。</p>
+                    </div>
+                </div>
+                <div class="section" style="/* height: 200px; */ width: 97%">
+                    <div class="sectiontitle">
+                        <span style="color: #ff9900;font-weight: bold;font-size: 20px">○</span>
+                        <a href="http://ipaau.org.cn/industry/index.asp" target="_blank" style="border: none;" class="sectiontitle">行业信息摘要TECHNICAL INFORMATION</a>
+                    </div>
+                    <div class="sectioncontent">
+                        <div class="section" style="height: 175px">
+                            <a href="http://ipaau.org.cn/industry/view.asp?id=1464" target="_blank" class="sectiontitle">2月财会摘要</a>
+                            <div class="sectioncontent" style="padding: 10px 10px">
+                                <p>1.	中国财政部修订会计准则第33号合并财务报表</p>
+                                <p>2.	中国财政部更新薪酬会计准则</p>
+                                <p>3.	中国会计师事务所数量达8209家</p>
+                                <p>4.	中国就会计所在自贸区设分所征意见</p>
+                                <p>5.	AICPA发布内部审计师工作成果使用准则</p>
+                                <p>6.	IAASB发布新的审计质量框架</p>
+                                <p>7.	普华报告：美企财务舞弊状况并未改善</p>
+                            </div>
+                        </div>
+                        <div class="section" style="height: 175px">
+                            <a href="http://ipaau.org.cn/industry/view.asp?id=1463" target="_blank" class="sectiontitle">2月财经摘要</a>
+                            <div class="sectioncontent" style="padding: 10px 10px">
+                                <p>1.	消费者网购7天内可无理由退货</p>
+                                <p>2.	粤港澳自贸区或纳入白云机场保税区</p>
+                                <p>3.	中国有望统一各类企业营业执照版式</p>
+                                <p>4.	中国将统一城乡居民基本养老保险制度</p>
+                                <p>5.	企业年检3月起正式取消</p>
+                                <p>6.	上海自贸区“扩大人民币跨境使用细则”发布</p>
+                                <p>7.	中国银监会发布商业银行流动性风险管理办法</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sort"> 您的电子邮箱地址如有变动，请<a style="font-size: 18px" href="http://ipaau.org.cn/login.asp" target="_blank">点击此处</a>登录会员专区-我的信息中更新您最新电子邮箱</div>
+            <div style=";width: 100%; height: 130px ;background: rgb(72,78,65);">
+                <div style="padding: 20px;">
+                    <span style="width: 85%; display: inline-block">
+                        <p style=" color: #ffffff">更多有关IPA AU 会员资格及服务咨询，请联系IPA AU中国（北京）办公室</p>
+                        <p style=" color: #ffffff">
+                            北京市朝阳区东三环北路霞光里66号远洋新干线A座1503室 ︱t:  010-8446 7570︱f: 010-8446 7580
+                            e:  <a href="mailto:China.office@publicaccountants.org.au">China.office@publicaccountants.org.au</a> ; <a href="mailto:China.membership@publicaccountants.org.au">China.membership@publicaccountants.org.au</a>
+                        </p>
+                        <b> <p style=" margin-top: 18px; color: #ffffff; font-size: 20px" align="right">扫一扫，关注IPA AU 中国官方微信</p></b>
+                    </span>
+                    <span style="float: right">
+                        <img style="width: 100px" src="http://ipaau.org.cn/member/MyAccount/newsLetter/201403/201403dir/image008.png" title="扫一扫">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
