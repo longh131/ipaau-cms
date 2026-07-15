@@ -18,6 +18,9 @@ class Article extends Model
         'category_id',
         'content',
         'summary',
+        'author',
+        'source',
+        'view_count',
         'cover_image',
         'redirect_url',
         'published_at',
@@ -34,6 +37,7 @@ class Article extends Model
         'is_featured' => 'boolean',
         'is_sticky' => 'boolean',
         'is_active' => 'boolean',
+        'view_count' => 'integer',
     ];
 
     public function category(): BelongsTo

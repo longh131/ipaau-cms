@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CategoryResource\RelationManagers;
 
+use App\Filament\Concerns\GeneratesArticleSlug;
 use App\Filament\Resources\ArticleResource;
 use App\Filament\Resources\ArticleResource\Schemas\ArticleFormSchema;
 use App\Models\Article;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ArticlesRelationManager extends RelationManager
 {
+    use GeneratesArticleSlug;
+
     protected static string $relationship = 'articles';
 
     protected static ?string $title = '栏目文章';

@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\ArticleResource\Pages;
 
+use App\Filament\Concerns\GeneratesArticleSlug;
 use App\Filament\Resources\ArticleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateArticle extends CreateRecord
 {
+    use GeneratesArticleSlug;
+
     protected static string $resource = ArticleResource::class;
 
     protected function getRedirectUrl(): string

@@ -118,6 +118,8 @@ class FrontendController extends Controller
             return redirect()->away($article->redirect_url);
         }
 
+        $article->increment('view_count');
+
         return view('frontend.article', [
             'article' => $article,
             'category' => $article->category,

@@ -7,6 +7,7 @@ use App\Filament\Resources\ArticleResource\Schemas\ArticleFormSchema;
 use App\Models\Article;
 use App\Models\Category;
 use App\Support\ArticleExtraFields;
+use App\Support\ArticleSlug;
 use App\Support\MediaUrl;
 use Filament\Actions;
 use Filament\Resources\Resource;
@@ -134,6 +135,14 @@ class ArticleResource extends Resource
         $data['cover_image'] = filled($data['cover_image'] ?? null)
             ? MediaUrl::normalizeStoredPath($data['cover_image'])
             : null;
+        $data['author'] = filled($data['author'] ?? null) ? trim((string) $data['author']) : null;
+        $data['source'] = filled($data['source'] ?? null) ? trim((string) $data['source']) : null;
+        $data['view_count'] = max(0, (int) ($data['view_count'] ?? 0));
+
+        if (blank($data['slug'] ?? null) && filled($data['title'] ?? null)) {
+            $ignoreId = is_numeric($data['id'] ?? null) ? (int) $data['id'] : null;
+            $data['slug'] = ArticleSlug::fromTitle((string) $data['title'], $ignoreId);
+        }
 
         return $data;
     }

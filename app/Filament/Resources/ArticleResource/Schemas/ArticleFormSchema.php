@@ -5,11 +5,16 @@ namespace App\Filament\Resources\ArticleResource\Schemas;
 use App\Models\Category;
 use App\Filament\Forms\ImageUpload;
 use App\Support\ArticleExtraFields;
+use App\Support\ArticleSlug;
 use App\Support\RichContent;
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class ArticleFormSchema
 {
@@ -18,11 +23,40 @@ class ArticleFormSchema
         return $schema->components([
             Forms\Components\TextInput::make('title')
                 ->label('标题')
-                ->required(),
+                ->required()
+                ->live(onBlur: true)
+                ->afterStateUpdated(function (?string $state, Set $set, Get $get): void {
+                    if (filled(trim((string) $get('slug'))) || blank($state)) {
+                        return;
+                    }
+
+                    $set('slug', ArticleSlug::fromTitle($state));
+                }),
             Forms\Components\TextInput::make('slug')
                 ->label('别名')
                 ->required()
-                ->unique(ignoreRecord: true),
+                ->unique(ignoreRecord: true)
+                ->helperText('填写标题后，点击此框可自动生成别名；也可点右侧按钮重新生成，或手动修改')
+                ->suffixAction(
+                    Action::make('generateSlugFromTitle')
+                        ->label('根据标题生成')
+                        ->icon(Heroicon::ArrowPath)
+                        ->action(function (Get $get, Set $set): void {
+                            if (blank($get('title'))) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('请先填写标题')
+                                    ->send();
+
+                                return;
+                            }
+
+                            $set('slug', ArticleSlug::fromTitle($get('title')));
+                        }),
+                )
+                ->extraInputAttributes([
+                    'x-on:focus' => 'if (! $el.value.trim()) { $wire.generateArticleSlugFromTitle() }',
+                ]),
             Forms\Components\Select::make('category_id')
                 ->label('所属栏目')
                 ->options(fn (): array => Category::query()
@@ -44,6 +78,22 @@ class ArticleFormSchema
                 ->label('文章摘要')
                 ->rows(3)
                 ->columnSpanFull(),
+            Forms\Components\TextInput::make('author')
+                ->label('作者')
+                ->maxLength(255)
+                ->columnSpan(1),
+            Forms\Components\TextInput::make('source')
+                ->label('来源')
+                ->maxLength(255)
+                ->placeholder('例如：IPA 官网、转载媒体名称')
+                ->columnSpan(1),
+            Forms\Components\TextInput::make('view_count')
+                ->label('访问量')
+                ->numeric()
+                ->minValue(0)
+                ->default(0)
+                ->helperText('可手动填写；用户访问文章详情页时会自动 +1')
+                ->columnSpan(1),
             ImageUpload::make(
                 'cover_image',
                 'articles/covers',

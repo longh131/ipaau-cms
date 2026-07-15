@@ -44,6 +44,29 @@
                         {{ $article->summary }}
                     </p>
                 @endif
+
+                @if(filled($article->author) || filled($article->source) || ($article->view_count ?? 0) > 0)
+                    <dl class="cms-article-meta mt-4 font-din text-primary text-base flex flex-wrap gap-x-6 gap-y-2">
+                        @if(filled($article->author))
+                            <div class="cms-article-meta__item">
+                                <dt class="inline">作者：</dt>
+                                <dd class="inline">{{ $article->author }}</dd>
+                            </div>
+                        @endif
+                        @if(filled($article->source))
+                            <div class="cms-article-meta__item">
+                                <dt class="inline">来源：</dt>
+                                <dd class="inline">{{ $article->source }}</dd>
+                            </div>
+                        @endif
+                        @if(($article->view_count ?? 0) > 0)
+                            <div class="cms-article-meta__item">
+                                <dt class="inline">访问量：</dt>
+                                <dd class="inline">{{ number_format($article->view_count) }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                @endif
             </header>
 
             @php($bodyHtml = \App\Support\RichContent::toHtml($article->content))

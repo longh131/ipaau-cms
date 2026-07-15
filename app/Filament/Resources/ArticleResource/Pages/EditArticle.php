@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\ArticleResource\Pages;
 
+use App\Filament\Concerns\GeneratesArticleSlug;
 use App\Filament\Resources\ArticleResource;
 use App\Support\MediaUrl;
 use Filament\Resources\Pages\EditRecord;
 
 class EditArticle extends EditRecord
 {
+    use GeneratesArticleSlug;
+
     protected static string $resource = ArticleResource::class;
 
     /**
