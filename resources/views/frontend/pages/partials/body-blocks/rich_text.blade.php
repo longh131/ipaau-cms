@@ -1,15 +1,22 @@
 @php
     $hasTitle = filled($block['title'] ?? null);
     $hasHtml = filled(strip_tags((string) ($block['html'] ?? '')));
+    $layout = $layout ?? 'default';
     $titleAlign = match ($block['title_align'] ?? 'center') {
         'left' => 'text-left',
         'right' => 'text-right',
         default => 'text-center',
     };
+    $bodyAlign = ($layout === 'professional_assistance' && ($block['title_align'] ?? 'center') === 'center')
+        ? 'text-center'
+        : 'text-left';
 @endphp
 
 @if($hasTitle || $hasHtml)
-    <div class="about-rich-text text-left cms-body-block cms-body-block--rich-text">
+    <div @class([
+        'about-rich-text cms-body-block cms-body-block--rich-text',
+        $titleAlign,
+    ])>
         @if($hasTitle)
             <h3 @class([
                 'cms-rich-text__title cms-section-title font-apex-book mb-0',
@@ -23,6 +30,7 @@
             <div
                 @class([
                     'cms-page-content cms-rich-text__body text-[color:var(--ipa-color)] font-din',
+                    $bodyAlign,
                     'mt-8' => $hasTitle,
                 ])
                 data-rte="true"

@@ -8,7 +8,9 @@ use App\Filament\Resources\CategoryResource\RelationManagers\ArticlesRelationMan
 use App\Models\Category;
 use App\Models\Setting;
 use App\Support\ArticleExtraFields;
+use App\Support\CategoryIntroduction;
 use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+use App\Support\RichContent;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -58,6 +60,28 @@ class CategoryResource extends Resource
         return $options;
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public static function normalizeFormData(array $data): array
+    {
+        $data['introduction'] = CategoryIntroduction::forForm($data['introduction'] ?? null);
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public static function normalizeStorageData(array $data): array
+    {
+        $data['introduction'] = CategoryIntroduction::forStorage($data['introduction'] ?? null);
+
+        return $data;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -88,6 +112,16 @@ class CategoryResource extends Resource
                     ->options(CategoryListTemplateRegistry::OPTIONS)
                     ->default(CategoryListTemplateRegistry::TEMPLATE_SIMPLE)
                     ->helperText('仅对「文章」类型栏目生效，决定前台列表展示样式')
+                    ->visible(fn (Get $get): bool => $get('type') === 'article')
+                    ->columnSpanFull(),
+                RichContent::configureFileAttachments(
+                    Forms\Components\RichEditor::make('introduction')
+                        ->label('栏目介绍')
+                        ->json()
+                        ->toolbarButtons(RichContent::pageToolbar())
+                        ->helperText('显示在栏目标题下方；建议说明本栏目内容范围，如专业技术、数字咨询、会刊精选等')
+                        ->columnSpanFull(),
+                )
                     ->visible(fn (Get $get): bool => $get('type') === 'article')
                     ->columnSpanFull(),
                 Forms\Components\Repeater::make('article_extra_field_schema')

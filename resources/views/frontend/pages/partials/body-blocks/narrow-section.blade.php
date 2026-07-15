@@ -1,6 +1,7 @@
 @php
     /** @var array{type: string} $block */
     $blockType = $block['type'] ?? 'rich_text';
+    $layout = $layout ?? 'default';
 @endphp
 
 <section
@@ -17,6 +18,7 @@
     <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
         @include('frontend.pages.partials.body-blocks.'.$blockType, [
             'block' => $block,
+            'layout' => $layout,
         ])
     </div>
 </section>

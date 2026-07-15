@@ -18,12 +18,15 @@ class Page extends Model
 
     public const TEMPLATE_GENERAL_SECONDARY = 'general_secondary';
 
+    public const TEMPLATE_PROFESSIONAL_ASSISTANCE = 'professional_assistance';
+
     /** @var array<string, string> */
     public const TEMPLATE_OPTIONS = [
         self::TEMPLATE_DEFAULT => '默认正文页',
         self::TEMPLATE_BASIC_CONTENT => '基本正文页',
         self::TEMPLATE_GOVERNANCE => '治理正文页',
         self::TEMPLATE_GENERAL_SECONDARY => '通用二级页',
+        self::TEMPLATE_PROFESSIONAL_ASSISTANCE => '专业协助页',
     ];
 
     protected $fillable = [

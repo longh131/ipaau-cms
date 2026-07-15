@@ -19,6 +19,7 @@ class Category extends Model
         'type',
         'list_template',
         'article_extra_field_schema',
+        'introduction',
         'sort_order',
         'is_active',
     ];

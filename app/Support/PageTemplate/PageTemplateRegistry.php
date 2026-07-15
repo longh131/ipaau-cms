@@ -7,6 +7,7 @@ use App\Support\PageTemplate\Templates\BasicContentPageData;
 use App\Support\PageTemplate\Templates\DefaultPageData;
 use App\Support\PageTemplate\Templates\GeneralSecondaryPageData;
 use App\Support\PageTemplate\Templates\GovernancePageData;
+use App\Support\PageTemplate\Templates\ProfessionalAssistancePageData;
 
 class PageTemplateRegistry
 {
@@ -16,6 +17,7 @@ class PageTemplateRegistry
         Page::TEMPLATE_BASIC_CONTENT => BasicContentPageData::class,
         Page::TEMPLATE_GOVERNANCE => GovernancePageData::class,
         Page::TEMPLATE_GENERAL_SECONDARY => GeneralSecondaryPageData::class,
+        Page::TEMPLATE_PROFESSIONAL_ASSISTANCE => ProfessionalAssistancePageData::class,
     ];
 
     public static function dataClass(string $template): ?string

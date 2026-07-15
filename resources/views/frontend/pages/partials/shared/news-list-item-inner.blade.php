@@ -1,3 +1,14 @@
+@if(filled($tagline ?? null))
+    <span
+        class="cms-news-list-curated__tagline eyebrow-md block mb-3 text-left"
+        style="
+            --ipa-color-light: oklch(0.4867 0.1803 336.11);
+            --ipa-color-dark: oklch(0.8944 0.0357 331.62);
+            color: var(--ipa-color-light);
+        "
+    >{{ $tagline }}</span>
+@endif
+
 @if(filled($title ?? null))
     <h2 class="mb-0 font-medium font-din text-2xl leading-[1.4] tracking-[.04em] uppercase inline-flex gap-3 items-center text-link group-hover/noImageCard:underline group-hover/noImageCard:text-link-hover text-left">
         {{ $title }}

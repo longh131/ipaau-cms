@@ -11,6 +11,7 @@ class MediaUrl
         'page-components/',
         'media/',
         'menu-promo/',
+        'articles/',
     ];
 
     public static function resolve(mixed $path): ?string

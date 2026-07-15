@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PageResource\Forms;
 use App\Filament\Forms\ImageUpload;
 use App\Support\PageTemplate\GeneralSecondarySections;
 use App\Support\PageTemplate\PageBodyBlocks;
+use App\Support\PageTemplate\ProfessionalAssistanceSections;
 use App\Support\RichContent;
 use Filament\Forms;
 use Filament\Schemas\Components\Fieldset;
@@ -821,6 +822,132 @@ class BodyBlockFormSchemas
             GeneralSecondarySections::TYPE_LEFT_RIGHT_LAYOUT => self::generalSecondaryLeftRightLayoutFields(),
             GeneralSecondarySections::TYPE_TABBED_CONTENT => self::generalSecondaryTabbedContentFields(),
             GeneralSecondarySections::TYPE_MEDIA_SPLIT => self::generalSecondaryMediaSplitFields(),
+            default => [],
+        };
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function professionalAssistanceHtmlBodyFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('tagline')
+                ->label('小标题')
+                ->placeholder('例如：Professional Support')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('title')
+                ->label('大标题')
+                ->placeholder('例如：How We Can Help')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Textarea::make('body')
+                ->label('正文（HTML 源码）')
+                ->rows(24)
+                ->helperText('直接粘贴或编写 HTML，保存后前台原样渲染。')
+                ->columnSpanFull()
+                ->extraInputAttributes([
+                    'class' => 'font-mono text-sm',
+                    'spellcheck' => 'false',
+                ]),
+        ];
+    }
+
+    public static function professionalAssistanceNewsListAFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('section_title')
+                ->label('板块标题')
+                ->placeholder('例如：Latest News')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Select::make('section_background')
+                ->label('板块背景')
+                ->options(GeneralSecondarySections::NEWS_LIST_BACKGROUND_OPTIONS)
+                ->default(GeneralSecondarySections::NEWS_LIST_BG_GRAY)
+                ->required()
+                ->columnSpanFull(),
+            RichContent::nestedRichEditor('summary', '摘要'),
+            Forms\Components\TextInput::make('view_more_label')
+                ->label('「查看更多」按钮文字')
+                ->default('查看更多')
+                ->maxLength(80)
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('items')
+                ->label('新闻列表')
+                ->helperText('前台默认显示 3 条，其余通过「查看更多」展开；每行 3 个卡片')
+                ->schema([
+                    Forms\Components\TextInput::make('tagline')
+                        ->label('小标题')
+                        ->placeholder('例如：MEMBER BENEFIT')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('title')
+                        ->label('新闻标题')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Forms\Components\Textarea::make('summary')
+                        ->label('概要')
+                        ->rows(3)
+                        ->maxLength(1000)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('url')
+                        ->label('链接')
+                        ->placeholder('https:// 或 /category/...')
+                        ->maxLength(2048)
+                        ->columnSpan(1),
+                    Forms\Components\Select::make('target')
+                        ->label('打开方式')
+                        ->options([
+                            '' => '当前窗口',
+                            '_blank' => '新窗口',
+                        ])
+                        ->default('_blank')
+                        ->columnSpan(1),
+                ])
+                ->minItems(1)
+                ->maxItems(48)
+                ->reorderable()
+                ->addActionLabel('添加新闻')
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
+    }
+
+    /**
+     * 专业协助页：按板块类型只挂载对应字段。
+     *
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function professionalAssistanceBlockFields(?string $type): array
+    {
+        return match ($type) {
+            ProfessionalAssistanceSections::TYPE_RICH_TEXT => [
+                Forms\Components\TextInput::make('title')
+                    ->label('标题')
+                    ->placeholder('例如：Who We Are')
+                    ->helperText('可选；显示在正文上方，样式与 About 页章节标题一致')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('title_align')
+                    ->label('标题对齐')
+                    ->options(PageBodyBlocks::TITLE_ALIGN_OPTIONS)
+                    ->default('center')
+                    ->columnSpanFull(),
+                RichContent::nestedRichEditor('html', '段落内容')
+                    ->helperText('请展开本板块，填写段落内容后再保存；折叠状态下富文本可能不会写入数据库。'),
+            ],
+            ProfessionalAssistanceSections::TYPE_HTML_BODY => self::professionalAssistanceHtmlBodyFields(),
+            ProfessionalAssistanceSections::TYPE_NEWS_LIST_A => self::professionalAssistanceNewsListAFields(),
+            ProfessionalAssistanceSections::TYPE_MEDIA_SPLIT => [
+                ...self::mediaSplitFields(),
+                self::bodyBlockButtonsRepeater()
+                    ->visible(true)
+                    ->helperText('可选；需同时填写按钮文字与链接，保存后前台才会显示'),
+            ],
+            ProfessionalAssistanceSections::TYPE_CAROUSEL => self::carouselFields(),
             default => [],
         };
     }

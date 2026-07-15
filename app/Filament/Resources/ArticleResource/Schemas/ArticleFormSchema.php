@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ArticleResource\Schemas;
 
 use App\Models\Category;
+use App\Filament\Forms\ImageUpload;
 use App\Support\ArticleExtraFields;
 use App\Support\RichContent;
 use Filament\Forms;
@@ -43,6 +44,12 @@ class ArticleFormSchema
                 ->label('文章摘要')
                 ->rows(3)
                 ->columnSpanFull(),
+            ImageUpload::make(
+                'cover_image',
+                'articles/covers',
+                '封页',
+                '建议横图，用于列表卡片封面；支持 JPG / PNG / WebP',
+            )->columnSpanFull(),
             RichContent::configureFileAttachments(
                 Forms\Components\RichEditor::make('content')
                     ->label('内容')

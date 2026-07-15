@@ -10,6 +10,7 @@ use App\Support\PageTemplate\PageTemplateRegistry;
 use App\Support\PageTemplate\Templates\BasicContentPageData;
 use App\Support\PageTemplate\Templates\GeneralSecondaryPageData;
 use App\Support\PageTemplate\Templates\GovernancePageData;
+use App\Support\PageTemplate\Templates\ProfessionalAssistancePageData;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Validation\ValidationException;
 
@@ -63,6 +64,7 @@ class CreatePage extends CreateRecord
             Page::TEMPLATE_BASIC_CONTENT => BasicContentPageData::contentSnapshot($data['data']),
             Page::TEMPLATE_GOVERNANCE => GovernancePageData::contentSnapshot($data['data']),
             Page::TEMPLATE_GENERAL_SECONDARY => GeneralSecondaryPageData::contentSnapshot($data['data']),
+            Page::TEMPLATE_PROFESSIONAL_ASSISTANCE => ProfessionalAssistancePageData::contentSnapshot($data['data']),
             default => PageBodyBlocks::legacyContentSnapshot($data['data']['body_blocks'] ?? null),
         };
 
@@ -87,6 +89,12 @@ class CreatePage extends CreateRecord
         if ($template === Page::TEMPLATE_GENERAL_SECONDARY && ! GeneralSecondaryPageData::hasContent($data['data'])) {
             throw ValidationException::withMessages([
                 'data.sections' => '请填写标题、摘要或至少添加一个有效板块。',
+            ]);
+        }
+
+        if ($template === Page::TEMPLATE_PROFESSIONAL_ASSISTANCE && ! ProfessionalAssistancePageData::hasContent($data['data'])) {
+            throw ValidationException::withMessages([
+                'data.sections' => '请至少添加一个有效板块。',
             ]);
         }
 

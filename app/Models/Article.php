@@ -18,6 +18,7 @@ class Article extends Model
         'category_id',
         'content',
         'summary',
+        'cover_image',
         'redirect_url',
         'published_at',
         'is_featured',

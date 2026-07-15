@@ -7,6 +7,7 @@ use App\Filament\Resources\ArticleResource\Schemas\ArticleFormSchema;
 use App\Models\Article;
 use App\Models\Category;
 use App\Support\ArticleExtraFields;
+use App\Support\MediaUrl;
 use Filament\Actions;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -130,6 +131,9 @@ class ArticleResource extends Resource
         $category = $categoryId ? Category::query()->find($categoryId) : null;
         $schema = ArticleExtraFields::normalizeSchema($category?->article_extra_field_schema);
         $data['extra_fields'] = ArticleExtraFields::normalizeValuesForStorage($data['extra_fields'] ?? [], $schema);
+        $data['cover_image'] = filled($data['cover_image'] ?? null)
+            ? MediaUrl::normalizeStoredPath($data['cover_image'])
+            : null;
 
         return $data;
     }

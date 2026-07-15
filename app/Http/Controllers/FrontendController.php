@@ -94,13 +94,15 @@ class FrontendController extends Controller
             ->orderByDesc('is_sticky')
             ->orderByDesc('published_at')
             ->orderByDesc('sort_order')
-            ->paginate(12);
+            ->paginate(CategoryListTemplateRegistry::perPageFor($category));
 
         return view(CategoryListTemplateRegistry::viewFor($category), [
             'category' => $category,
             'articles' => $articles,
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
             'listFields' => \App\Support\ArticleExtraFields::listFields($category->article_extra_field_schema),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'initialVisible' => CategoryListTemplateRegistry::initialVisibleFor($category),
         ]);
     }
 

@@ -106,6 +106,7 @@
                                         style="--bg-color: #F2F2F2; background-color: var(--bg-color);"
                                     >
                                         @include('frontend.pages.partials.shared.news-list-item-inner', [
+                                            'tagline' => trim((string) ($item['tagline'] ?? '')),
                                             'title' => $title,
                                             'summary' => $summary,
                                             'showArrow' => true,
@@ -120,6 +121,7 @@
                                         style="--bg-color: #F2F2F2; background-color: var(--bg-color);"
                                     >
                                         @include('frontend.pages.partials.shared.news-list-item-inner', [
+                                            'tagline' => trim((string) ($item['tagline'] ?? '')),
                                             'title' => $title,
                                             'summary' => $summary,
                                             'showArrow' => false,

@@ -6,11 +6,13 @@ use App\Filament\Resources\PageResource\Forms\BasicContentPageForm;
 use App\Filament\Resources\PageResource\Forms\DefaultPageForm;
 use App\Filament\Resources\PageResource\Forms\GeneralSecondaryPageForm;
 use App\Filament\Resources\PageResource\Forms\GovernancePageForm;
+use App\Filament\Resources\PageResource\Forms\ProfessionalAssistancePageForm;
 use App\Models\Category;
 use App\Models\Page;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -44,30 +46,6 @@ class PageResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $defaultTemplateFields = collect(DefaultPageForm::schema())
-            ->map(fn ($component) => $component->visible(
-                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_DEFAULT,
-            ))
-            ->all();
-
-        $basicContentTemplateFields = collect(BasicContentPageForm::schema())
-            ->map(fn ($component) => $component->visible(
-                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_BASIC_CONTENT,
-            ))
-            ->all();
-
-        $governanceTemplateFields = collect(GovernancePageForm::schema())
-            ->map(fn ($component) => $component->visible(
-                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_GOVERNANCE,
-            ))
-            ->all();
-
-        $generalSecondaryTemplateFields = collect(GeneralSecondaryPageForm::schema())
-            ->map(fn ($component) => $component->visible(
-                fn (Get $get): bool => ($get('template') ?? Page::TEMPLATE_DEFAULT) === Page::TEMPLATE_GENERAL_SECONDARY,
-            ))
-            ->all();
-
         return $schema
             ->components([
                 Forms\Components\Select::make('category_id')
@@ -119,10 +97,16 @@ class PageResource extends Resource
                     ->default(Page::TEMPLATE_DEFAULT)
                     ->required()
                     ->live(),
-                ...$defaultTemplateFields,
-                ...$basicContentTemplateFields,
-                ...$governanceTemplateFields,
-                ...$generalSecondaryTemplateFields,
+                Group::make()
+                    ->schema(fn (Get $get): array => match ((string) ($get('template') ?? Page::TEMPLATE_DEFAULT)) {
+                        Page::TEMPLATE_BASIC_CONTENT => BasicContentPageForm::schema(),
+                        Page::TEMPLATE_GOVERNANCE => GovernancePageForm::schema(),
+                        Page::TEMPLATE_GENERAL_SECONDARY => GeneralSecondaryPageForm::schema(),
+                        Page::TEMPLATE_PROFESSIONAL_ASSISTANCE => ProfessionalAssistancePageForm::schema(),
+                        default => DefaultPageForm::schema(),
+                    })
+                    ->key(fn (Get $get): string => 'page-template-content-'.($get('template') ?? Page::TEMPLATE_DEFAULT))
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('meta_title')
                     ->label('SEO 标题')
                     ->columnSpanFull(),

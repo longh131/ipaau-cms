@@ -1,13 +1,15 @@
 @php
     use App\Support\ArticleExtraFields;
 
-    $imageUrl = ArticleExtraFields::listImageUrl($article->extra_fields, $listFields);
+    $imageUrl = ArticleExtraFields::listImageUrl($article->extra_fields, $listFields)
+        ?? \App\Support\MediaUrl::resolve($article->cover_image ?? null);
     $tags = ArticleExtraFields::listTags($article->extra_fields, $listFields);
     $colClass = match ($loop->index % 3) {
         0 => 'md:col-start-1',
         1 => 'md:col-start-3',
         default => 'md:col-start-5',
     };
+    $isHidden = (bool) ($hidden ?? false);
 @endphp
 
 <a
@@ -15,6 +17,7 @@
     @class([
         'news-hero-card col-span-2 relative w-full pt-4 pb-8 rounded-2xl overflow-hidden news-card',
         $colClass,
+        'news-card--hidden hidden' => $isHidden,
     ])
     data-title="{{ Str::lower($article->title) }}"
 >
