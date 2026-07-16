@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\NewsletterSubscriptionController;
+use App\Http\Controllers\SearchController;
 
 Route::get('/', [FrontendController::class, 'home'])->name('home');
 Route::post('/newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])
@@ -12,6 +13,7 @@ Route::redirect('/home-exported.html', '/');
 Route::get('/test-menu', function () {
     return view('frontend.test');
 });
+Route::get('/search', SearchController::class)->name('search');
 Route::get('/page/{slug}', [FrontendController::class, 'render'])->name('page.show');
 Route::get('/category/{slug}', [FrontendController::class, 'render'])->name('category.show');
 Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');

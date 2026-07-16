@@ -29,6 +29,8 @@
         role="search"
         aria-label="Sitewide"
         id="main-nav-search"
+        action="{{ route('search') }}"
+        method="GET"
     >
         <h2 class="block mx-auto pt-6 pb-0 mb-6 text-center text-secondary text-display-sm md:text-display-md font-apex-book">
             What are you looking for?
@@ -36,6 +38,7 @@
         <div class="mx-auto pb-6 pt-0 mt-0 flex flex-nowrap items-stretch justify-center gap-0 group-[.active]/form:opacity-100 group-[.inactive]/form:opacity-0 transition-all duration-300 group-[.active]/form:delay-500">
             <input
                 id="search-banner"
+                name="q"
                 type="search"
                 placeholder="Enter search terms"
                 autocomplete="off"
@@ -43,7 +46,7 @@
                 aria-hidden="true"
                 aria-label="Site Search"
                 class="rounded-l-full py-3 pr-5 pl-12 basis-auto grow text-primary border-primary border-r-0 bg-no-repeat"
-                value=""
+                value="{{ request('q') }}"
                 style="background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%221.5%22%20stroke%3D%22oklch(0.464%200%200)%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22m21%2021-5.197-5.197m0%200A7.5%207.5%200%201%200%205.196%205.196a7.5%207.5%200%200%200%2010.607%2010.607Z%22%2F%3E%3C%2Fsvg%3E&quot;); background-position: 1rem center; background-size: 1.5rem 1.5rem;"
             />
             <button

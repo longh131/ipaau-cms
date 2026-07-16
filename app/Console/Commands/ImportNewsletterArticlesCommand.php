@@ -76,6 +76,11 @@ class ImportNewsletterArticlesCommand extends Command
             } elseif ($entry['extension'] === 'html') {
                 $rawHtml = NewsletterHtml::readHtmlFile($localFile);
                 $content = NewsletterHtml::rewriteAssetUrls($rawHtml, $entry['asset_dir']);
+                $relativeAsset = ltrim(str_replace('\\', '/', substr(
+                    $localFile,
+                    strlen(rtrim($newsletterRoot, '/\\')) + 1
+                )), '/');
+                $redirectUrl = url(NewsletterHtml::publicAssetUrl($publicDir, $relativeAsset));
                 $htmlImported++;
             } else {
                 $relativeAsset = ltrim(str_replace('\\', '/', substr($localFile, strlen(rtrim($newsletterRoot, '/\\')) + 1)), '/');

@@ -537,6 +537,32 @@
             form.classList.remove('active');
             form.classList.add('inactive');
         }
+
+        setSearchFieldState(false);
+    }
+
+    function getSearchInput() {
+        return document.getElementById('search-banner');
+    }
+
+    function getSearchSubmitButton() {
+        const form = getSearchForm()?.querySelector('form');
+        return form ? form.querySelector('button[type="submit"]') : null;
+    }
+
+    function setSearchFieldState(isOpen) {
+        const input = getSearchInput();
+        const submitButton = getSearchSubmitButton();
+
+        if (input) {
+            input.tabIndex = isOpen ? 0 : -1;
+            input.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        }
+
+        if (submitButton) {
+            submitButton.tabIndex = isOpen ? 0 : -1;
+            submitButton.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        }
     }
 
     // 获取搜索图标容器（用于切换图标）
@@ -580,12 +606,24 @@
             form.classList.toggle('active');
             form.classList.toggle('inactive');
         }
+
+        setSearchFieldState(willOpen);
+
+        if (willOpen) {
+            const input = getSearchInput();
+            if (input) {
+                window.requestAnimationFrame(function() {
+                    input.focus();
+                });
+            }
+        }
     }
 
     // 初始化搜索功能
     function initSearch() {
         const trigger = document.querySelector('[data-type="search"] button');
-        
+        const searchForm = getSearchForm()?.querySelector('form');
+
         if (!trigger) {
             return;
         }
@@ -595,6 +633,20 @@
             e.stopPropagation();
             toggleSearch();
         });
+
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                const input = getSearchInput();
+                const query = input ? input.value.trim() : '';
+
+                if (query === '') {
+                    e.preventDefault();
+                    if (input) {
+                        input.focus();
+                    }
+                }
+            });
+        }
     }
 
     // ==================== 选项卡效果 ====================
