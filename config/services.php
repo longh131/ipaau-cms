@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'member_sms' => [
+        'endpoint' => env('SMS_ENDPOINT', 'http://web.mas521.com:6088/sms.aspx'),
+        'userid' => env('SMS_USERID', '2102'),
+        'account' => env('SMS_ACCOUNT', 'china.admin'),
+        'password' => env('SMS_PASSWORD'),
+        'fake' => env('SMS_FAKE', true),
+    ],
+
 ];

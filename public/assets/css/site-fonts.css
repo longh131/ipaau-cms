@@ -1,10 +1,10 @@
 /*
- * Site typography: Arial (Latin) + 等线 / DengXian (CJK).
+ * Site typography: 新宋体 (NSimSun) site-wide.
  * Load after home.css to override Inter, ApexSerif Book, and din-2014.
  */
 
 :root {
-  --ipa-font-family: Arial, "等线", "DengXian", sans-serif;
+  --ipa-font-family: "NSimSun", "新宋体", SimSun, serif;
 
   /* Display scale: each step is two sizes smaller than home.css defaults */
   --ipa-display-xs: 1rem;
@@ -714,7 +714,7 @@ section.diversity-section {
 /* CMS 单页正文 */
 .cms-page-content h2,
 .cms-page-content h3 {
-  font-family: "Apex Serif", "ApexSerif", Georgia, serif;
+  font-family: var(--ipa-font-family) !important;
   color: oklch(0.3152 0.1176 262.41);
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
@@ -737,7 +737,7 @@ section.diversity-section {
 }
 
 .cms-page-content h4 {
-  font-family: "Apex Serif", "ApexSerif", Georgia, serif;
+  font-family: var(--ipa-font-family) !important;
   font-size: 1.125rem;
   line-height: 1.35;
   font-weight: 400;

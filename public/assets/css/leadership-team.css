@@ -102,3 +102,21 @@
 .leadership-bio .bio-profile__body p:last-child {
   margin-bottom: 0;
 }
+
+.leadership-bio .team-bio__job-title {
+  display: block;
+  margin: 0 0 0.75rem;
+  --ipa-color-light: oklch(0.4867 0.1803 336.11);
+  --ipa-color-dark: oklch(0.8944 0.0357 331.62);
+  color: var(--ipa-color-light);
+}
+
+.leadership-bio .team-bio__name-wrap {
+  --ipa-color-light: oklch(0.3152 0.1176 262.41);
+  --ipa-color-dark: oklch(0.9011 0.0552 218.07);
+  color: var(--ipa-color-light);
+}
+
+.leadership-bio .team-bio__name-wrap h2 {
+  margin: 0;
+}

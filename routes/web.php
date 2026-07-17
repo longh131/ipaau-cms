@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\Member\AuthController as MemberAuthController;
+use App\Http\Controllers\Member\PortalController as MemberPortalController;
 use App\Http\Controllers\NewsletterSubscriptionController;
 use App\Http\Controllers\SearchController;
 
@@ -17,6 +19,22 @@ Route::get('/search', SearchController::class)->name('search');
 Route::get('/page/{slug}', [FrontendController::class, 'render'])->name('page.show');
 Route::get('/category/{slug}', [FrontendController::class, 'render'])->name('category.show');
 Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');
+
+Route::prefix('member')->name('member.')->group(function (): void {
+    Route::get('/login', [MemberAuthController::class, 'showLogin'])->name('login');
+    Route::post('/send-code', [MemberAuthController::class, 'sendCode'])
+        ->middleware('throttle:6,1')
+        ->name('send-code');
+    Route::post('/verify', [MemberAuthController::class, 'verify'])
+        ->middleware('throttle:12,1')
+        ->name('verify');
+    Route::post('/logout', [MemberAuthController::class, 'logout'])->name('logout');
+
+    Route::middleware('ipa.member')->group(function (): void {
+        Route::get('/', [MemberPortalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/profile', [MemberPortalController::class, 'profile'])->name('profile');
+    });
+});
 
 Route::middleware([
     'auth:sanctum',

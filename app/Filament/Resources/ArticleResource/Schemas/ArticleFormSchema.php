@@ -110,6 +110,7 @@ class ArticleFormSchema
             ),
             Forms\Components\DateTimePicker::make('published_at')
                 ->label('发布时间')
+                ->default(fn (): \Illuminate\Support\Carbon => now())
                 ->columnSpan(1),
             Forms\Components\TextInput::make('sort_order')
                 ->label('排序')

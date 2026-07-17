@@ -57,7 +57,7 @@ class ArticleExtraFields
     }
 
     /**
-     * @return array<int, Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public static function categorySchemaRepeaterFields(): array
     {
@@ -88,7 +88,7 @@ class ArticleExtraFields
     }
 
     /**
-     * @return array<int, Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public static function articleFormComponents(?Category $category): array
     {
@@ -110,7 +110,7 @@ class ArticleExtraFields
     /**
      * @param  array{key: string, label: string, type: string, show_in_list: bool}  $field
      */
-    protected static function formComponent(array $field): Forms\Components\Component
+    protected static function formComponent(array $field): \Filament\Schemas\Components\Component
     {
         $key = $field['key'];
         $label = filled($field['label']) ? $field['label'] : $key;
@@ -196,6 +196,33 @@ class ArticleExtraFields
         }
 
         return $items;
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $extraFields
+     */
+    public static function teamJobTitle(?array $extraFields): ?string
+    {
+        $value = is_array($extraFields)
+            ? ($extraFields[\App\Support\CategoryListTemplate\TeamIntroTemplate::JOB_TITLE_KEY] ?? null)
+            : null;
+
+        if (! is_string($value) || blank($value)) {
+            return null;
+        }
+
+        return trim($value);
+    }
+
+    public static function teamCoverUrl(?array $extraFields, ?string $coverImage): ?string
+    {
+        $fromCover = MediaUrl::resolve($coverImage);
+
+        if ($fromCover) {
+            return $fromCover;
+        }
+
+        return self::assetUrl(is_array($extraFields) ? ($extraFields['list_image'] ?? null) : null);
     }
 
     /**

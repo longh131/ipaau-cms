@@ -17,15 +17,15 @@ class MemberResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Users;
 
-    protected static ?string $navigationLabel = '会员管理';
+    protected static ?string $navigationLabel = '领导团队';
 
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 14;
 
     protected static string|\UnitEnum|null $navigationGroup = '内容管理';
 
-    protected static ?string $modelLabel = '会员';
+    protected static ?string $modelLabel = '领导成员';
 
-    protected static ?string $pluralModelLabel = '会员';
+    protected static ?string $pluralModelLabel = '领导团队';
 
     public static function form(Schema $schema): Schema
     {

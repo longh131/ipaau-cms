@@ -12,6 +12,8 @@ class CategoryListTemplateRegistry
 
     public const TEMPLATE_TOPICS_ARTICLE_LIST = 'topics_article_list';
 
+    public const TEMPLATE_TEAM_INTRO = 'team_intro';
+
     public const DEFAULT_PER_PAGE = 12;
 
     public const TOPICS_ARTICLE_LIST_PER_PAGE = 24;
@@ -23,6 +25,7 @@ class CategoryListTemplateRegistry
         self::TEMPLATE_SIMPLE => '简单列表',
         self::TEMPLATE_NEWS_CARDS => '新闻卡片',
         self::TEMPLATE_TOPICS_ARTICLE_LIST => '列表（含：专业技术，数字咨询，会刊精选）',
+        self::TEMPLATE_TEAM_INTRO => '团队介绍',
     ];
 
     public static function resolve(Category $category): string
@@ -67,5 +70,10 @@ class CategoryListTemplateRegistry
     public static function usesViewMoreFor(Category $category): bool
     {
         return self::resolve($category) === self::TEMPLATE_TOPICS_ARTICLE_LIST;
+    }
+
+    public static function isTeamIntro(Category $category): bool
+    {
+        return self::resolve($category) === self::TEMPLATE_TEAM_INTRO;
     }
 }

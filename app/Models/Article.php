@@ -38,6 +38,15 @@ class Article extends Model
         'is_sticky' => 'boolean',
         'is_active' => 'boolean',
         'view_count' => 'integer',
+        'sort_order' => 'integer',
+    ];
+
+    protected $attributes = [
+        'sort_order' => 0,
+        'view_count' => 0,
+        'is_sticky' => false,
+        'is_featured' => false,
+        'is_active' => true,
     ];
 
     public function category(): BelongsTo

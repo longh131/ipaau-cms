@@ -120,6 +120,19 @@ class FrontendController extends Controller
 
         $article->increment('view_count');
 
+        $category = $article->category;
+
+        if ($category && CategoryListTemplateRegistry::isTeamIntro($category)) {
+            return view('frontend.articles.team_intro', [
+                'article' => $article,
+                'category' => $category,
+                'breadcrumbs' => BreadcrumbBuilder::forArticle($article),
+                'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+                'jobTitle' => \App\Support\ArticleExtraFields::teamJobTitle($article->extra_fields),
+                'coverUrl' => \App\Support\ArticleExtraFields::teamCoverUrl($article->extra_fields, $article->cover_image),
+            ]);
+        }
+
         return view('frontend.article', [
             'article' => $article,
             'category' => $article->category,

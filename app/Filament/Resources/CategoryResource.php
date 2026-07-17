@@ -111,8 +111,11 @@ class CategoryResource extends Resource
                     ->label('列表模板')
                     ->options(CategoryListTemplateRegistry::OPTIONS)
                     ->default(CategoryListTemplateRegistry::TEMPLATE_SIMPLE)
-                    ->helperText('仅对「文章」类型栏目生效，决定前台列表展示样式')
+                    ->helperText(fn (Get $get): string => $get('list_template') === CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO
+                        ? '团队介绍：上方栏目名称与介绍，下方一行三个成员卡片，点击进入详情页'
+                        : '仅对「文章」类型栏目生效，决定前台列表展示样式')
                     ->visible(fn (Get $get): bool => $get('type') === 'article')
+                    ->live()
                     ->columnSpanFull(),
                 RichContent::configureFileAttachments(
                     Forms\Components\RichEditor::make('introduction')
@@ -126,7 +129,9 @@ class CategoryResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Repeater::make('article_extra_field_schema')
                     ->label('文章扩展字段')
-                    ->helperText('定义该栏目下文章的额外字段；前台按模板输出')
+                    ->helperText(fn (Get $get): string => $get('list_template') === CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO
+                        ? '团队介绍建议：job_title / 职位 / 单行文本 / 列表页显示=是；成员照片用文章「封面图片」'
+                        : '定义该栏目下文章的额外字段；前台按模板输出')
                     ->schema(ArticleExtraFields::categorySchemaRepeaterFields())
                     ->columns(2)
                     ->collapsible()

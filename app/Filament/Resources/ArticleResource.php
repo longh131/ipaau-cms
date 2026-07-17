@@ -138,6 +138,7 @@ class ArticleResource extends Resource
         $data['author'] = filled($data['author'] ?? null) ? trim((string) $data['author']) : null;
         $data['source'] = filled($data['source'] ?? null) ? trim((string) $data['source']) : null;
         $data['view_count'] = max(0, (int) ($data['view_count'] ?? 0));
+        $data['sort_order'] = max(0, (int) ($data['sort_order'] ?? 0));
 
         if (blank($data['slug'] ?? null) && filled($data['title'] ?? null)) {
             $ignoreId = is_numeric($data['id'] ?? null) ? (int) $data['id'] : null;

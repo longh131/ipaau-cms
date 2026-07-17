@@ -50,6 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->navigationGroups([
+                NavigationGroup::make('会员管理'),
                 NavigationGroup::make('内容管理'),
                 NavigationGroup::make('权限管理'),
                 NavigationGroup::make('系统'),
@@ -117,6 +118,7 @@ class AdminPanelProvider extends PanelProvider
         array_unshift($resources, CategoryResource::class);
 
         $systemResources = [
+            \App\Filament\Resources\IpaMemberResource::class,
             PageComponentResource::class,
             MediaResource::class,
             MenuResource::class,
