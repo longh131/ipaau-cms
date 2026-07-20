@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Setting;
 use App\Support\RichContent;
+use Illuminate\Support\Facades\Storage;
 
 class SiteSettingsService
 {
@@ -12,17 +13,19 @@ class SiteSettingsService
         'douyin',
         'xiaohongshu',
         'wechat_channels',
+        'wechat',
     ];
 
     private const SOCIAL_PLATFORMS = [
-        'linkedin' => ['label' => 'LinkedIn', 'icon' => 'linkedin.svg'],
-        'douyin' => ['label' => '抖音', 'icon' => 'douyin.svg'],
-        'xiaohongshu' => ['label' => '小红书', 'icon' => 'xiaohongshu.svg'],
-        'wechat_channels' => ['label' => '视频号', 'icon' => 'wechat-channels.svg'],
-        'facebook' => ['label' => 'Facebook', 'icon' => 'facebook.svg'],
-        'twitter' => ['label' => 'Twitter', 'icon' => 'twitter.svg'],
-        'instagram' => ['label' => 'Instagram', 'icon' => 'instagram.svg'],
-        'youtube' => ['label' => 'YouTube', 'icon' => 'youtube.svg'],
+        'linkedin' => ['label' => 'LinkedIn', 'icon' => 'linkedin.svg', 'type' => 'link'],
+        'douyin' => ['label' => '抖音', 'icon' => 'douyin.svg', 'type' => 'link'],
+        'xiaohongshu' => ['label' => '小红书', 'icon' => 'xiaohongshu.svg', 'type' => 'link'],
+        'wechat_channels' => ['label' => '视频号', 'icon' => 'wechat-channels.svg', 'type' => 'link'],
+        'wechat' => ['label' => '微信', 'icon' => 'wechat.svg', 'type' => 'qrcode'],
+        'facebook' => ['label' => 'Facebook', 'icon' => 'facebook.svg', 'type' => 'link'],
+        'twitter' => ['label' => 'Twitter', 'icon' => 'twitter.svg', 'type' => 'link'],
+        'instagram' => ['label' => 'Instagram', 'icon' => 'instagram.svg', 'type' => 'link'],
+        'youtube' => ['label' => 'YouTube', 'icon' => 'youtube.svg', 'type' => 'link'],
     ];
 
     public function getFooterDisclaimer(): string
@@ -43,7 +46,7 @@ class SiteSettingsService
     }
 
     /**
-     * @return array<int, array{key: string, label: string, url: string, icon: string}>
+     * @return array<int, array{key: string, label: string, url: ?string, icon: string, type: string, qrcode: ?string}>
      */
     public function getFooterSocialLinks(): array
     {
@@ -55,17 +58,41 @@ class SiteSettingsService
             }
 
             $platform = self::SOCIAL_PLATFORMS[$key];
-            $url = $this->getSocialUrl($key);
+            $type = $platform['type'] ?? 'link';
+            $qrcode = $type === 'qrcode' ? $this->getWechatQrcodeUrl() : null;
 
             $links[] = [
                 'key' => $key,
                 'label' => $platform['label'],
-                'url' => $url,
+                'url' => $type === 'link' ? $this->getSocialUrl($key) : null,
                 'icon' => asset('assets/svg/social/'.$platform['icon']),
+                'type' => $type,
+                'qrcode' => $qrcode,
             ];
         }
 
         return $links;
+    }
+
+    public function getWechatQrcodeUrl(): ?string
+    {
+        $value = Setting::get('social_wechat_qrcode', '');
+
+        if (is_array($value)) {
+            $value = $value[0] ?? '';
+        }
+
+        $path = trim((string) $value);
+
+        if ($path === '') {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $path)) {
+            return $path;
+        }
+
+        return Storage::disk('public')->url($path);
     }
 
     public function isSocialEnabled(string $key): bool

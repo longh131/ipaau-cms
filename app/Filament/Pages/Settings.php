@@ -2,8 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Forms\ImageUpload;
 use App\Models\Setting;
 use App\Support\RichContent;
+use Illuminate\Support\Arr;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -64,6 +66,11 @@ class Settings extends Page implements HasForms
 
     public ?bool $social_wechat_channels_enabled = false;
 
+    /** @var array<int, string>|string|null */
+    public array|string|null $social_wechat_qrcode = null;
+
+    public ?bool $social_wechat_enabled = false;
+
     public ?string $social_facebook = '';
 
     public ?bool $social_facebook_enabled = false;
@@ -110,6 +117,8 @@ class Settings extends Page implements HasForms
             'social_xiaohongshu_enabled' => $this->normalizeBoolean(Setting::get('social_xiaohongshu_enabled'), false),
             'social_wechat_channels' => Setting::get('social_wechat_channels', ''),
             'social_wechat_channels_enabled' => $this->normalizeBoolean(Setting::get('social_wechat_channels_enabled'), false),
+            'social_wechat_qrcode' => filled($qrcode = Setting::get('social_wechat_qrcode', '')) ? $qrcode : null,
+            'social_wechat_enabled' => $this->normalizeBoolean(Setting::get('social_wechat_enabled'), false),
             'social_facebook' => Setting::get('social_facebook', ''),
             'social_facebook_enabled' => $this->normalizeBoolean(Setting::get('social_facebook_enabled'), false),
             'social_twitter' => Setting::get('social_twitter', ''),
@@ -194,13 +203,16 @@ class Settings extends Page implements HasForms
                         ->icon(Heroicon::Link)
                         ->schema([
                             Section::make('页脚显示顺序')
-                                ->description('LinkedIn → 抖音 → 小红书 → 视频号。开启「显示」后图标即出现在页脚；填写链接后图标可点击跳转。')
-                                ->schema($this->socialPlatformFieldsets([
-                                    'social_linkedin' => 'LinkedIn',
-                                    'social_douyin' => '抖音',
-                                    'social_xiaohongshu' => '小红书',
-                                    'social_wechat_channels' => '视频号',
-                                ]))
+                                ->description('LinkedIn → 抖音 → 小红书 → 视频号 → 微信。开启「显示」后图标即出现在页脚；填写链接后图标可点击跳转（微信为悬停展示二维码）。')
+                                ->schema(array_merge(
+                                    $this->socialPlatformFieldsets([
+                                        'social_linkedin' => 'LinkedIn',
+                                        'social_douyin' => '抖音',
+                                        'social_xiaohongshu' => '小红书',
+                                        'social_wechat_channels' => '视频号',
+                                    ]),
+                                    [$this->wechatSocialFieldset()],
+                                ))
                                 ->columns(2),
                             Section::make('其他平台')
                                 ->description('预留配置，当前页脚不显示以下平台图标。')
@@ -283,6 +295,19 @@ class Settings extends Page implements HasForms
         return $fieldsets;
     }
 
+    private function wechatSocialFieldset(): Fieldset
+    {
+        return Fieldset::make('微信')
+            ->schema([
+                Forms\Components\Toggle::make('social_wechat_enabled')
+                    ->label('显示')
+                    ->inline(false),
+                ImageUpload::make('social_wechat_qrcode', 'settings/social', '二维码')
+                    ->helperText('上传后在页脚悬停微信图标时展示，无需填写链接。'),
+            ])
+            ->columns(1);
+    }
+
     public function save(): void
     {
         $state = $this->form->getState();
@@ -303,6 +328,8 @@ class Settings extends Page implements HasForms
         Setting::set('social_xiaohongshu_enabled', (bool) ($state['social_xiaohongshu_enabled'] ?? false));
         Setting::set('social_wechat_channels', $this->normalizeSocialUrl($state['social_wechat_channels'] ?? ''));
         Setting::set('social_wechat_channels_enabled', (bool) ($state['social_wechat_channels_enabled'] ?? false));
+        Setting::set('social_wechat_qrcode', $this->normalizeUploadedPath($state['social_wechat_qrcode'] ?? ''));
+        Setting::set('social_wechat_enabled', (bool) ($state['social_wechat_enabled'] ?? false));
         Setting::set('social_facebook', $this->normalizeSocialUrl($state['social_facebook'] ?? ''));
         Setting::set('social_facebook_enabled', (bool) ($state['social_facebook_enabled'] ?? false));
         Setting::set('social_twitter', $this->normalizeSocialUrl($state['social_twitter'] ?? ''));
@@ -361,5 +388,14 @@ class Settings extends Page implements HasForms
         }
 
         return 'https://'.ltrim($url, '/');
+    }
+
+    private function normalizeUploadedPath(mixed $value): string
+    {
+        if (is_array($value)) {
+            $value = Arr::first($value);
+        }
+
+        return trim((string) ($value ?? ''));
     }
 }

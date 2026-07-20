@@ -26,7 +26,25 @@
               <ul class="footer-social-media-links">
                 @foreach ($footerSocialLinks as $social)
                 <li>
-                  @if (filled($social['url']))
+                  @if (($social['type'] ?? 'link') === 'qrcode')
+                  <span
+                    class="footer-social-qrcode inline-block transition-all duration-500 {{ filled($social['qrcode']) ? 'cursor-pointer' : 'opacity-60' }}"
+                    title="{{ filled($social['qrcode']) ? $social['label'] : $social['label'].'（请在系统设置中上传二维码）' }}"
+                    tabindex="{{ filled($social['qrcode']) ? '0' : '-1' }}"
+                  >
+                    <img
+                      class="w-[24px] h-[24px] transition-all duration-500 {{ filled($social['qrcode']) ? 'group-hover:scale-[1.1]' : '' }}"
+                      alt="{{ $social['label'] }}"
+                      src="{{ $social['icon'] }}"
+                    />
+                    @if (filled($social['qrcode']))
+                    <span class="footer-social-qrcode-popup" role="tooltip">
+                      <img src="{{ $social['qrcode'] }}" alt="{{ $social['label'] }}二维码" />
+                    </span>
+                    @endif
+                    <span class="sr-only">{{ $social['label'] }}</span>
+                  </span>
+                  @elseif (filled($social['url']))
                   <a
                     href="{{ $social['url'] }}"
                     title="{{ $social['label'] }}"
