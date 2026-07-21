@@ -22,7 +22,7 @@
     <script src="{{ asset('assets/menu.js') }}" defer></script>
     @stack('head')
 </head>
-<body style="--scrollbar-compensation: 0px" class="no-external-icons {{ $bodyClass ?? '' }}">
+<body style="--scrollbar-compensation: 0px" class="no-external-icons {{ trim(($bodyClass ?? '').' '.($pageSlugClass ?? '')) }}">
     <div id="root">
         <a
             class="h-xl z-50 w-auto p-2 absolute top-0 -translate-y-full focus-visible:translate-y-0 transition-all duration-300 bg-secondary text-white"

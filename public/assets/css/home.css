@@ -9798,13 +9798,18 @@ section[data-type=imageBlockWithCarousel] .imageblock-carousel .image-block-caro
     font-family: "din-2014", "Helvetica Neue", "sans-serif";
 }
 .text-gradient-blue {
-    background: linear-gradient(90deg, oklch(54.71% 0.127 240.8deg) 0%, oklch(77.28% 0.1209 221.88deg) 100%);
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+    background: linear-gradient(90deg, #0078b3, #299ecf, #48c6ec);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-box-decoration-break: slice;
+    box-decoration-break: slice;
   }
 .bg-gradient-blue {
-    background: linear-gradient(90deg, oklch(54.71% 0.127 240.8deg) 0%, oklch(77.28% 0.1209 221.88deg) 100%);
+    background: linear-gradient(90deg, #0078b3, #299ecf, #48c6ec);
   }
 .text-gradient-purple {
     background: linear-gradient(90deg, oklch(49.91% 0.1741 329.89deg) 0%, oklch(61.84% 0.1734 345.67deg) 100%);
@@ -9816,40 +9821,45 @@ section[data-type=imageBlockWithCarousel] .imageblock-carousel .image-block-caro
     background: linear-gradient(90deg, oklch(49.91% 0.1741 329.89deg) 0%, oklch(61.84% 0.1734 345.67deg) 100%);
   }
 .text-gradient-orange {
-    background: linear-gradient(90deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(78.22% 0.172155 67.583deg) 100%);
+    background: linear-gradient(90deg, #f05f22, #f88019, #ff9f00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 .bg-gradient-orange {
-    background: linear-gradient(90deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(78.22% 0.172155 67.583deg) 100%);
+    background: linear-gradient(90deg, #f05f22, #f88019, #ff9f00);
   }
 .text-gradient-pink {
-    background: linear-gradient(90deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(59.31% 0.2034 342.15deg) 100%);
+    background: linear-gradient(90deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 .bg-gradient-pink {
-    background: linear-gradient(90deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(59.31% 0.2034 342.15deg) 100%);
+    background: linear-gradient(90deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
   }
 .text-gradient-blue-reverse {
-    background: linear-gradient(270deg, oklch(54.71% 0.127 240.8deg) 0%, oklch(77.28% 0.1209 221.88deg) 100%);
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+    background: linear-gradient(90deg, #48c6ec, #299ecf, #0078b3);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-box-decoration-break: slice;
+    box-decoration-break: slice;
   }
 .bg-gradient-blue-reverse {
-    background: linear-gradient(270deg, oklch(54.71% 0.127 240.8deg) 0%, oklch(77.28% 0.1209 221.88deg) 100%);
+    background: linear-gradient(90deg, #48c6ec, #299ecf, #0078b3);
   }
 .text-gradient-purple-reverse {
-    background: linear-gradient(270deg, oklch(49.91% 0.1741 329.89deg) 0%, oklch(61.84% 0.1734 345.67deg) 100%);
+    background: linear-gradient(270deg, #963291, #cb529c);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 .bg-gradient-purple-reverse {
-    background: linear-gradient(270deg, oklch(49.91% 0.1741 329.89deg) 0%, oklch(61.84% 0.1734 345.67deg) 100%);
+    background: linear-gradient(270deg, #963291, #cb529c);
   }
 .text-gradient-orange-reverse {
     background: linear-gradient(270deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(78.22% 0.172155 67.583deg) 100%);
@@ -9861,13 +9871,13 @@ section[data-type=imageBlockWithCarousel] .imageblock-carousel .image-block-caro
     background: linear-gradient(270deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(78.22% 0.172155 67.583deg) 100%);
   }
 .text-gradient-pink-reverse {
-    background: linear-gradient(270deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(59.31% 0.2034 342.15deg) 100%);
+    background: linear-gradient(270deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 .bg-gradient-pink-reverse {
-    background: linear-gradient(270deg, oklch(66.51% 0.1915 40.22deg) 0%, oklch(59.31% 0.2034 342.15deg) 100%);
+    background: linear-gradient(270deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
   }
 .megamenu-gradient{
   background-color: oklch(0.8723 0.0191 265.97);

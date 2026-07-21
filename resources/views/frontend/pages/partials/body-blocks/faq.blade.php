@@ -6,6 +6,8 @@
      *     items: array<int, array{question: string, answer: string}>
      * } $block */
     $items = $block['items'] ?? [];
+    $layout = $layout ?? 'default';
+    $isGeneralSecondary = $layout === 'general_secondary';
     $hasHeader = filled($block['tagline'] ?? null)
         || filled($block['title'] ?? null)
         || filled($block['intro'] ?? null);
@@ -14,7 +16,10 @@
 @if(! empty($items))
     <section
         data-type="accordion"
-        class="cms-body-block cms-body-block--faq centered bg-[color:var(--bg-color)]"
+        @class([
+            'cms-body-block cms-body-block--faq bg-[color:var(--bg-color)]',
+            'centered' => ! $isGeneralSecondary,
+        ])
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -25,7 +30,11 @@
     >
         <div class="inner container px-4 md:px-10 mx-auto px-7 flex flex-col gap-12">
             @if($hasHeader)
-                <div class="text-center container mx-auto">
+                <div @class([
+                    'text-center',
+                    'container mx-auto' => ! $isGeneralSecondary,
+                    'w-full' => $isGeneralSecondary,
+                ])>
                     @if(filled($block['tagline'] ?? null))
                         <span
                             class="eyebrow-xl"

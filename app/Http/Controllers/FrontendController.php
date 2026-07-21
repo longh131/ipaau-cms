@@ -160,6 +160,7 @@ class FrontendController extends Controller
             'pageView' => PageTemplateRegistry::forFrontend($page->data, $page->template, $page),
             'breadcrumbs' => BreadcrumbBuilder::forCategory($page->category, $page->displayTitle()),
             'bodyClass' => 'cms-about-page',
+            'pageSlugClass' => 'cms-page--'.$page->slug,
             'headerBlobPartial' => 'blob-about',
         ]);
     }

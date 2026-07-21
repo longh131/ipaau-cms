@@ -17,6 +17,20 @@
   --ipa-display-4xl: 4.75rem;
   --ipa-section-title-size: var(--ipa-display-lg);
   --ipa-section-title-size-lg: var(--ipa-display-xl);
+  --ipa-page-title-size: var(--ipa-display-2xl);
+  --ipa-page-title-size-lg: var(--ipa-display-3xl);
+
+  /* 内页正文：18px @ 16px root */
+  --ipa-body-text-size: 1.125rem;
+  --ipa-body-text-line-height: 1.75;
+
+  /* 内页富文本 h3 标题色 */
+  --ipa-rich-h3-color: oklch(0.3152 0.1176 262.41);
+
+  /* 会员要求页 h4（子标题，梅紫色） */
+  --ipa-rich-h4-color: #992785;
+  --ipa-rich-h4-size: 1.125rem;
+  --ipa-rich-h4-line-height: 1.35;
 }
 
 html,
@@ -334,6 +348,19 @@ body {
 
 .cms-section-title {
   margin: 0;
+}
+
+/* 内页 h1 主标题：比 h3 区块标题大两档（对齐首页 display-2xl / display-3xl 刻度） */
+h1.cms-section-title {
+  font-size: var(--ipa-page-title-size);
+  line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+  h1.cms-section-title {
+    font-size: var(--ipa-page-title-size-lg);
+    line-height: 1.15;
+  }
 }
 
 /* 首页 Hero 主标题：不受区块 h3 统一规则影响，按 h1 上的 display 档位渲染 */
@@ -712,43 +739,251 @@ section.diversity-section {
 }
 
 /* CMS 单页正文 */
-.cms-page-content h2,
-.cms-page-content h3 {
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__summary,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ),
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__summary,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) {
+  font-size: var(--ipa-body-text-size);
+  line-height: var(--ipa-body-text-line-height);
+}
+
+/* 内页正文容器上的 Tailwind 字号类统一回落到 18px */
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__summary,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ):is(.text-base, .text-lg, .text-xl, .text-2xl),
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__summary,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ):is(.text-base, .text-lg, .text-xl, .text-2xl) {
+  font-size: var(--ipa-body-text-size);
+}
+
+/* 基本正文页：富文本内段落/列表等与容器统一 18px（保留标题、label 等样式类） */
+body.cms-basic-content-page .cms-basic-content__body :is(p, li, td, th, blockquote, figcaption):not([class*="text-display"]):not([class*="label-"]) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+body.cms-basic-content-page .cms-basic-content__body :is(p, li, span, div):is(.text-base, .text-lg, .text-xl, .text-2xl) {
+  font-size: var(--ipa-body-text-size);
+  line-height: var(--ipa-body-text-line-height);
+}
+
+/* 内页富文本标题：h2/h3/h4（除首页外所有子页） */
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) :is(h2, h3),
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) :is(h2, h3) {
   font-family: var(--ipa-font-family) !important;
-  color: oklch(0.3152 0.1176 262.41);
+  color: var(--ipa-rich-h3-color);
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
 }
 
-.cms-page-content h2 {
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h2,
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h2 {
   font-size: 1.5rem;
   line-height: 1.25;
 }
 
-.cms-page-content h3 {
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h3,
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h3 {
   font-size: var(--ipa-section-title-size);
   line-height: 1.2;
 }
 
 @media (min-width: 1024px) {
-  .cms-page-content h3 {
+  body.cms-content-page :is(
+      .cms-page-content,
+      .about-rich-text,
+      .cms-rich-text__body,
+      .cms-basic-content__body,
+      .cms-governance-content-block__body,
+      .bio-profile__body,
+      .news-rich-text,
+      [data-rte="true"]
+    ) h3,
+  body.cms-about-page :is(
+      .cms-page-content,
+      .about-rich-text,
+      .cms-rich-text__body,
+      .cms-basic-content__body,
+      .cms-governance-content-block__body,
+      .bio-profile__body,
+      .news-rich-text,
+      [data-rte="true"]
+    ) h3 {
     font-size: var(--ipa-section-title-size-lg);
   }
 }
 
-.cms-page-content h4 {
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4,
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 {
   font-family: var(--ipa-font-family) !important;
-  font-size: 1.125rem;
-  line-height: 1.35;
-  font-weight: 400;
-  color: #992785;
+  font-size: var(--ipa-rich-h4-size);
+  line-height: var(--ipa-rich-h4-line-height);
+  font-weight: 700;
+  color: var(--ipa-rich-h3-color);
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
 }
 
-.cms-page-content h4 .text-warm-plum,
-[data-rte="true"] h4 .text-warm-plum {
-  color: #992785;
+body.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 :is(strong, b, .text-warm-plum),
+body.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 :is(strong, b, .text-warm-plum) {
+  color: var(--ipa-rich-h3-color);
+  font-weight: inherit;
+}
+
+/* 会员要求页保留原 h4 梅紫色样式 */
+body.cms-page--member-requirements.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4,
+body.cms-page--member-requirements.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 {
+  font-weight: 400;
+  color: var(--ipa-rich-h4-color);
+}
+
+body.cms-page--member-requirements.cms-content-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 :is(strong, b, .text-warm-plum),
+body.cms-page--member-requirements.cms-about-page :is(
+    .cms-page-content,
+    .about-rich-text,
+    .cms-rich-text__body,
+    .cms-basic-content__body,
+    .cms-governance-content-block__body,
+    .bio-profile__body,
+    .news-rich-text
+  ) h4 :is(strong, b, .text-warm-plum) {
+  color: var(--ipa-rich-h4-color);
+  font-weight: inherit;
 }
 
 .cms-page-content p {
@@ -816,4 +1051,96 @@ section[data-type="accordion"] [data-rte="true"].cms-page-content a:not(.cta):ho
   [data-type="statsCards"] .stats-card__number--spaced {
     margin-bottom: -0.5rem;
   }
+}
+
+/*
+ * 文字渐变（Recognition 页 committees 列表等）
+ * 整段共用一个渐变区域（避免 inline 每行单独渐变）
+ * 后台：源代码模式包裹 <span class="text-gradient-blue">...</span>
+ */
+.text-gradient-blue {
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+  background: linear-gradient(180deg, #0078b3, #299ecf, #48c6ec);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+}
+
+.text-gradient-blue-reverse {
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+  background: linear-gradient(90deg, #48c6ec, #299ecf, #0078b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+}
+
+.cms-page-content strong:has(.text-gradient-blue),
+.cms-page-content strong:has(.text-gradient-blue-reverse) {
+  color: inherit;
+}
+
+.cms-page-content .text-gradient-blue,
+.cms-page-content .text-gradient-blue-reverse,
+[data-rte="true"] .text-gradient-blue,
+[data-rte="true"] .text-gradient-blue-reverse {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* 渐变强调句 / 句内关键词渐变（4 种） */
+.text-gradient-purple-reverse {
+  background: linear-gradient(270deg, #963291, #cb529c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-gradient-pink {
+  background: linear-gradient(90deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-gradient-orange {
+  background: linear-gradient(90deg, #f05f22, #f88019, #ff9f00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-gradient-pink-reverse {
+  background: linear-gradient(270deg, #f05f22, #eb5c3f, #e65952 25%, #dc5270 50%, #c93c9f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.cms-highlight-html :is(
+    .text-gradient-purple-reverse,
+    .text-gradient-pink,
+    .text-gradient-orange,
+    .text-gradient-pink-reverse
+  ) {
+  display: inline;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }

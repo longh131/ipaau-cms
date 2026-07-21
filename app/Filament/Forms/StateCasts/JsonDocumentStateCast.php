@@ -19,6 +19,14 @@ class JsonDocumentStateCast implements StateCast
      */
     public function get(mixed $state): string|array
     {
+        if (is_array($state)) {
+            $state = \App\Support\MediaUrl::normalizeRichContentValue($state);
+        }
+
+        if (is_string($state)) {
+            $state = \App\Support\MediaUrl::normalizeRichContentValue($state);
+        }
+
         if (is_string($state)) {
             return $state;
         }

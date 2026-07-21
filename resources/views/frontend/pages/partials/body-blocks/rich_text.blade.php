@@ -1,6 +1,8 @@
 @php
+    use App\Support\RichContent;
+
     $hasTitle = filled($block['title'] ?? null);
-    $hasHtml = filled(strip_tags((string) ($block['html'] ?? '')));
+    $hasHtml = RichContent::hasVisibleHtml((string) ($block['html'] ?? ''));
     $layout = $layout ?? 'default';
     $titleAlign = match ($block['title_align'] ?? 'center') {
         'left' => 'text-left',

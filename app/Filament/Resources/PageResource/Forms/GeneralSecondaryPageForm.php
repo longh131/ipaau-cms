@@ -36,7 +36,7 @@ class GeneralSecondaryPageForm
                                 'summary',
                                 '摘要',
                                 helperText: '留空则前台不显示；有内容时宽度与基本正文页一致（最大 978px），居中显示',
-                            ),
+                            )->columnSpanFull(),
                             BodyBlockFormSchemas::sectionButtonsRepeater(),
                         ])
                         ->columnSpanFull(),

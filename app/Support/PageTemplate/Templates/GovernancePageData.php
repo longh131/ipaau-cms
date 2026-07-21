@@ -8,6 +8,8 @@ use App\Support\PageTemplate\PageBodyBlocks;
 
 class GovernancePageData
 {
+    public const CARD_LIST_INITIAL_VISIBLE = 3;
+
     public const BENTO_STYLE_FIVE = 'five';
 
     public const BENTO_STYLE_TALL = 'tall';

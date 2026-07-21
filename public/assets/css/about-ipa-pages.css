@@ -43,9 +43,7 @@ body.cms-about-page .footer-main {
   min-height: 12rem;
 }
 
-.about-section .about-rich-text h1,
-.about-section .about-rich-text h3,
-.about-section .about-rich-text h4 {
+.about-section .about-rich-text h1 {
   color: inherit;
 }
 
@@ -77,18 +75,18 @@ body.cms-about-page .footer-main {
   text-underline-offset: 4px;
 }
 
-/* 内容页正文：统一加大一档（约 text-xl → text-2xl） */
+/* 内容页正文：内页统一 18px（见 site-fonts.css --ipa-body-text-size） */
 .cms-page-content,
 .about-section .about-rich-text {
-  font-size: 1.25rem;
-  line-height: 1.75;
+  font-size: var(--ipa-body-text-size, 1.125rem);
+  line-height: var(--ipa-body-text-line-height, 1.75);
 }
 
 @media (min-width: 1024px) {
   .cms-page-content,
   .about-section .about-rich-text {
-    font-size: 1.5rem;
-    line-height: 1.65;
+    font-size: var(--ipa-body-text-size, 1.125rem);
+    line-height: var(--ipa-body-text-line-height, 1.75);
   }
 }
 
@@ -111,6 +109,20 @@ body.cms-about-page .footer-main {
 /* CMS 正文区块 */
 .cms-body-block--highlight p {
   margin-bottom: 0;
+}
+
+.cms-highlight-html {
+  line-height: 1.25;
+  color: oklch(0.3152 0.1176 262.41);
+}
+
+.cms-body-block--highlight .cms-highlight-html :is(
+    .text-gradient-purple-reverse,
+    .text-gradient-pink,
+    .text-gradient-orange,
+    .text-gradient-pink-reverse
+  ) {
+  color: transparent;
 }
 
 .cms-rich-text__title {
@@ -145,15 +157,8 @@ body.cms-about-page .footer-main {
 }
 
 .cms-basic-content__summary {
-  font-size: 1.25rem;
-  line-height: 1.75;
-}
-
-@media (min-width: 1024px) {
-  .cms-basic-content__summary {
-    font-size: 1.5rem;
-    line-height: 1.65;
-  }
+  font-size: var(--ipa-body-text-size, 1.125rem);
+  line-height: var(--ipa-body-text-line-height, 1.75);
 }
 
 .cms-basic-content__body--html > * + * {
@@ -613,6 +618,13 @@ body.cms-about-page .footer-main {
 
 .cms-news-list-curated {
   --cms-card-list-width: 426px;
+}
+
+.cms-news-list-curated--full-bleed {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .cms-news-list-curated__panel {

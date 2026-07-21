@@ -516,6 +516,30 @@ class BodyBlockFormSchemas
         ];
     }
 
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function highlightFields(): array
+    {
+        return [
+            Forms\Components\Textarea::make('text')
+                ->label('强调文字（HTML）')
+                ->rows(8)
+                ->helperText('支持 HTML。仅部分文字需要渐变时，用 <span class="text-gradient-pink">关键词</span> 包裹；下方「渐变样式」列出可用 class 名称。')
+                ->columnSpanFull()
+                ->extraInputAttributes([
+                    'class' => 'font-mono text-sm',
+                    'spellcheck' => 'false',
+                ]),
+            Forms\Components\Select::make('gradient')
+                ->label('渐变样式（class 参考）')
+                ->options(PageBodyBlocks::GRADIENT_OPTIONS)
+                ->default('purple-reverse')
+                ->helperText('不会自动套在整段外层；请在上方 HTML 中为需要渐变的文字设置所选 class。')
+                ->columnSpanFull(),
+        ];
+    }
+
     public static function newsListFields(): array
     {
         return [
@@ -768,18 +792,7 @@ class BodyBlockFormSchemas
                     ->columnSpanFull(),
                 RichContent::nestedRichEditor('html', '段落内容'),
             ],
-            PageBodyBlocks::TYPE_HIGHLIGHT => [
-                Forms\Components\Textarea::make('text')
-                    ->label('强调文字')
-                    ->rows(3)
-                    ->helperText('整句或关键词，前台以渐变样式显示')
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('gradient')
-                    ->label('渐变样式')
-                    ->options(PageBodyBlocks::GRADIENT_OPTIONS)
-                    ->default('purple-reverse')
-                    ->columnSpanFull(),
-            ],
+            PageBodyBlocks::TYPE_HIGHLIGHT => self::highlightFields(),
             PageBodyBlocks::TYPE_CTA_GROUP => [
                 self::bodyBlockButtonsRepeater()
                     ->visible(true)

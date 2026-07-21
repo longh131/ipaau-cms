@@ -153,7 +153,7 @@ class ProfessionalAssistanceSections
             self::TYPE_CAROUSEL => PageBodyBlocks::blockHasContent($section),
             self::TYPE_HTML_BODY => filled($section['tagline'] ?? null)
                 || filled($section['title'] ?? null)
-                || filled(strip_tags((string) ($section['body'] ?? ''))),
+                || RichContent::hasVisibleHtml((string) ($section['body'] ?? '')),
             self::TYPE_NEWS_LIST_A => filled($section['section_title'] ?? null)
                 || RichContent::hasVisibleHtml(RichContent::toHtml($section['summary'] ?? ''))
                 || ($section['items'] ?? []) !== [],

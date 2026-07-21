@@ -18,6 +18,7 @@
      * } $block */
     $block = $block ?? [];
     $layout = $layout ?? 'default';
+    $wrapModule = (bool) ($wrapModule ?? false);
     $isGeneralSecondary = $layout === 'general_secondary';
     $sectionTitle = trim((string) ($block['section_title'] ?? ''));
     $summaryHtml = (string) ($block['summary_html'] ?? '');
@@ -34,6 +35,7 @@
     $sectionBgColor = $hasGrayBackground
         ? GeneralSecondarySections::NEWS_LIST_BG_GRAY_COLOR
         : 'transparent';
+    $isFullBleedGray = $hasGrayBackground && ! $isGeneralSecondary;
 @endphp
 
 @if(filled($sectionTitle) || $hasSummary || $items !== [])
@@ -41,18 +43,25 @@
         data-type="cardListCurated"
         @class([
             'cms-body-block cms-body-block--news-list cms-news-list-curated',
-            'cms-governance-module cms-general-secondary-module' => $isGeneralSecondary,
+            'cms-governance-module cms-general-secondary-module' => $isGeneralSecondary || $wrapModule,
             'cms-news-list-curated--general-secondary' => $isGeneralSecondary,
             'cms-news-list-curated--expandable' => $hasHiddenItems,
+            'cms-news-list-curated--full-bleed bg-[color:var(--bg-color)]' => $isFullBleedGray,
         ])
         style="
             --ipa-color-light: oklch(0.464 0 0);
             --ipa-color-dark: oklch(1 0 0);
             --light-or-dark: light;
+            @if($isFullBleedGray)
+            --bg-color: {{ $sectionBgColor }};
+            @endif
             color: var(--ipa-color-light);
         "
     >
         <div class="inner container px-4 md:px-10 mx-auto">
+            @if($isFullBleedGray)
+                <div class="cms-news-list-curated__inner py-16">
+            @else
             <div
                 @class([
                     'cms-news-list-curated__panel rounded-lg',
@@ -62,6 +71,7 @@
                 style="--bg-color: {{ $sectionBgColor }};"
             >
                 <div class="cms-news-list-curated__inner px-4 md:px-10 py-16">
+            @endif
                 @if(filled($sectionTitle))
                     <div class="cms-news-list-curated__heading w-full text-left">
                         <h3 class="cms-section-title leading-tight tracking-[-.0253334em] mb-0 text-secondary">
@@ -163,7 +173,9 @@
                     </div>
                 @endif
                 </div>
+            @if(! $isFullBleedGray)
             </div>
+            @endif
         </div>
     </section>
 @endif

@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/about-ipa-pages.css') }}" />
 @endpush
 
+@push('scripts')
+    <script src="{{ asset('assets/js/about-ipa-pages.js') }}" defer></script>
+@endpush
+
 @section('content')
     <x-breadcrumbs :items="$breadcrumbs ?? []" />
 

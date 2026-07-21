@@ -1,8 +1,10 @@
 @php
+    use App\Support\RichContent;
+
     $heading = trim((string) ($pageView['heading'] ?? ''));
     $summary = trim((string) ($pageView['summary'] ?? ''));
     $bodyHtml = (string) ($pageView['body_html'] ?? '');
-    $hasBody = filled(strip_tags($bodyHtml));
+    $hasBody = RichContent::hasVisibleHtml($bodyHtml);
     $hasBreadcrumbs = $hasBreadcrumbs ?? false;
 @endphp
 

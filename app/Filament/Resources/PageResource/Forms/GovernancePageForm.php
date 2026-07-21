@@ -131,6 +131,7 @@ class GovernancePageForm
                                 ->columnSpanFull(),
                             Forms\Components\Repeater::make('card_list_items')
                                 ->label('卡片')
+                                ->helperText('前台默认显示 3 条，其余通过「查看更多」展开；每行 3 个卡片')
                                 ->schema([
                                     Forms\Components\TextInput::make('title')
                                         ->label('标题')

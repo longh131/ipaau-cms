@@ -73,12 +73,14 @@
                 <div class="cms-governance-module cms-general-secondary-module">
                     @include('frontend.pages.partials.body-blocks.faq', [
                         'block' => $section,
+                        'layout' => 'general_secondary',
                     ])
                 </div>
             @elseif(($section['type'] ?? '') === 'news_list_a')
                 @include('frontend.pages.partials.body-blocks.news_list', [
                     'block' => $section,
                     'layout' => 'default',
+                    'wrapModule' => true,
                 ])
             @elseif(($section['type'] ?? '') === 'news_list')
                 @include('frontend.pages.partials.body-blocks.news_list', [

@@ -1,8 +1,10 @@
 @php
+    use App\Support\RichContent;
+
     $bodyHtml = (string) ($block['body_html'] ?? '');
     $tagline = trim((string) ($block['tagline'] ?? ''));
     $title = trim((string) ($block['title'] ?? ''));
-    $hasBody = filled(strip_tags($bodyHtml));
+    $hasBody = RichContent::hasVisibleHtml($bodyHtml);
     $hasTagline = filled($tagline);
     $hasTitle = filled($title);
     $layout = $layout ?? 'default';

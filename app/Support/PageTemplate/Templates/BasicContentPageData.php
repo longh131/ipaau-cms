@@ -83,7 +83,7 @@ class BasicContentPageData
             return true;
         }
 
-        if (filled(strip_tags($data['body']))) {
+        if (RichContent::hasVisibleHtml($data['body'])) {
             return true;
         }
 
@@ -106,7 +106,7 @@ class BasicContentPageData
             $parts[] = '<p>'.e($form['summary']).'</p>';
         }
 
-        if (filled(strip_tags($form['body']))) {
+        if (RichContent::hasVisibleHtml($form['body'])) {
             $parts[] = $form['body'];
         }
 

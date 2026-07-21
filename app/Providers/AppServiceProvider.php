@@ -40,6 +40,11 @@ class AppServiceProvider extends ServiceProvider
                 ->fileAttachmentsDisk(RichContent::fileAttachmentsDisk())
                 ->fileAttachmentsDirectory(RichContent::fileAttachmentsDirectory())
                 ->fileAttachmentsVisibility(RichContent::fileAttachmentsVisibility())
+                ->getFileAttachmentUrlUsing(
+                    fn (?string $file): ?string => filled($file)
+                        ? \App\Support\MediaUrl::toPublicStoragePath($file)
+                        : null,
+                )
                 ->tools([
                     RichEditorTool::make('h4')
                         ->label('H4')

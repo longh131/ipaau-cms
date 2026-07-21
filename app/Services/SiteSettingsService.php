@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Setting;
+use App\Support\MediaUrl;
 use App\Support\RichContent;
-use Illuminate\Support\Facades\Storage;
 
 class SiteSettingsService
 {
@@ -88,11 +88,11 @@ class SiteSettingsService
             return null;
         }
 
-        if (preg_match('#^https?://#i', $path)) {
-            return $path;
+        if (MediaUrl::isStorageUrl($path)) {
+            return MediaUrl::toPublicStoragePath($path);
         }
 
-        return Storage::disk('public')->url($path);
+        return $path;
     }
 
     public function isSocialEnabled(string $key): bool

@@ -73,12 +73,10 @@ class PageBodyBlocks
 
     /** @var array<string, string> */
     public const GRADIENT_OPTIONS = [
-        'purple-reverse' => '紫色渐变',
-        'blue-reverse' => '蓝色渐变',
-        'orange-reverse' => '橙色渐变',
-        'pink-reverse' => '粉色渐变',
-        'purple' => '紫色渐变（正向）',
-        'blue' => '蓝色渐变（正向）',
+        'purple-reverse' => '.text-gradient-purple-reverse — 紫色渐变',
+        'pink' => '.text-gradient-pink — 粉色渐变',
+        'orange' => '.text-gradient-orange — 橙色渐变',
+        'pink-reverse' => '.text-gradient-pink-reverse — 粉色渐变（反向）',
     ];
 
     /**
@@ -109,7 +107,7 @@ class PageBodyBlocks
                 ],
                 self::TYPE_HIGHLIGHT => [
                     'type' => self::TYPE_HIGHLIGHT,
-                    'text' => trim((string) ($block['text'] ?? '')),
+                    'text' => (string) ($block['text'] ?? ''),
                     'gradient' => self::normalizeGradient((string) ($block['gradient'] ?? 'purple-reverse')),
                 ],
                 self::TYPE_CTA_GROUP => [
@@ -309,7 +307,7 @@ class PageBodyBlocks
             return true;
         }
 
-        return filled(strip_tags((string) $legacyContent));
+        return filled(RichContent::hasVisibleHtml((string) $legacyContent));
     }
 
     /**
@@ -339,7 +337,7 @@ class PageBodyBlocks
             }
 
             if ($block['type'] === self::TYPE_HTML_BODY) {
-                if (filled(strip_tags((string) ($block['body'] ?? '')))) {
+                if (RichContent::hasVisibleHtml((string) ($block['body'] ?? ''))) {
                     $parts[] = (string) $block['body'];
                 }
 
@@ -352,7 +350,7 @@ class PageBodyBlocks
 
             $html = RichContent::toHtml($block['html']);
 
-            if (filled(strip_tags($html))) {
+            if (RichContent::hasVisibleHtml($html)) {
                 $parts[] = $html;
             }
         }
@@ -381,15 +379,15 @@ class PageBodyBlocks
     {
         return match ($block['type'] ?? null) {
             self::TYPE_RICH_TEXT => filled($block['title'] ?? null)
-                || filled(strip_tags(RichContent::toHtml($block['html'] ?? ''))),
-            self::TYPE_HIGHLIGHT => filled($block['text'] ?? null),
+                || RichContent::hasVisibleHtml(RichContent::toHtml($block['html'] ?? '')),
+            self::TYPE_HIGHLIGHT => filled(trim((string) ($block['text'] ?? ''))),
             self::TYPE_CTA_GROUP => ($block['buttons'] ?? []) !== [],
             self::TYPE_TABS => ($block['tabs'] ?? []) !== [],
             self::TYPE_CAROUSEL => ($block['slides'] ?? []) !== [],
             self::TYPE_MEDIA_SPLIT => filled($block['image'] ?? null)
                 || filled($block['tagline'] ?? null)
                 || filled($block['title'] ?? null)
-                || filled(strip_tags(RichContent::toHtml($block['content'] ?? '')))
+                || RichContent::hasVisibleHtml(RichContent::toHtml($block['content'] ?? ''))
                 || ($block['buttons'] ?? []) !== [],
             self::TYPE_CONTENT_COLUMNS => static::contentColumnHasContent(static::contentColumnFromBlock($block, 0))
                 || static::contentColumnHasContent(static::contentColumnFromBlock($block, 1)),
@@ -398,7 +396,7 @@ class PageBodyBlocks
             self::TYPE_CARD_LIST_CURATED => filled($block['section_title'] ?? null)
                 || ($block['items'] ?? []) !== [],
             self::TYPE_NEWS_LIST => GeneralSecondarySections::forStorage([$block]) !== [],
-            self::TYPE_HTML_BODY => filled(strip_tags((string) ($block['body'] ?? ''))),
+            self::TYPE_HTML_BODY => RichContent::hasVisibleHtml((string) ($block['body'] ?? '')),
             default => false,
         };
     }
@@ -810,7 +808,7 @@ class PageBodyBlocks
     protected static function contentColumnHasContent(array $column): bool
     {
         return filled($column['title'] ?? null)
-            || filled(strip_tags(RichContent::toHtml($column['content'] ?? '')))
+            || RichContent::hasVisibleHtml(RichContent::toHtml($column['content'] ?? ''))
             || self::normalizeOptionalButton([
                 'label' => $column['button_label'] ?? ($column['button']['label'] ?? ''),
                 'url' => $column['button_url'] ?? ($column['button']['url'] ?? ''),

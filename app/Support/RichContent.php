@@ -53,7 +53,12 @@ class RichContent
             ->resizableImages(true)
             ->fileAttachmentsDisk(static::fileAttachmentsDisk())
             ->fileAttachmentsDirectory(static::fileAttachmentsDirectory())
-            ->fileAttachmentsVisibility(static::fileAttachmentsVisibility());
+            ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
+            ->getFileAttachmentUrlUsing(
+                fn (?string $file): ?string => filled($file)
+                    ? MediaUrl::toPublicStoragePath($file)
+                    : null,
+            );
     }
 
     /**
@@ -155,10 +160,10 @@ class RichContent
                 );
             }
 
-            return $document;
+            return MediaUrl::normalizeRichContentValue($document);
         }
 
-        return static::normalizeNode($document);
+        return MediaUrl::normalizeRichContentValue(static::normalizeNode($document));
     }
 
     /**
@@ -242,7 +247,7 @@ class RichContent
         }
 
         if (is_string($state) && static::looksLikeHtml($state)) {
-            return static::normalizeHtmlLineBreaks($state);
+            return static::normalizeHtmlLineBreaks(MediaUrl::normalizeRichContentHtml($state));
         }
 
         if (is_string($state)) {
@@ -254,11 +259,28 @@ class RichContent
         }
 
         return static::normalizeHtmlLineBreaks(
-            RichContentRenderer::make(static::documentForRenderer($state))
-                ->plugins(static::plugins())
-                ->fileAttachmentsDisk(static::fileAttachmentsDisk())
-                ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
-                ->toHtml()
+            MediaUrl::normalizeRichContentHtml(
+                RichContentRenderer::make(static::documentForRenderer($state))
+                    ->plugins(static::plugins())
+                    ->fileAttachmentsDisk(static::fileAttachmentsDisk())
+                    ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
+                    ->processNodesUsing(function (object &$node): void {
+                        if ($node->type !== 'image') {
+                            return;
+                        }
+
+                        if (filled($node->attrs->id ?? null)) {
+                            $node->attrs->id = MediaUrl::toRelativePath((string) $node->attrs->id);
+                        }
+
+                        if (filled($node->attrs->src ?? null)) {
+                            $node->attrs->src = MediaUrl::normalizeRichContentUrl((string) $node->attrs->src);
+                        } elseif (filled($node->attrs->id ?? null)) {
+                            $node->attrs->src = MediaUrl::toPublicStoragePath($node->attrs->id);
+                        }
+                    })
+                    ->toHtml()
+            )
         );
     }
 
@@ -335,8 +357,12 @@ class RichContent
             }
 
             if (is_array($decoded)) {
-                return $decoded;
+                return MediaUrl::normalizeRichContentValue($decoded);
             }
+        }
+
+        if (static::looksLikeHtml($trimmed)) {
+            return MediaUrl::normalizeRichContentHtml($trimmed);
         }
 
         return $trimmed;
