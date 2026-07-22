@@ -80,7 +80,17 @@ class MenuItemResource extends Resource
                     ->dehydrated(true),
                 Forms\Components\TextInput::make('url')
                     ->label('自定义 URL')
-                    ->url()
+                    ->placeholder('/member/ 或 https://example.com')
+                    ->helperText('支持站内路径（以 / 开头）或完整外链（http://、https://）')
+                    ->rules([
+                        'required',
+                        'string',
+                        'max:500',
+                        'regex:/^(https?:\/\/|\/)\S+/i',
+                    ])
+                    ->validationMessages([
+                        'regex' => '请输入有效的 URL 或站内路径（以 / 开头，如 /member/）',
+                    ])
                     ->visible(fn (Get $get) => ($get('link_type') ?: MenuItemLink::TYPE_URL) === MenuItemLink::TYPE_URL)
                     ->required(fn (Get $get) => ($get('link_type') ?: MenuItemLink::TYPE_URL) === MenuItemLink::TYPE_URL),
                 Forms\Components\Select::make('target')
