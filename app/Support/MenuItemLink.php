@@ -82,6 +82,9 @@ class MenuItemLink
         $linkId = $data['link_id'] ?? null;
         unset($data['link_type'], $data['link_id']);
 
+        $data['target'] = filled($data['target'] ?? null) ? (string) $data['target'] : '_self';
+        $data['sort_order'] = is_numeric($data['sort_order'] ?? null) ? (int) $data['sort_order'] : 0;
+
         if ($linkType === self::TYPE_URL) {
             $data['route'] = null;
             $data['route_params'] = null;

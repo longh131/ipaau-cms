@@ -125,6 +125,35 @@ class Category extends Model
     }
 
     /**
+     * @return array<int>
+     */
+    public static function collectDescendantIds(int $categoryId): array
+    {
+        $ids = [];
+
+        foreach (static::where('parent_id', $categoryId)->orderBy('sort_order')->pluck('id') as $childId) {
+            $ids[] = (int) $childId;
+            $ids = array_merge($ids, static::collectDescendantIds((int) $childId));
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function parentSelectOptions(?int $excludeCategoryId = null): array
+    {
+        $excludeIds = $excludeCategoryId
+            ? array_merge([$excludeCategoryId], static::collectDescendantIds($excludeCategoryId))
+            : [];
+
+        return static::flatTreeSelectOptions(function (Category $category) use ($excludeIds): bool {
+            return ! in_array($category->id, $excludeIds, true);
+        });
+    }
+
+    /**
      * @return array<int, string>
      */
     public static function pageSelectOptions(?int $pageId = null): array

@@ -99,11 +99,15 @@ class MenuItemResource extends Resource
                         '_self' => '当前窗口',
                         '_blank' => '新窗口',
                     ])
-                    ->default('_self'),
+                    ->default('_self')
+                    ->required()
+                    ->dehydrated(true),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->required()
+                    ->dehydrated(true),
                 Forms\Components\Toggle::make('is_active')
                     ->label('是否启用')
                     ->default(true),
@@ -282,6 +286,7 @@ class MenuItemResource extends Resource
                                 'title' => $category->name,
                                 'route' => MenuItemLink::ROUTE_MAP[MenuItemLink::TYPE_CATEGORY],
                                 'route_params' => json_encode(['slug' => $category->slug], JSON_UNESCAPED_UNICODE),
+                                'target' => '_self',
                                 'sort_order' => $category->sort_order ?? 0,
                                 'is_active' => (bool) $category->is_active,
                             ]);

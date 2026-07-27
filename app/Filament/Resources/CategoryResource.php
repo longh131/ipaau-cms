@@ -48,13 +48,27 @@ class CategoryResource extends Resource
         return array_filter($allTypes, fn ($key) => in_array($key, $enabledTypes), ARRAY_FILTER_USE_KEY);
     }
 
+    /**
+     * @return array<int, string>
+     */
+    public static function parentCategoryOptions(?int $excludeCategoryId = null): array
+    {
+        $options = [0 => '无（作为顶级栏目）'];
+        $options += Category::parentSelectOptions($excludeCategoryId);
+
+        return $options;
+    }
+
     protected static function buildTreeOptions($categories, $prefix = ''): array
     {
         $options = [];
         foreach ($categories as $category) {
             $options[$category->id] = $prefix . $category->name;
-            if ($category->children && $category->children->count() > 0) {
-                $options = $options + static::buildTreeOptions($category->children, $prefix . '→ ');
+            $children = $category->relationLoaded('allChildren')
+                ? $category->allChildren
+                : $category->children;
+            if ($children && $children->count() > 0) {
+                $options = $options + static::buildTreeOptions($children, $prefix . '→ ');
             }
         }
         return $options;
@@ -95,12 +109,17 @@ class CategoryResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\Select::make('parent_id')
                     ->label('上级栏目')
-                    ->options(function () {
-                        $options = [0 => '无（作为顶级栏目）'];
-                        $categories = Category::getSortedTree();
-                        $options = $options + static::buildTreeOptions($categories);
-                        return $options;
+                    ->options(function (): array {
+                        $livewire = \Livewire\Livewire::current();
+                        $categoryId = null;
+
+                        if ($livewire && method_exists($livewire, 'getRecord')) {
+                            $categoryId = $livewire->getRecord()?->getKey();
+                        }
+
+                        return static::parentCategoryOptions(is_numeric($categoryId) ? (int) $categoryId : null);
                     })
+                    ->searchable()
                     ->default(0),
                 Forms\Components\Select::make('type')
                     ->label('类型')
