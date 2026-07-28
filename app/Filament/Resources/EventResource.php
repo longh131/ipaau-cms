@@ -46,7 +46,7 @@ class EventResource extends Resource
                         ['h2', 'h3', 'h4', 'blockquote', 'codeBlock'],
                         ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
-                        ['link', 'attachFiles'],
+                        ['link', 'textColor', 'attachFiles'],
                         ['undo', 'redo'],
                         ['source-ai'],
                     ]),

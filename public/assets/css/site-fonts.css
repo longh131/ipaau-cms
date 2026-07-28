@@ -1017,6 +1017,14 @@ section[data-type="accordion"] [data-rte="true"].cms-page-content a:not(.cta):ho
   text-underline-offset: 4px;
 }
 
+/* Filament RichEditor 文字颜色（span.color 通过 --color / --dark-color 变量存储） */
+[data-rte="true"] span.color,
+.cms-page-content span.color,
+.about-rich-text span.color,
+.footer-main span.color {
+  color: var(--color);
+}
+
 /* 富文本内图片：覆盖 Tailwind Preflight 的 display:block，使段落 text-align 对齐生效 */
 .cms-page-content[data-rte="true"] img {
   display: inline-block;

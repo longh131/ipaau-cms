@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -69,6 +70,17 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id')->orderBy('sort_order');
+    }
+
+    /**
+     * @param  Builder<Category>  $query
+     * @return Builder<Category>
+     */
+    public function scopeAssignableForArticles(Builder $query): Builder
+    {
+        return $query
+            ->where('type', 'article')
+            ->whereNotIn('id', Course::categoryIds());
     }
 
     public static function getSortedTree()

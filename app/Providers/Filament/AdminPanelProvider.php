@@ -119,6 +119,7 @@ class AdminPanelProvider extends PanelProvider
 
         $systemResources = [
             \App\Filament\Resources\IpaMemberResource::class,
+            \App\Filament\Resources\CourseResource::class,
             PageComponentResource::class,
             MediaResource::class,
             MenuResource::class,

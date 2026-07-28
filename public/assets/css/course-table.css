@@ -1,0 +1,108 @@
+/* Course listing table (category list template: course_table) */
+
+.cms-course-table-section,
+.cms-course-table-section .cms-course-table-wrap,
+.cms-course-table-section .cms-course-table {
+  font-family: var(--ipa-font-family);
+  font-size: var(--ipa-body-text-size, 1.125rem);
+  line-height: var(--ipa-body-text-line-height, 1.75);
+}
+
+.cms-course-table-section__header {
+  max-width: 100%;
+}
+
+.cms-course-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #d8dce3;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(13, 44, 108, 0.04);
+}
+
+.cms-course-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  color: oklch(0.35 0 0);
+}
+
+.cms-course-table thead th {
+  padding: 0.875rem 1rem;
+  background: #eef0f4;
+  border: 1px solid #d8dce3;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  color: oklch(0.32 0 0);
+}
+
+.cms-course-table tbody td {
+  padding: 0.875rem 1rem;
+  border: 1px solid #e3e6ec;
+  vertical-align: middle;
+  text-align: center;
+  background: #fff;
+}
+
+.cms-course-table tbody tr:nth-child(even) td {
+  background: #fafbfc;
+}
+
+.cms-course-table tbody tr:hover td {
+  background: #f3f6fb;
+}
+
+.cms-course-table__activity {
+  text-align: left !important;
+  min-width: 280px;
+}
+
+.cms-course-table__activity a {
+  color: oklch(0.35 0 0);
+  text-decoration: none;
+}
+
+.cms-course-table__activity a:hover {
+  color: #0d2c6c;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cms-course-table__register-link {
+  color: oklch(0.6258 0.2041 256.27);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cms-course-table__register-open {
+  color: oklch(0.6258 0.2041 256.27);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cms-course-table__register-link:hover {
+  color: #0d2c6c;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cms-course-table__register-closed {
+  color: oklch(0.45 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .cms-course-table {
+    min-width: 680px;
+  }
+
+  .cms-course-table thead th,
+  .cms-course-table tbody td {
+    padding: 0.75rem 0.625rem;
+    font-size: 1rem;
+  }
+}

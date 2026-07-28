@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Course;
 use App\Models\Page;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
@@ -88,6 +89,10 @@ class FrontendController extends Controller
             return $this->renderPage($page);
         }
 
+        if (CategoryListTemplateRegistry::isCourseTable($category)) {
+            return $this->renderCourseCategory($category);
+        }
+
         $articles = Article::query()
             ->where('category_id', $category->id)
             ->where('is_active', true)
@@ -103,6 +108,24 @@ class FrontendController extends Controller
             'listFields' => \App\Support\ArticleExtraFields::listFields($category->article_extra_field_schema),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
             'initialVisible' => CategoryListTemplateRegistry::initialVisibleFor($category),
+        ]);
+    }
+
+    private function renderCourseCategory(Category $category): View
+    {
+        $courses = Course::query()
+            ->where('category_id', $category->id)
+            ->where('is_active', true)
+            ->orderByDesc('starts_at')
+            ->orderByDesc('legacy_added_at')
+            ->orderByDesc('id')
+            ->paginate(CategoryListTemplateRegistry::perPageFor($category));
+
+        return view(CategoryListTemplateRegistry::viewFor($category), [
+            'category' => $category,
+            'courses' => $courses,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
         ]);
     }
 

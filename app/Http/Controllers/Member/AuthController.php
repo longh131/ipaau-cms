@@ -12,10 +12,20 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function showLogin(): View|RedirectResponse
+    public function showLogin(Request $request): View|RedirectResponse
     {
         if (session()->has('ipa_member_id')) {
-            return redirect()->route('member.dashboard');
+            if (! IpaMember::query()->whereKey(session('ipa_member_id'))->exists()) {
+                session()->forget('ipa_member_id');
+            } else {
+                return redirect()->route('member.dashboard');
+            }
+        }
+
+        if ($request->filled('redirect')
+            && $this->isSafeRedirect($request->query('redirect'))
+            && ! $this->isLoginUrl($request->query('redirect'))) {
+            session(['url.intended' => $request->query('redirect')]);
         }
 
         return view('member.auth.login');
@@ -51,7 +61,15 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $request->session()->put('ipa_member_id', $member->id);
 
-        return redirect()->intended(route('member.dashboard'));
+        $intended = $request->session()->pull('url.intended');
+
+        if (filled($intended)
+            && $this->isSafeRedirect($intended)
+            && ! $this->isLoginUrl($intended)) {
+            return redirect()->to($intended);
+        }
+
+        return redirect()->route('member.dashboard');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -61,5 +79,19 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('member.login');
+    }
+
+    private function isSafeRedirect(?string $url): bool
+    {
+        if (blank($url)) {
+            return false;
+        }
+
+        return str_starts_with($url, url('/'));
+    }
+
+    private function isLoginUrl(string $url): bool
+    {
+        return str_starts_with($url, route('member.login'));
     }
 }

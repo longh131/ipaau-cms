@@ -6,6 +6,7 @@ use App\Filament\Forms\StateCasts\JsonDocumentStateCast;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
+use Filament\Forms\Components\RichEditor\TextColor;
 
 class RichContent
 {
@@ -39,10 +40,27 @@ class RichContent
             ['h2', 'h3', 'h4', 'blockquote'],
             ['alignStart', 'alignCenter', 'alignEnd'],
             ['bulletList', 'orderedList'],
-            ['link'],
+            ['link', 'textColor'],
             ['attachFiles'],
             ['undo', 'redo'],
             ['source-ai'],
+        ];
+    }
+
+    /**
+     * @return array<string, TextColor|string>
+     */
+    public static function textColors(): array
+    {
+        return [
+            'brand-blue' => TextColor::make('品牌蓝', '#0d2c6c'),
+            'link-blue' => TextColor::make('链接蓝', '#2563eb'),
+            'warm-plum' => TextColor::make('紫红色', '#992785'),
+            'body' => TextColor::make('正文灰', '#464646'),
+            'muted' => TextColor::make('浅灰', '#666666'),
+            'red' => TextColor::make('红色', '#dc2626'),
+            'green' => TextColor::make('绿色', '#16a34a'),
+            ...TextColor::getDefaults(),
         ];
     }
 
@@ -138,6 +156,7 @@ class RichContent
 
         return RichContentRenderer::make($state)
             ->plugins(static::plugins())
+            ->textColors(static::textColors())
             ->fileAttachmentsDisk(static::fileAttachmentsDisk())
             ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
             ->getEditor()
@@ -262,6 +281,7 @@ class RichContent
             MediaUrl::normalizeRichContentHtml(
                 RichContentRenderer::make(static::documentForRenderer($state))
                     ->plugins(static::plugins())
+                    ->textColors(static::textColors())
                     ->fileAttachmentsDisk(static::fileAttachmentsDisk())
                     ->fileAttachmentsVisibility(static::fileAttachmentsVisibility())
                     ->processNodesUsing(function (object &$node): void {

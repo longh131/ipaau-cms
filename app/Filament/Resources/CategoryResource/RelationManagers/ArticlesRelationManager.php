@@ -7,6 +7,7 @@ use App\Filament\Resources\ArticleResource;
 use App\Filament\Resources\ArticleResource\Schemas\ArticleFormSchema;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Course;
 use App\Support\ArticleExtraFields;
 use Filament\Actions;
 use Filament\Forms;
@@ -30,7 +31,9 @@ class ArticlesRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $ownerRecord instanceof Category && $ownerRecord->type === 'article';
+        return $ownerRecord instanceof Category
+            && $ownerRecord->type === 'article'
+            && ! Course::isCourseCategory($ownerRecord->getKey());
     }
 
     public function form(Schema $schema): Schema

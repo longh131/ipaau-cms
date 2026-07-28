@@ -54,7 +54,7 @@ class CreateArticle extends CreateRecord
     {
         return Category::query()
             ->whereKey($categoryId)
-            ->where('type', 'article')
+            ->assignableForArticles()
             ->exists();
     }
 }

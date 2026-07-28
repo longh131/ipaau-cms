@@ -14,11 +14,13 @@ class ArticleExtraFields
         'textarea' => '多行文本',
         'url' => '链接',
         'image' => '图片路径',
+        'select' => '下拉选择',
+        'date' => '日期',
     ];
 
     /**
      * @param  array<int, mixed>|null  $schema
-     * @return array<int, array{key: string, label: string, type: string, show_in_list: bool}>
+     * @return array<int, array{key: string, label: string, type: string, show_in_list: bool, options?: array<string, string>}>
      */
     public static function normalizeSchema(?array $schema): array
     {
@@ -50,6 +52,7 @@ class ArticleExtraFields
                 'label' => trim((string) ($field['label'] ?? $key)),
                 'type' => $type,
                 'show_in_list' => (bool) ($field['show_in_list'] ?? false),
+                ...($type === 'select' ? ['options' => self::parseSelectOptions($field['options'] ?? null)] : []),
             ];
         }
 
@@ -79,12 +82,80 @@ class ArticleExtraFields
                 ->options(self::TYPE_OPTIONS)
                 ->default('text')
                 ->required()
+                ->live()
                 ->columnSpan(1),
             Forms\Components\Toggle::make('show_in_list')
                 ->label('列表页显示')
                 ->default(false)
                 ->columnSpan(1),
+            Forms\Components\Textarea::make('options')
+                ->label('下拉选项')
+                ->helperText('每行一个；可用「值|显示文字」，如：online|线上活动')
+                ->rows(3)
+                ->visible(fn (Get $get): bool => $get('type') === 'select')
+                ->columnSpanFull(),
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function parseSelectOptions(mixed $raw): array
+    {
+        if (is_array($raw)) {
+            $options = [];
+
+            foreach ($raw as $value => $label) {
+                if (is_int($value) && is_string($label)) {
+                    $label = trim($label);
+
+                    if ($label !== '') {
+                        $options[$label] = $label;
+                    }
+
+                    continue;
+                }
+
+                $value = trim((string) $value);
+                $label = trim((string) $label);
+
+                if ($value !== '') {
+                    $options[$value] = $label !== '' ? $label : $value;
+                }
+            }
+
+            return $options;
+        }
+
+        if (! is_string($raw) || blank($raw)) {
+            return [];
+        }
+
+        $options = [];
+
+        foreach (preg_split('/\R/', trim($raw)) ?: [] as $line) {
+            $line = trim($line);
+
+            if ($line === '') {
+                continue;
+            }
+
+            if (str_contains($line, '|')) {
+                [$value, $label] = array_map('trim', explode('|', $line, 2));
+                $value = (string) $value;
+                $label = (string) $label;
+
+                if ($value !== '') {
+                    $options[$value] = $label !== '' ? $label : $value;
+                }
+
+                continue;
+            }
+
+            $options[$line] = $line;
+        }
+
+        return $options;
     }
 
     /**
@@ -108,7 +179,7 @@ class ArticleExtraFields
     }
 
     /**
-     * @param  array{key: string, label: string, type: string, show_in_list: bool}  $field
+     * @param  array{key: string, label: string, type: string, show_in_list: bool, options?: array<string, string>}  $field
      */
     protected static function formComponent(array $field): \Filament\Schemas\Components\Component
     {
@@ -130,6 +201,15 @@ class ArticleExtraFields
                 ->helperText('相对路径（如 assets/img/...）或完整 URL')
                 ->maxLength(2048)
                 ->columnSpanFull(),
+            'select' => Forms\Components\Select::make($key)
+                ->label($label)
+                ->options($field['options'] ?? [])
+                ->searchable()
+                ->columnSpanFull(),
+            'date' => Forms\Components\DatePicker::make($key)
+                ->label($label)
+                ->native(false)
+                ->columnSpanFull(),
             default => Forms\Components\TextInput::make($key)
                 ->label($label)
                 ->maxLength(500)
@@ -145,15 +225,19 @@ class ArticleExtraFields
     public static function normalizeValuesForStorage(?array $extraFields, array $schema): array
     {
         $extraFields = is_array($extraFields) ? $extraFields : [];
-        $allowedKeys = array_column($schema, 'key');
+        $schemaByKey = collect($schema)->keyBy('key');
         $normalized = [];
 
-        foreach ($allowedKeys as $key) {
+        foreach ($schemaByKey as $key => $field) {
             if (! array_key_exists($key, $extraFields)) {
                 continue;
             }
 
             $value = $extraFields[$key];
+
+            if ($value instanceof \DateTimeInterface) {
+                $value = $value->format(($field['type'] ?? 'text') === 'date' ? 'Y-m-d' : 'Y-m-d H:i:s');
+            }
 
             if (is_string($value)) {
                 $value = trim($value);
@@ -161,6 +245,14 @@ class ArticleExtraFields
 
             if ($value === '' || $value === null) {
                 continue;
+            }
+
+            if (($field['type'] ?? 'text') === 'date' && is_string($value)) {
+                try {
+                    $value = \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
+                } catch (\Throwable) {
+                    continue;
+                }
             }
 
             $normalized[$key] = $value;
@@ -192,6 +284,7 @@ class ArticleExtraFields
                 'label' => $field['label'],
                 'type' => $field['type'],
                 'value' => $value,
+                'display' => self::displayValue($value, $field),
             ];
         }
 
@@ -289,6 +382,30 @@ class ArticleExtraFields
         }
 
         return [];
+    }
+
+    public static function displayValue(mixed $value, array $field): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        if (($field['type'] ?? 'text') === 'select') {
+            $options = $field['options'] ?? [];
+            $stringValue = (string) $value;
+
+            return (string) ($options[$stringValue] ?? $stringValue);
+        }
+
+        if (($field['type'] ?? 'text') === 'date' && is_string($value)) {
+            try {
+                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
+            } catch (\Throwable) {
+                return (string) $value;
+            }
+        }
+
+        return is_scalar($value) ? (string) $value : '';
     }
 
     public static function assetUrl(mixed $value): ?string

@@ -101,6 +101,7 @@ class PageBodyBlocks
             $normalizedBlock = match ($type) {
                 self::TYPE_RICH_TEXT => [
                     'type' => self::TYPE_RICH_TEXT,
+                    'tagline' => trim((string) ($block['tagline'] ?? '')),
                     'title' => trim((string) ($block['title'] ?? '')),
                     'title_align' => static::normalizeTitleAlign((string) ($block['title_align'] ?? 'center')),
                     'html' => RichContent::encodeDocumentForForm($block['html'] ?? ''),
@@ -217,6 +218,7 @@ class PageBodyBlocks
             $blocks = [
                 [
                     'type' => self::TYPE_RICH_TEXT,
+                    'tagline' => '',
                     'title' => '',
                     'title_align' => 'center',
                     'html' => (string) $legacyContent,
@@ -230,6 +232,7 @@ class PageBodyBlocks
             $renderedBlock = match ($block['type']) {
                 self::TYPE_RICH_TEXT => [
                     'type' => self::TYPE_RICH_TEXT,
+                    'tagline' => $block['tagline'],
                     'title' => $block['title'],
                     'title_align' => $block['title_align'],
                     'html' => RichContent::toHtml($block['html']),
@@ -378,7 +381,8 @@ class PageBodyBlocks
     public static function blockHasContent(array $block): bool
     {
         return match ($block['type'] ?? null) {
-            self::TYPE_RICH_TEXT => filled($block['title'] ?? null)
+            self::TYPE_RICH_TEXT => filled($block['tagline'] ?? null)
+                || filled($block['title'] ?? null)
                 || RichContent::hasVisibleHtml(RichContent::toHtml($block['html'] ?? '')),
             self::TYPE_HIGHLIGHT => filled(trim((string) ($block['text'] ?? ''))),
             self::TYPE_CTA_GROUP => ($block['buttons'] ?? []) !== [],

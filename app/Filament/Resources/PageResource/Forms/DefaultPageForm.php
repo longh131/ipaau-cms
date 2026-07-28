@@ -43,7 +43,7 @@ class DefaultPageForm
 
                             return match ($type) {
                                 PageBodyBlocks::TYPE_RICH_TEXT => '富文本：'.Str::limit(
-                                    (string) ($state['title'] ?? strip_tags((string) ($state['html'] ?? ''))),
+                                    (string) (($state['title'] ?? '') ?: ($state['tagline'] ?? '') ?: strip_tags((string) ($state['html'] ?? ''))),
                                     24,
                                 ),
                                 PageBodyBlocks::TYPE_HIGHLIGHT => '渐变强调句：'.Str::limit((string) ($state['text'] ?? ''), 24),

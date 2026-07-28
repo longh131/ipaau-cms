@@ -14,7 +14,11 @@ class CategoryListTemplateRegistry
 
     public const TEMPLATE_TEAM_INTRO = 'team_intro';
 
+    public const TEMPLATE_COURSE_TABLE = 'course_table';
+
     public const DEFAULT_PER_PAGE = 12;
+
+    public const COURSE_TABLE_PER_PAGE = 20;
 
     public const TOPICS_ARTICLE_LIST_PER_PAGE = 24;
 
@@ -26,6 +30,7 @@ class CategoryListTemplateRegistry
         self::TEMPLATE_NEWS_CARDS => '新闻卡片',
         self::TEMPLATE_TOPICS_ARTICLE_LIST => '列表（含：专业技术，数字咨询，会刊精选）',
         self::TEMPLATE_TEAM_INTRO => '团队介绍',
+        self::TEMPLATE_COURSE_TABLE => '课程表格',
     ];
 
     public static function resolve(Category $category): string
@@ -55,6 +60,7 @@ class CategoryListTemplateRegistry
     {
         return match (self::resolve($category)) {
             self::TEMPLATE_TOPICS_ARTICLE_LIST => self::TOPICS_ARTICLE_LIST_PER_PAGE,
+            self::TEMPLATE_COURSE_TABLE => self::COURSE_TABLE_PER_PAGE,
             default => self::DEFAULT_PER_PAGE,
         };
     }
@@ -75,5 +81,10 @@ class CategoryListTemplateRegistry
     public static function isTeamIntro(Category $category): bool
     {
         return self::resolve($category) === self::TEMPLATE_TEAM_INTRO;
+    }
+
+    public static function isCourseTable(Category $category): bool
+    {
+        return self::resolve($category) === self::TEMPLATE_COURSE_TABLE;
     }
 }

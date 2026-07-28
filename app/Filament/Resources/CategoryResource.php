@@ -130,9 +130,11 @@ class CategoryResource extends Resource
                     ->label('列表模板')
                     ->options(CategoryListTemplateRegistry::OPTIONS)
                     ->default(CategoryListTemplateRegistry::TEMPLATE_SIMPLE)
-                    ->helperText(fn (Get $get): string => $get('list_template') === CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO
-                        ? '团队介绍：上方栏目名称与介绍，下方一行三个成员卡片，点击进入详情页'
-                        : '仅对「文章」类型栏目生效，决定前台列表展示样式')
+                    ->helperText(fn (Get $get): string => match ($get('list_template')) {
+                        CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO => '团队介绍：上方栏目名称与介绍，下方一行三个成员卡片，点击进入详情页',
+                        CategoryListTemplateRegistry::TEMPLATE_COURSE_TABLE => '课程表格：从「课程管理」读取数据，按表格展示举办城市、活动时间、报名状态等',
+                        default => '仅对「文章」类型栏目生效，决定前台列表展示样式',
+                    })
                     ->visible(fn (Get $get): bool => $get('type') === 'article')
                     ->live()
                     ->columnSpanFull(),

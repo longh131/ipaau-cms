@@ -74,7 +74,11 @@ class ArticleResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('栏目')
-                    ->relationship('category', 'name'),
+                    ->relationship(
+                        'category',
+                        'name',
+                        fn (Builder $query): Builder => $query->assignableForArticles(),
+                    ),
                 Tables\Filters\Filter::make('published_at')
                     ->label('发布时间')
                     ->form([

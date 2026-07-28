@@ -19,6 +19,8 @@ Route::get('/search', SearchController::class)->name('search');
 Route::get('/page/{slug}', [FrontendController::class, 'render'])->name('page.show');
 Route::get('/category/{slug}', [FrontendController::class, 'render'])->name('category.show');
 Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');
+Route::get('/courses/{course}/register', [\App\Http\Controllers\CourseRegistrationController::class, 'redirect'])
+    ->name('courses.register');
 
 Route::prefix('member')->name('member.')->group(function (): void {
     Route::get('/login', [MemberAuthController::class, 'showLogin'])->name('login');

@@ -60,7 +60,7 @@ class ArticleFormSchema
             Forms\Components\Select::make('category_id')
                 ->label('所属栏目')
                 ->options(fn (): array => Category::query()
-                    ->where('type', 'article')
+                    ->assignableForArticles()
                     ->orderBy('sort_order')
                     ->pluck('name', 'id')
                     ->all())

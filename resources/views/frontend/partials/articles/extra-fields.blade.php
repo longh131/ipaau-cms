@@ -20,7 +20,7 @@
                             <p class="whitespace-pre-line">{{ $item['value'] }}</p>
                             @break
                         @default
-                            {{ $item['value'] }}
+                            {{ $item['display'] ?? $item['value'] }}
                     @endswitch
                 </dd>
             </div>

@@ -765,7 +765,7 @@ class BodyBlockFormSchemas
             ['h4'],
             ['alignStart', 'alignCenter', 'alignEnd'],
             ['bulletList', 'orderedList'],
-            ['link'],
+            ['link', 'textColor'],
             ['undo', 'redo'],
         ];
     }
@@ -779,6 +779,12 @@ class BodyBlockFormSchemas
     {
         return match ($type) {
             PageBodyBlocks::TYPE_RICH_TEXT => [
+                Forms\Components\TextInput::make('tagline')
+                    ->label('小标题')
+                    ->placeholder('例如：ABOUT THE IPA')
+                    ->helperText('样式与首页 Hero 主视觉小标题一致；留空则不显示')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('title')
                     ->label('标题')
                     ->placeholder('例如：Who We Are')

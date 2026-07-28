@@ -36,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
                     InlineStylePlugin::make(),
                 ])
                 ->toolbarButtons(RichContent::pageToolbar())
+                ->textColors(RichContent::textColors())
+                ->customTextColors()
                 ->resizableImages(true)
                 ->fileAttachmentsDisk(RichContent::fileAttachmentsDisk())
                 ->fileAttachmentsDirectory(RichContent::fileAttachmentsDirectory())
