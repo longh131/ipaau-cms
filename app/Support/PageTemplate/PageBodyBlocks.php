@@ -130,7 +130,7 @@ class PageBodyBlocks
                     'type' => self::TYPE_FAQ,
                     'tagline' => trim((string) ($block['tagline'] ?? '')),
                     'title' => trim((string) ($block['title'] ?? '')),
-                    'intro' => trim((string) ($block['intro'] ?? '')),
+                    'intro' => RichContent::encodeDocumentForForm($block['intro'] ?? ''),
                     'items' => collect(FaqSectionData::forForm(['items' => $block['items'] ?? []])['items'])
                         ->map(function (array $item): array {
                             $item['answer'] = RichContent::encodeDocumentForForm($item['answer'] ?? '');
@@ -273,7 +273,7 @@ class PageBodyBlocks
                     'type' => self::TYPE_FAQ,
                     'tagline' => $block['tagline'],
                     'title' => $block['title'],
-                    'intro' => $block['intro'],
+                    'intro' => RichContent::toHtml($block['intro'] ?? ''),
                     'items' => FaqSectionData::forFrontend(['items' => $block['items']])['items'],
                 ],
                 self::TYPE_STATS => [

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PageComponentResource\Forms;
 
 use App\Filament\Forms\ImageUpload;
+use App\Filament\Resources\PageResource\Forms\BodyBlockFormSchemas;
 use Filament\Forms;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -41,13 +42,7 @@ class TabbedContentSectionForm
                                 ->label('内容')
                                 ->rows(4)
                                 ->columnSpanFull(),
-                            Forms\Components\TextInput::make('button_label')
-                                ->label('链接按钮名称')
-                                ->maxLength(120),
-                            Forms\Components\TextInput::make('button_url')
-                                ->label('链接按钮地址')
-                                ->placeholder('/articles/ 或 https://')
-                                ->maxLength(2048),
+                            BodyBlockFormSchemas::tabButtonsRepeater(),
                             ImageUpload::make(
                                 'image',
                                 'page-components/tabbed-content',

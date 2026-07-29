@@ -42,13 +42,7 @@ class BodyBlockFormSchemas
                         ->rows(4)
                         ->helperText('空行可分段显示')
                         ->columnSpanFull(),
-                    Forms\Components\TextInput::make('button_label')
-                        ->label('链接按钮名称')
-                        ->maxLength(120),
-                    Forms\Components\TextInput::make('button_url')
-                        ->label('链接按钮地址')
-                        ->placeholder('/category/ 或 https://')
-                        ->maxLength(2048),
+                    self::tabButtonsRepeater(),
                     ImageUpload::make(
                         'image',
                         'page-components/pages/tabs',
@@ -334,6 +328,42 @@ class BodyBlockFormSchemas
             ->columnSpanFull();
     }
 
+    public static function tabButtonsRepeater(): Forms\Components\Repeater
+    {
+        return Forms\Components\Repeater::make('buttons')
+            ->label('按钮')
+            ->helperText('可选；需同时填写按钮文字与链接，保存后前台才会显示；可添加多个')
+            ->schema([
+                Forms\Components\TextInput::make('label')
+                    ->label('按钮文字')
+                    ->maxLength(120),
+                Forms\Components\TextInput::make('url')
+                    ->label('链接')
+                    ->placeholder('/category/ 或 https://')
+                    ->maxLength(2048),
+                Forms\Components\Select::make('style')
+                    ->label('样式')
+                    ->options([
+                        'primary' => '蓝底白字（主按钮）',
+                        'secondary' => '白底蓝字（次按钮）',
+                    ])
+                    ->default('secondary'),
+                Forms\Components\Select::make('target')
+                    ->label('打开方式')
+                    ->options([
+                        '' => '当前窗口',
+                        '_blank' => '新窗口',
+                    ])
+                    ->default(''),
+            ])
+            ->minItems(0)
+            ->maxItems(6)
+            ->reorderable()
+            ->addActionLabel('添加按钮')
+            ->columns(2)
+            ->columnSpanFull();
+    }
+
     /**
      * @return array<int, Forms\Components\Component>
      */
@@ -350,11 +380,7 @@ class BodyBlockFormSchemas
                 ->placeholder('例如：Frequently Asked Questions')
                 ->maxLength(255)
                 ->columnSpanFull(),
-            Forms\Components\Textarea::make('intro')
-                ->label('导语')
-                ->rows(2)
-                ->placeholder('显示在标题下方，可选')
-                ->columnSpanFull(),
+            RichContent::nestedRichEditor('intro', '导语', self::faqAnswerToolbar()),
             Forms\Components\Repeater::make('items')
                 ->label('问答项')
                 ->helperText('至少填写问题；答案支持段落、列表与链接')

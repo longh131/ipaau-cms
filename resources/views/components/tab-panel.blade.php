@@ -69,13 +69,28 @@
         </div>
         @endif
     </div>
-    @if(filled($tab['button_label'] ?? null) && filled($tab['url'] ?? null))
-    <div class="pt-4 text-left">
-        <x-cta-button
-            :label="$tab['button_label']"
-            :url="$tab['url']"
-            style="secondary"
-        />
+    @php
+        $buttons = $tab['buttons'] ?? [];
+
+        if ($buttons === [] && filled($tab['button_label'] ?? null) && filled($tab['url'] ?? null)) {
+            $buttons = [[
+                'label' => $tab['button_label'],
+                'url' => $tab['url'],
+                'style' => 'secondary',
+                'target' => '',
+            ]];
+        }
+    @endphp
+    @if($buttons !== [])
+    <div class="pt-4 text-left flex flex-col sm:flex-row flex-wrap gap-6">
+        @foreach ($buttons as $button)
+            <x-cta-button
+                :label="$button['label']"
+                :url="$button['url']"
+                :style="$button['style'] ?? 'secondary'"
+                :target="filled($button['target'] ?? null) ? $button['target'] : null"
+            />
+        @endforeach
     </div>
     @endif
 </div>

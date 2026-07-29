@@ -18,7 +18,7 @@ class TabbedContentSectionData
 
     /**
      * @param  array<string, mixed>|null  $data
-     * @return array{tabs: array<int, array{tab_label: string, tagline: string, title: string, description: string, button_label: string, button_url: string, image: string}>}
+     * @return array{tabs: array<int, array<string, mixed>>}
      */
     public static function forForm(?array $data): array
     {
@@ -30,7 +30,7 @@ class TabbedContentSectionData
                 continue;
             }
 
-            $tabs[] = static::normalizeItem($tab);
+            $tabs[] = static::normalizeItem($tab, forForm: true);
         }
 
         return ['tabs' => $tabs];
@@ -38,7 +38,7 @@ class TabbedContentSectionData
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array{tabs: array<int, array{tab_label: string, tagline: string, title: string, description: string, button_label: string, button_url: string, image: string}>}
+     * @return array{tabs: array<int, array<string, mixed>>}
      */
     public static function forStorage(array $data): array
     {
@@ -63,7 +63,7 @@ class TabbedContentSectionData
 
     /**
      * @param  array<string, mixed>|null  $data
-     * @return array{tabs: array<int, array{tab_label: string, tagline: string, title: string, description: string, button_label: string, url: ?string, image: ?string}>}
+     * @return array{tabs: array<int, array<string, mixed>>}
      */
     public static function forFrontend(?array $data): array
     {
@@ -71,14 +71,13 @@ class TabbedContentSectionData
 
         return [
             'tabs' => collect($form['tabs'])
-                ->filter(fn (array $tab) => filled($tab['tab_label']))
-                ->map(fn (array $tab) => [
+                ->filter(fn (array $tab): bool => filled($tab['tab_label']))
+                ->map(fn (array $tab): array => [
                     'tab_label' => $tab['tab_label'],
                     'tagline' => $tab['tagline'],
                     'title' => $tab['title'],
                     'description' => $tab['description'],
-                    'button_label' => $tab['button_label'],
-                    'url' => filled($tab['button_url']) ? $tab['button_url'] : null,
+                    'buttons' => $tab['buttons'],
                     'image' => MediaUrl::resolve($tab['image']),
                 ])
                 ->values()
@@ -88,18 +87,91 @@ class TabbedContentSectionData
 
     /**
      * @param  array<string, mixed>  $tab
-     * @return array{tab_label: string, tagline: string, title: string, description: string, button_label: string, button_url: string, image: string}
+     * @return array<string, mixed>
      */
-    private static function normalizeItem(array $tab): array
+    private static function normalizeItem(array $tab, bool $forForm = false): array
     {
+        $buttons = static::normalizeButtons($tab['buttons'] ?? []);
+
+        if ($buttons === []) {
+            $label = trim((string) ($tab['button_label'] ?? $tab['cta_text'] ?? ''));
+            $url = trim((string) ($tab['button_url'] ?? $tab['cta_url'] ?? $tab['url'] ?? ''));
+
+            if ($label !== '' && $url !== '') {
+                $buttons[] = [
+                    'label' => $label,
+                    'url' => $url,
+                    'style' => 'secondary',
+                    'target' => '',
+                ];
+            }
+        }
+
+        if ($forForm) {
+            $buttons = static::normalizeButtonsForForm($buttons);
+        }
+
         return [
             'tab_label' => trim((string) ($tab['tab_label'] ?? $tab['label'] ?? '')),
             'tagline' => trim((string) ($tab['tagline'] ?? $tab['eyebrow'] ?? '')),
             'title' => trim((string) ($tab['title'] ?? '')),
             'description' => trim((string) ($tab['description'] ?? $tab['body'] ?? '')),
-            'button_label' => trim((string) ($tab['button_label'] ?? $tab['cta_text'] ?? '')),
-            'button_url' => trim((string) ($tab['button_url'] ?? $tab['cta_url'] ?? $tab['url'] ?? '')),
+            'buttons' => $buttons,
             'image' => MediaUrl::normalizeStoredPath($tab['image'] ?? ''),
         ];
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string, style: string, target: string}>
+     */
+    private static function normalizeButtons(mixed $buttons): array
+    {
+        if (! is_array($buttons)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($buttons as $button) {
+            if (! is_array($button)) {
+                continue;
+            }
+
+            $label = trim((string) ($button['label'] ?? ''));
+            $url = trim((string) ($button['url'] ?? ''));
+
+            if ($label === '' || $url === '') {
+                continue;
+            }
+
+            $style = (string) ($button['style'] ?? 'secondary');
+            $style = in_array($style, ['primary', 'secondary'], true) ? $style : 'secondary';
+
+            $target = (string) ($button['target'] ?? '');
+            $target = $target === '_blank' ? '_blank' : '';
+
+            $normalized[] = [
+                'label' => $label,
+                'url' => $url,
+                'style' => $style,
+                'target' => $target,
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param  array<int, array{label: string, url: string, style: string, target: string}>  $buttons
+     * @return array<int, array{label: string, url: string, style: string, target: string}>
+     */
+    private static function normalizeButtonsForForm(array $buttons): array
+    {
+        return array_map(static fn (array $button): array => [
+            'label' => $button['label'],
+            'url' => $button['url'],
+            'style' => in_array($button['style'], ['primary', 'secondary'], true) ? $button['style'] : 'secondary',
+            'target' => $button['target'] === '_blank' ? '_blank' : '',
+        ], $buttons);
     }
 }

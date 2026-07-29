@@ -1,4 +1,6 @@
 @php
+    use App\Support\RichContent;
+
     /** @var array{
      *     tagline: string,
      *     title: string,
@@ -8,9 +10,11 @@
     $items = $block['items'] ?? [];
     $layout = $layout ?? 'default';
     $isGeneralSecondary = $layout === 'general_secondary';
+    $introHtml = (string) ($block['intro'] ?? '');
+    $hasIntro = RichContent::hasVisibleHtml($introHtml);
     $hasHeader = filled($block['tagline'] ?? null)
         || filled($block['title'] ?? null)
-        || filled($block['intro'] ?? null);
+        || $hasIntro;
 @endphp
 
 @if(! empty($items))
@@ -53,11 +57,12 @@
                         >{{ $block['title'] }}</h3>
                     @endif
 
-                    @if(filled($block['intro'] ?? null))
+                    @if($hasIntro)
                         <div
-                            class="text-[color:var(--ipa-color)] mt-8 text-xl font-din text-primary"
+                            class="text-[color:var(--ipa-color)] mt-8 text-xl font-din text-primary cms-page-content"
                             data-type="section-description"
-                        >{{ $block['intro'] }}</div>
+                            data-rte="true"
+                        >{!! $introHtml !!}</div>
                     @endif
                 </div>
             @endif

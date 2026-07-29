@@ -202,7 +202,7 @@ class GeneralSecondarySections
                     'type' => self::TYPE_FAQ,
                     'tagline' => $section['tagline'],
                     'title' => $section['title'],
-                    'intro' => $section['intro'],
+                    'intro' => RichContent::toHtml($section['intro'] ?? ''),
                     'items' => FaqSectionData::forFrontend(['items' => $section['items']])['items'],
                 ],
                 self::TYPE_NEWS_LIST_A => [
@@ -306,7 +306,7 @@ class GeneralSecondarySections
             'type' => self::TYPE_FAQ,
             'tagline' => trim((string) ($section['tagline'] ?? '')),
             'title' => trim((string) ($section['title'] ?? '')),
-            'intro' => trim((string) ($section['intro'] ?? '')),
+            'intro' => RichContent::encodeDocumentForForm($section['intro'] ?? ''),
             'items' => collect($items)
                 ->map(function (array $item): array {
                     $item['answer'] = RichContent::encodeDocumentForForm($item['answer'] ?? '');
