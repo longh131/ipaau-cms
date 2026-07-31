@@ -18,6 +18,9 @@ Route::get('/test-menu', function () {
 Route::get('/search', SearchController::class)->name('search');
 Route::get('/page/{slug}', [FrontendController::class, 'render'])->name('page.show');
 Route::get('/category/{slug}', [FrontendController::class, 'render'])->name('category.show');
+Route::post('/category/{slug}/certificate-lookup', [\App\Http\Controllers\CertificateLookupController::class, 'store'])
+    ->middleware('throttle:20,1')
+    ->name('category.certificate-lookup');
 Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');
 Route::get('/courses/{course}/register', [\App\Http\Controllers\CourseRegistrationController::class, 'redirect'])
     ->name('courses.register');

@@ -115,7 +115,7 @@ class AdminPanelProvider extends PanelProvider
             ->filter()
             ->toArray();
 
-        array_unshift($resources, CategoryResource::class);
+        array_unshift($resources, CategoryResource::class, \App\Filament\Resources\SpecialCategoryPageResource::class);
 
         $systemResources = [
             \App\Filament\Resources\IpaMemberResource::class,

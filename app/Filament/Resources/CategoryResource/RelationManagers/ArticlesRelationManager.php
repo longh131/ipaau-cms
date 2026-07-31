@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Course;
 use App\Support\ArticleExtraFields;
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -33,7 +34,9 @@ class ArticlesRelationManager extends RelationManager
     {
         return $ownerRecord instanceof Category
             && $ownerRecord->type === 'article'
-            && ! Course::isCourseCategory($ownerRecord->getKey());
+            && ! Course::isCourseCategory($ownerRecord->getKey())
+            && ! CategoryListTemplateRegistry::isSpecialCourseList($ownerRecord)
+            && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($ownerRecord);
     }
 
     public function form(Schema $schema): Schema

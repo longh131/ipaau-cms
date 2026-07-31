@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Page;
+use App\Models\SpecialCategoryPage;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
 use App\Support\BreadcrumbBuilder;
@@ -93,6 +94,14 @@ class FrontendController extends Controller
             return $this->renderCourseCategory($category);
         }
 
+        if (CategoryListTemplateRegistry::isSpecialCourseList($category)) {
+            return $this->renderSpecialCourseListCategory($category);
+        }
+
+        if (CategoryListTemplateRegistry::isSpecialCertificateLookup($category)) {
+            return $this->renderSpecialCertificateLookupCategory($category);
+        }
+
         $articles = Article::query()
             ->where('category_id', $category->id)
             ->where('is_active', true)
@@ -126,6 +135,49 @@ class FrontendController extends Controller
             'courses' => $courses,
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+        ]);
+    }
+
+    private function renderSpecialCourseListCategory(Category $category): View
+    {
+        $pageSettings = SpecialCategoryPage::query()
+            ->where('category_id', $category->id)
+            ->first();
+
+        $courses = Course::query()
+            ->whereIn('category_id', $pageSettings?->resolvedCourseCategoryIds() ?? Course::categoryIds())
+            ->where('is_active', true)
+            ->orderByDesc('starts_at')
+            ->orderByDesc('legacy_added_at')
+            ->orderByDesc('id')
+            ->paginate(CategoryListTemplateRegistry::perPageFor($category));
+
+        return view(CategoryListTemplateRegistry::viewFor($category), [
+            'category' => $category,
+            'courses' => $courses,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
+            'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
+        ]);
+    }
+
+    private function renderSpecialCertificateLookupCategory(Category $category): View
+    {
+        $pageSettings = SpecialCategoryPage::query()
+            ->where('category_id', $category->id)
+            ->where('feature_type', SpecialCategoryPage::FEATURE_CERTIFICATE_LOOKUP)
+            ->first();
+
+        return view(CategoryListTemplateRegistry::viewFor($category), [
+            'category' => $category,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
+            'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
+            'certificateTitle' => $pageSettings?->certificateTitleForFrontend() ?? '证书查询',
+            'certificateSummary' => $pageSettings?->certificateSummaryForFrontend() ?? '',
+            'lookupResult' => session('certificate_lookup_result'),
         ]);
     }
 

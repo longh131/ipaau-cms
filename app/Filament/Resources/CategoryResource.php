@@ -133,6 +133,8 @@ class CategoryResource extends Resource
                     ->helperText(fn (Get $get): string => match ($get('list_template')) {
                         CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO => '团队介绍：上方栏目名称与介绍，下方一行三个成员卡片，点击进入详情页',
                         CategoryListTemplateRegistry::TEMPLATE_COURSE_TABLE => '课程表格：从「课程管理」读取数据，按表格展示举办城市、活动时间、报名状态等',
+                        CategoryListTemplateRegistry::TEMPLATE_SPECIAL_COURSE_LIST => '功能栏目页：请在「功能栏目页」中配置 HTML 正文与课程范围；标题与介绍在本页下方编辑',
+                        CategoryListTemplateRegistry::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP => '功能栏目页：请在「功能栏目页」中配置 HTML 正文与证书查询；标题与介绍在本页下方编辑',
                         default => '仅对「文章」类型栏目生效，决定前台列表展示样式',
                     })
                     ->visible(fn (Get $get): bool => $get('type') === 'article')
@@ -224,7 +226,9 @@ class CategoryResource extends Resource
                     ->url(fn (Category $record): string => ArticleResource::getUrl('index', [
                         'category_id' => $record->getKey(),
                     ]))
-                    ->visible(fn (Category $record): bool => $record->type === 'article'),
+                    ->visible(fn (Category $record): bool => $record->type === 'article'
+                        && ! CategoryListTemplateRegistry::isSpecialCourseList($record)
+                        && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($record)),
                 Actions\EditAction::make()
                     ->label('编辑'),
                 Actions\DeleteAction::make()

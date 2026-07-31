@@ -62,6 +62,11 @@ class Category extends Model
         return $this->hasOne(Page::class);
     }
 
+    public function specialCategoryPage(): HasOne
+    {
+        return $this->hasOne(SpecialCategoryPage::class);
+    }
+
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
