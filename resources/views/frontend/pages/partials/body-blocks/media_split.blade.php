@@ -10,7 +10,7 @@
      * } $block */
     $imageLeft = ($block['image_position'] ?? 'left') === 'left';
     $hasImage = filled($block['image'] ?? null);
-    $imageShape = ($block['image_shape'] ?? 'acorn') === 'rectangle' ? 'rectangle' : 'acorn';
+    $imageShape = $block['image_shape'] ?? 'acorn';
     $hasText = filled($block['tagline'] ?? null)
         || filled($block['title'] ?? null)
         || filled(strip_tags((string) ($block['content_html'] ?? '')))

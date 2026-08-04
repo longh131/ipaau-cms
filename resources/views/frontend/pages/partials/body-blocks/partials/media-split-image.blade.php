@@ -8,6 +8,7 @@
             'about-cta__image',
             'about-cta__image--acorn' => ($imageShape ?? 'acorn') === 'acorn',
             'about-cta__image--rect' => ($imageShape ?? 'acorn') === 'rectangle',
+            'about-cta__image--rect-tall' => ($imageShape ?? 'acorn') === 'tall_rectangle',
         ])>
             <img
                 src="{{ $block['image'] }}"

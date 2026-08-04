@@ -537,6 +537,19 @@ section[data-type="testimonialCarousel"].testimonial-carousel-section:not(.cms-b
   white-space: pre-line;
 }
 
+/* 首页会员推荐：正文字号比板块标题小三号 */
+:not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__quote {
+  font-size: var(--ipa-display-xs) !important;
+  line-height: 1.6 !important;
+}
+
+@media (min-width: 1024px) {
+  :not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__quote {
+    font-size: var(--ipa-display-sm) !important;
+    line-height: 1.55 !important;
+  }
+}
+
 .testimonial-carousel .testimonial-card__details {
   width: 100%;
 }

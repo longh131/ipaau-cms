@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initDropdowns();
     initNewsletterForm();
     initBlobScrollProgress();
-    initBlobAnimationOptimization();
     initAccordion();
 });
 
@@ -265,104 +264,5 @@ function initAccordion() {
                 icon.setAttribute('d', isOpen ? 'M12 4.5v15m7.5-7.5h-15' : 'M5 12h14');
             }
         });
-    });
-}
-
-function initBlobAnimationOptimization() {
-    const blobContainers = document.querySelectorAll('.blobBackground.animated .blobContainer');
-
-    if (blobContainers.length === 0) {
-        return;
-    }
-    
-    console.log('Found', blobContainers.length, 'blob containers');
-    
-    // 为每个容器中的色块配置独立的动画参数
-    const animations = [];
-    
-    blobContainers.forEach((container) => {
-        const blobs = container.querySelectorAll('div');
-        blobs.forEach((blob, index) => {
-            // 根据元素的位置/类名分配不同的动画类型和速度
-            let animType = 'horizontal';
-            let speed = 0.1;
-            let range = 100;
-            
-            // 根据元素特征设置不同动画
-            if (blob.classList.contains('purple')) {
-                animType = 'horizontal';
-                speed = 0.12;
-                range = 120;
-            } else if (blob.classList.contains('blue')) {
-                animType = 'vertical';
-                speed = 0.1;
-                range = 100;
-            } else if (blob.classList.contains('orange')) {
-                animType = 'rotate';
-                speed = 0.08;
-                range = 360;
-            }
-            
-            animations.push({
-                element: blob,
-                type: animType,
-                speed: speed,
-                range: range,
-                phase: index * 60,  // 错开相位，更自然
-                rotX: 0,
-                rotY: 0
-            });
-        });
-    });
-    
-    let startTime = null;
-    let animFrame = null;
-    
-    function animate(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const seconds = elapsed / 1000;
-        
-        animations.forEach(anim => {
-            const angle = seconds * Math.PI * 2 * anim.speed + (anim.phase * Math.PI / 180);
-            
-            if (anim.type === 'horizontal') {
-                const offsetX = Math.sin(angle) * anim.range;
-                anim.element.style.transform = `translate3d(${offsetX}px, 0, 0)`;
-            }
-            else if (anim.type === 'vertical') {
-                const offsetY = Math.sin(angle) * anim.range;
-                anim.element.style.transform = `translate3d(0, ${offsetY}px, 0)`;
-            }
-            else if (anim.type === 'rotate') {
-                const rotation = (seconds * anim.speed * 360) % 360;
-                const offsetX = Math.sin(angle * 0.5) * (anim.range * 0.3);
-                const offsetY = Math.cos(angle * 0.7) * (anim.range * 0.3);
-                anim.element.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${rotation}deg)`;
-            }
-        });
-        
-        animFrame = requestAnimationFrame(animate);
-    }
-    
-    // 启动动画
-    animFrame = requestAnimationFrame(animate);
-    console.log('Blob animation started with requestAnimationFrame');
-    
-    // 页面隐藏时暂停动画（节省资源）
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            if (animFrame) {
-                cancelAnimationFrame(animFrame);
-                animFrame = null;
-                console.log('Blob animation paused (page hidden)');
-            }
-        } else {
-            if (!animFrame) {
-                startTime = null;
-                animFrame = requestAnimationFrame(animate);
-                console.log('Blob animation resumed (page visible)');
-            }
-        }
     });
 }

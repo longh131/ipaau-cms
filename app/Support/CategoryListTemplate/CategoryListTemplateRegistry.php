@@ -3,6 +3,7 @@
 namespace App\Support\CategoryListTemplate;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoryListTemplateRegistry
 {
@@ -102,5 +103,23 @@ class CategoryListTemplateRegistry
     public static function isSpecialCertificateLookup(Category $category): bool
     {
         return self::resolve($category) === self::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP;
+    }
+
+    /**
+     * @param  Builder<\App\Models\Article>  $query
+     */
+    public static function applyArticleOrdering(Builder $query, Category $category): Builder
+    {
+        if (self::isTeamIntro($category)) {
+            return $query
+                ->orderBy('sort_order')
+                ->orderByDesc('published_at')
+                ->orderBy('id');
+        }
+
+        return $query
+            ->orderByDesc('is_sticky')
+            ->orderByDesc('published_at')
+            ->orderByDesc('sort_order');
     }
 }

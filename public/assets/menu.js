@@ -826,10 +826,7 @@
 
     // 初始化滑动效果
     function initCarousel() {
-        // 处理.testimonial-carousel类的轮播
-        console.log('[DEBUG] 开始处理轮播');
         const testimonialCarousels = document.querySelectorAll('.testimonial-carousel');
-        console.log('[DEBUG] 找到轮播容器数量:', testimonialCarousels.length);
         
         testimonialCarousels.forEach((carousel) => {
             const swiperWrapper = carousel.querySelector('.swiper-wrapper');
@@ -1032,15 +1029,24 @@
             startAutoplayTimer();
         });
 
-        // 处理testimonialCarousel
+        // 旧版 testimonial 结构（非 .testimonial-carousel / swiper）
         const testimonialSections = document.querySelectorAll('section[data-type="testimonialCarousel"]');
         
         testimonialSections.forEach(section => {
+            if (section.querySelector('.testimonial-carousel')) {
+                return;
+            }
+
             const slides = section.querySelectorAll('[data-type="slide"], .testimonial-slide');
+            if (slides.length === 0) {
+                return;
+            }
+
             const prevButton = section.querySelector('[data-type="prev-button"], .prev-button');
             const nextButton = section.querySelector('[data-type="next-button"], .next-button');
             const indicators = section.querySelectorAll('[data-type="indicator"], .carousel-indicator');
             let currentIndex = 0;
+            let autoplayInterval = null;
 
             function showSlide(index) {
                 if (index < 0) index = slides.length - 1;
@@ -1070,6 +1076,18 @@
                 showSlide(currentIndex - 1);
             }
 
+            function pauseAutoplay() {
+                if (autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    autoplayInterval = null;
+                }
+            }
+
+            function startAutoplay() {
+                pauseAutoplay();
+                autoplayInterval = setInterval(nextSlide, 5000);
+            }
+
             if (nextButton) {
                 nextButton.addEventListener('click', nextSlide);
             }
@@ -1081,14 +1099,11 @@
                 indicator.addEventListener('click', () => showSlide(index));
             });
 
-            const interval = setInterval(nextSlide, 5000);
-            
-            section.addEventListener('mouseenter', () => clearInterval(interval));
-            section.addEventListener('mouseleave', () => setInterval(nextSlide, 5000));
+            section.addEventListener('mouseenter', pauseAutoplay);
+            section.addEventListener('mouseleave', startAutoplay);
 
-            if (slides.length > 0) {
-                showSlide(0);
-            }
+            showSlide(0);
+            startAutoplay();
         });
 
         // 处理通用slider

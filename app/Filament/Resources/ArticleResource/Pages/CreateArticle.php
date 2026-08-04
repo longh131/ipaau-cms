@@ -17,15 +17,18 @@ class CreateArticle extends CreateRecord
     {
         parent::mount();
 
+        $defaults = [
+            'published_at' => now(),
+            'is_active' => true,
+        ];
+
         $categoryId = request()->integer('category_id');
 
-        if ($categoryId <= 0 || ! $this->isArticleCategory($categoryId)) {
-            return;
+        if ($categoryId > 0 && $this->isArticleCategory($categoryId)) {
+            $defaults['category_id'] = $categoryId;
         }
 
-        $this->form->fill([
-            'category_id' => $categoryId,
-        ]);
+        $this->form->fill($defaults);
     }
 
     protected function getRedirectUrl(): string
@@ -47,7 +50,17 @@ class CreateArticle extends CreateRecord
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return ArticleResource::normalizeArticleData($data);
+        $data = ArticleResource::normalizeArticleData($data);
+
+        if (blank($data['published_at'] ?? null)) {
+            $data['published_at'] = now();
+        }
+
+        if (! array_key_exists('is_active', $data) || $data['is_active'] === null) {
+            $data['is_active'] = true;
+        }
+
+        return $data;
     }
 
     private function isArticleCategory(int $categoryId): bool

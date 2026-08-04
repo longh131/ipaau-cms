@@ -62,6 +62,7 @@ class PageBodyBlocks
     public const IMAGE_SHAPE_OPTIONS = [
         'acorn' => '橡果形（About 页默认）',
         'rectangle' => '圆角矩形',
+        'tall_rectangle' => '圆角长矩形',
     ];
 
     /** @var array<string, string> */

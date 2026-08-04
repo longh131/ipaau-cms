@@ -102,13 +102,12 @@ class FrontendController extends Controller
             return $this->renderSpecialCertificateLookupCategory($category);
         }
 
-        $articles = Article::query()
-            ->where('category_id', $category->id)
-            ->where('is_active', true)
-            ->orderByDesc('is_sticky')
-            ->orderByDesc('published_at')
-            ->orderByDesc('sort_order')
-            ->paginate(CategoryListTemplateRegistry::perPageFor($category));
+        $articles = CategoryListTemplateRegistry::applyArticleOrdering(
+            Article::query()
+                ->where('category_id', $category->id)
+                ->where('is_active', true),
+            $category,
+        )->paginate(CategoryListTemplateRegistry::perPageFor($category));
 
         return view(CategoryListTemplateRegistry::viewFor($category), [
             'category' => $category,

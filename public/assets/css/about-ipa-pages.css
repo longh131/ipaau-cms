@@ -265,12 +265,15 @@ body.cms-about-page .footer-main {
   max-width: 100%;
 }
 
-.about-cta__image--rect {
+.about-cta__image--rect,
+.about-cta__image--rect-tall {
   background-color: oklch(0.9612 0 0);
 }
 
 .about-cta__image--rect,
-.about-cta__image--rect img {
+.about-cta__image--rect-tall,
+.about-cta__image--rect img,
+.about-cta__image--rect-tall img {
   border-radius: 24px;
 }
 
@@ -319,7 +322,12 @@ body.cms-about-page .footer-main {
   aspect-ratio: 4 / 3;
 }
 
-.about-cta__image--rect img {
+.about-cta__image--rect-tall {
+  aspect-ratio: 3 / 4;
+}
+
+.about-cta__image--rect img,
+.about-cta__image--rect-tall img {
   display: block;
   width: 100%;
   height: 100%;
