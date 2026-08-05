@@ -78,7 +78,7 @@
               @endif
               <div class="footer-wechat-accounts">
                 <img
-                  src="{{ asset('assets/img/订阅号+服务号.jpg') }}"
+                  src="{{ asset('assets/img/erweima.jpg') }}"
                   alt="公共会计师IPA与IPA服务微信公众号"
                   class="footer-wechat-accounts__image"
                   width="280"
