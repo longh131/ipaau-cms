@@ -1,6 +1,6 @@
 @extends('layouts.app', [
     'bodyClass' => 'cms-content-page cms-leadership-team-page',
-    'headerBlobPartial' => 'blob-home',
+    'headerBlobPartial' => 'blob-about',
 ])
 
 @section('title', $category->name)

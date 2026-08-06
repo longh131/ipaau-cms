@@ -30,6 +30,8 @@
                     loading="lazy"
                     class="mx-auto mb-5 aspect-video rounded-2xl object-cover w-full"
                 />
+            @else
+                <div class="news-card__placeholder mx-auto mb-5 aspect-video rounded-2xl w-full" aria-hidden="true"></div>
             @endif
 
             @if(filled($article->published_at))

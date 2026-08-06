@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'bodyClass' => 'cms-about-page cms-content-page cms-basic-content-page cms-article-page',
+    'bodyClass' => 'cms-about-page cms-content-page cms-news-article-page',
     'headerBlobPartial' => 'blob-about',
 ])
 
@@ -7,19 +7,25 @@
 @section('canonical', route('article.show', $article->slug))
 @section('og_title', $article->title)
 
+@php
+    use App\Support\RichContent;
+
+    $bodyHtml = RichContent::toHtml($article->content);
+@endphp
+
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/about-ipa-pages.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/news-pages.css') }}" />
 @endpush
 
 @section('content')
     <x-breadcrumbs :items="$breadcrumbs ?? []" />
 
     <section
-        data-type="articleDetail"
+        data-type="articleHeader"
         @class([
-            'cms-page-content-section cms-basic-content-section',
+            'news-section cms-news-article-header bg-[color:var(--bg-color)]',
             'cms-page-content-section--with-breadcrumb' => ! empty($breadcrumbs ?? []),
-            'pt-28' => empty($breadcrumbs ?? []),
         ])
         style="
             --bg-color: transparent;
@@ -29,55 +35,48 @@
             color: var(--ipa-color-light);
         "
     >
-        <div class="inner container px-4 md:px-10 mx-auto cms-basic-content__inner">
-            <header class="cms-basic-content__header">
-                <h1 class="cms-basic-content__title font-apex-book cms-section-title text-secondary mb-0">
-                    {{ $article->title }}
-                </h1>
+        <div class="inner container px-4 md:px-10 mx-auto">
+            <div class="container mx-auto px-0 py-10 lg:py-16">
+                <div class="cms-news-article-header__content">
+                    @if(filled($article->published_at))
+                        <div class="cms-news-article-header__meta font-din text-primary">
+                            <time datetime="{{ $article->published_at->toDateString() }}">
+                                {{ $article->published_at->format('d/m/Y') }}
+                            </time>
+                        </div>
+                    @endif
 
-                @if(filled($article->published_at))
-                    <p class="cms-basic-content__summary font-din text-primary leading-relaxed">
-                        {{ $article->published_at->format('d F Y') }}
-                    </p>
-                @elseif(filled($article->summary))
-                    <p class="cms-basic-content__summary font-din text-primary leading-relaxed">
-                        {{ $article->summary }}
-                    </p>
-                @endif
-
-                @if(filled($article->author) || filled($article->source) || ($article->view_count ?? 0) > 0)
-                    <dl class="cms-article-meta mt-4 font-din text-primary text-base flex flex-wrap gap-x-6 gap-y-2">
-                        @if(filled($article->author))
-                            <div class="cms-article-meta__item">
-                                <dt class="inline">作者：</dt>
-                                <dd class="inline">{{ $article->author }}</dd>
-                            </div>
-                        @endif
-                        @if(filled($article->source))
-                            <div class="cms-article-meta__item">
-                                <dt class="inline">来源：</dt>
-                                <dd class="inline">{{ $article->source }}</dd>
-                            </div>
-                        @endif
-                        @if(($article->view_count ?? 0) > 0)
-                            <div class="cms-article-meta__item">
-                                <dt class="inline">访问量：</dt>
-                                <dd class="inline">{{ number_format($article->view_count) }}</dd>
-                            </div>
-                        @endif
-                    </dl>
-                @endif
-            </header>
-
-            @php($bodyHtml = \App\Support\RichContent::toHtml($article->content))
-
-            @if(filled(strip_tags($bodyHtml)))
-                <div class="about-rich-text cms-page-content cms-basic-content__body cms-basic-content__body--html font-din text-[color:var(--ipa-color)]" data-rte="true">
-                    {!! $bodyHtml !!}
+                    <div class="news-rich-text cms-news-article-header__title-wrap">
+                        <h1 class="cms-news-article-title text-display-lg lg:text-display-xl text-secondary mb-0">
+                            {{ $article->title }}
+                        </h1>
+                    </div>
                 </div>
-            @endif
+            </div>
+        </div>
+    </section>
 
-            @include('frontend.partials.articles.extra-fields', ['items' => $extraFieldItems ?? []])
+    <section
+        data-type="articleContainer"
+        class="news-section cms-news-article-body bg-[color:var(--bg-color)] py-12 lg:py-16"
+        style="
+            --bg-color: #F2F2F2;
+            --ipa-color-light: oklch(0.464 0 0);
+            --ipa-color-dark: oklch(1 0 0);
+            --light-or-dark: light;
+            color: var(--ipa-color-light);
+        "
+    >
+        <div class="inner container px-4 md:px-10 mx-auto">
+            <div class="cms-news-article-body__inner">
+                @if(filled(strip_tags($bodyHtml)))
+                    <div class="about-rich-text cms-page-content cms-news-article-body__content font-din text-[color:var(--ipa-color)] news-rich-text" data-rte="true">
+                        {!! $bodyHtml !!}
+                    </div>
+                @endif
+
+                @include('frontend.partials.articles.extra-fields', ['items' => $extraFieldItems ?? []])
+            </div>
         </div>
     </section>
 @endsection

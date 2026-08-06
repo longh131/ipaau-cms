@@ -1,4 +1,7 @@
-@extends('layouts.app', ['bodyClass' => 'cms-content-page cms-news-list-page cms-topics-article-list-page'])
+@extends('layouts.app', [
+    'bodyClass' => 'cms-about-page cms-content-page cms-news-list-page cms-topics-article-list-page',
+    'headerBlobPartial' => 'blob-about',
+])
 
 @section('title', $category->name)
 @section('canonical', route('category.show', $category->slug))
