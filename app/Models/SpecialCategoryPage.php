@@ -12,10 +12,13 @@ class SpecialCategoryPage extends Model
 
     public const FEATURE_CERTIFICATE_LOOKUP = 'certificate_lookup';
 
+    public const FEATURE_VIDEO_HUB = 'video_hub';
+
     /** @var array<string, string> */
     public const FEATURE_TYPE_OPTIONS = [
         self::FEATURE_COURSE_LIST => '课程汇总',
         self::FEATURE_CERTIFICATE_LOOKUP => '证书查询',
+        self::FEATURE_VIDEO_HUB => 'IPA 视频汇总',
     ];
 
     protected $fillable = [
@@ -40,6 +43,7 @@ class SpecialCategoryPage extends Model
     {
         return match ($this->feature_type) {
             self::FEATURE_CERTIFICATE_LOOKUP => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP,
+            self::FEATURE_VIDEO_HUB => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_VIDEO_HUB,
             default => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_COURSE_LIST,
         };
     }

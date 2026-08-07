@@ -76,6 +76,7 @@ class SpecialCategoryPageResource extends Resource
                     ->label('页面结构说明')
                     ->content(fn (Get $get): string => match ($get('feature_type')) {
                         SpecialCategoryPage::FEATURE_CERTIFICATE_LOOKUP => '前台顺序：栏目标题 → 栏目介绍 → 正文（HTML 源码·上） → 证书查询 → 正文（HTML 源码·下）',
+                        SpecialCategoryPage::FEATURE_VIDEO_HUB => '前台顺序：栏目标题 → 栏目介绍 → 正文（HTML 源码·上） → IPA播报 / IPA活动回顾 视频区块 → 正文（HTML 源码·下）',
                         default => '前台顺序：栏目标题 → 栏目介绍 → 正文（HTML 源码·上） → 课程表格（分页） → 正文（HTML 源码·下）',
                     })
                     ->columnSpanFull(),
@@ -84,6 +85,7 @@ class SpecialCategoryPageResource extends Resource
                     ->rows(16)
                     ->helperText(fn (Get $get): string => match ($get('feature_type')) {
                         SpecialCategoryPage::FEATURE_CERTIFICATE_LOOKUP => '显示在证书查询模块上方；直接粘贴或编写 HTML，保存后前台原样渲染。',
+                        SpecialCategoryPage::FEATURE_VIDEO_HUB => '显示在视频汇总模块上方；直接粘贴或编写 HTML，保存后前台原样渲染。',
                         default => '显示在课程表格上方；直接粘贴或编写 HTML，保存后前台原样渲染。',
                     })
                     ->columnSpanFull()
@@ -116,6 +118,7 @@ class SpecialCategoryPageResource extends Resource
                     ->rows(16)
                     ->helperText(fn (Get $get): string => match ($get('feature_type')) {
                         SpecialCategoryPage::FEATURE_CERTIFICATE_LOOKUP => '显示在证书查询模块下方；直接粘贴或编写 HTML，保存后前台原样渲染。',
+                        SpecialCategoryPage::FEATURE_VIDEO_HUB => '显示在视频汇总模块下方；直接粘贴或编写 HTML，保存后前台原样渲染。',
                         default => '显示在课程表格下方；直接粘贴或编写 HTML，保存后前台原样渲染。',
                     })
                     ->columnSpanFull()
@@ -145,6 +148,10 @@ class SpecialCategoryPageResource extends Resource
                     ->getStateUsing(function (SpecialCategoryPage $record): string {
                         if ($record->feature_type === SpecialCategoryPage::FEATURE_CERTIFICATE_LOOKUP) {
                             return $record->certificateTitleForFrontend();
+                        }
+
+                        if ($record->feature_type === SpecialCategoryPage::FEATURE_VIDEO_HUB) {
+                            return 'IPA播报 + IPA活动回顾';
                         }
 
                         $ids = $record->course_category_ids;

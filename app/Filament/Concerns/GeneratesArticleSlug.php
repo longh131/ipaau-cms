@@ -16,7 +16,13 @@ trait GeneratesArticleSlug
             return;
         }
 
-        $this->data['slug'] = ArticleSlug::fromTitle($title, $this->currentArticleIdForSlug());
+        $categoryId = (int) ($this->data['category_id'] ?? 0);
+
+        $this->data['slug'] = ArticleSlug::fromTitle(
+            $title,
+            $this->currentArticleIdForSlug(),
+            $categoryId > 0 ? $categoryId : null,
+        );
     }
 
     protected function currentArticleIdForSlug(): ?int

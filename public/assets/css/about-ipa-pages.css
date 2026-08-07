@@ -161,6 +161,12 @@ body.cms-about-page .footer-main {
   line-height: var(--ipa-body-text-line-height, 1.75);
 }
 
+.cms-basic-content__body {
+  width: 100%;
+  max-width: var(--cms-basic-content-width);
+  margin-inline: auto;
+}
+
 .cms-basic-content__body--html > * + * {
   margin-top: var(--cms-basic-content-gap);
 }
@@ -175,6 +181,24 @@ body.cms-about-page .footer-main {
 }
 
 /* CMS 正文页：区块间距统一由父级控制 */
+.cms-body-block--html-body,
+.cms-body-block--narrow {
+  --cms-body-block-content-width: 978px;
+}
+
+.cms-body-block--html-body .cms-basic-content__body,
+.cms-body-block--html-body .about-rich-text:not(.cms-basic-content__body),
+.cms-body-block--narrow .about-rich-text,
+.cms-body-block--narrow .cms-body-block--rich-text {
+  width: 100%;
+  max-width: min(var(--cms-body-block-content-width), 100%);
+  margin-inline: auto;
+}
+
+.cms-body-block--html-body .mb-8.max-w-5xl {
+  max-width: min(var(--cms-body-block-content-width), 100%) !important;
+}
+
 .cms-page-content-section {
   --cms-block-gap: 100px;
   padding-bottom: 0;
@@ -764,4 +788,71 @@ body.cms-about-page .footer-main {
 
 .cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body a:not(.cta):hover {
   text-decoration: underline;
+}
+
+/*
+ * Footnote card grid (HTML body blocks).
+ * Supports 5-card (3+2) and 6-card (4+2) layouts; overrides inline <style> in page HTML.
+ */
+@media (min-width: 1025px) {
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(1) {
+    grid-column: 1 / span 2;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(2) {
+    grid-column: 3 / span 2;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(3) {
+    grid-column: 5 / span 2;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(4) {
+    grid-column: 2 / span 2;
+    margin-left: 0;
+    transform: none;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(5) {
+    grid-column: 4 / span 2;
+    margin-left: 0;
+    transform: none;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card:nth-child(5) {
+    grid-column: 2;
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card:nth-child(6) {
+    grid-column: 3;
+  }
+}
+
+@media (max-width: 1024px) {
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card-grid,
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card:nth-child(n),
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card:nth-child(n) {
+    grid-column: auto;
+    margin-left: 0;
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(5):last-child) .cms-footnote-card-grid,
+  body.cms-about-page .cms-footnote-card-section:has(.cms-footnote-card:nth-child(6):last-child) .cms-footnote-card-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -81,7 +81,8 @@ class CourseResource extends Resource
                     ->label('获得学分')
                     ->numeric()
                     ->minValue(0)
-                    ->step(0.01),
+                    ->step(0.1)
+                    ->helperText('支持一位小数，例如：6 或 6.5'),
                 Forms\Components\TextInput::make('price')
                     ->label('价格')
                     ->maxLength(120)
@@ -99,7 +100,8 @@ class CourseResource extends Resource
                 Forms\Components\TextInput::make('sort_order')
                     ->label('排序')
                     ->numeric()
-                    ->default(0)
+                    ->default(fn (): int => Course::defaultSortOrderForNew())
+                    ->helperText('默认预填预计的课程 ID，保存后会自动对齐；数值越大越靠前')
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
                     ->label('是否开通')
@@ -111,6 +113,9 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label('排序')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('标题')
                     ->searchable()
@@ -133,9 +138,7 @@ class CourseResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('cpd_credits')
                     ->label('学分')
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->label('价格')
+                    ->formatStateUsing(fn ($state): string => Course::formatCpdCredits($state) ?? '—')
                     ->toggleable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('开通')
@@ -145,7 +148,7 @@ class CourseResource extends Resource
                     ->date()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('starts_at', 'desc')
+            ->defaultSort('sort_order', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('分类')

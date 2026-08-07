@@ -3,6 +3,8 @@
 namespace App\Support;
 
 use App\Models\Category;
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+use App\Support\CategoryListTemplate\VideoListTemplate;
 use Filament\Forms;
 use Filament\Schemas\Components\Utilities\Get;
 
@@ -133,7 +135,7 @@ class ArticleExtraFields
 
         $options = [];
 
-        foreach (preg_split('/\R/', trim($raw)) ?: [] as $line) {
+        foreach (preg_split("/\r\n|\r|\n/", trim($raw)) ?: [] as $line) {
             $line = trim($line);
 
             if ($line === '') {
@@ -172,7 +174,20 @@ class ArticleExtraFields
         $components = [];
 
         foreach ($schema as $field) {
-            $components[] = self::formComponent($field);
+            $component = self::formComponent($field);
+
+            if (
+                $category !== null
+                && CategoryListTemplateRegistry::isVideoList($category)
+                && ($field['key'] ?? '') === VideoListTemplate::VIDEO_FILENAME_KEY
+                && $component instanceof Forms\Components\TextInput
+            ) {
+                $component
+                    ->required()
+                    ->helperText('填写 public/assets/video/ 目录下的视频文件名，例如：9. 2025年度回顾.mp4');
+            }
+
+            $components[] = $component;
         }
 
         return $components;

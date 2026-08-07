@@ -102,6 +102,10 @@ class FrontendController extends Controller
             return $this->renderSpecialCertificateLookupCategory($category);
         }
 
+        if (CategoryListTemplateRegistry::isSpecialVideoHub($category)) {
+            return $this->renderSpecialVideoHubCategory($category);
+        }
+
         $articles = CategoryListTemplateRegistry::applyArticleOrdering(
             Article::query()
                 ->where('category_id', $category->id)
@@ -180,6 +184,23 @@ class FrontendController extends Controller
         ]);
     }
 
+    private function renderSpecialVideoHubCategory(Category $category): View
+    {
+        $pageSettings = SpecialCategoryPage::query()
+            ->where('category_id', $category->id)
+            ->where('feature_type', SpecialCategoryPage::FEATURE_VIDEO_HUB)
+            ->first();
+
+        return view(CategoryListTemplateRegistry::viewFor($category), [
+            'category' => $category,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
+            'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
+            'videoSections' => \App\Support\CategoryListTemplate\VideoHubSectionData::sectionsForFrontend(),
+        ]);
+    }
+
     private function renderArticle(string $slug): View|RedirectResponse
     {
         $article = Article::query()
@@ -204,6 +225,37 @@ class FrontendController extends Controller
                 'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
                 'jobTitle' => \App\Support\ArticleExtraFields::teamJobTitle($article->extra_fields),
                 'coverUrl' => \App\Support\ArticleExtraFields::teamCoverUrl($article->extra_fields, $article->cover_image),
+            ]);
+        }
+
+        if ($category && CategoryListTemplateRegistry::isEventsCpd($category)) {
+            return view('frontend.articles.events_cpd', [
+                'article' => $article,
+                'category' => $category,
+                'breadcrumbs' => BreadcrumbBuilder::forArticle($article),
+                'extraFieldItems' => array_values(array_filter(
+                    \App\Support\ArticleExtraFields::forFrontend(
+                        $article->extra_fields,
+                        $article->category?->article_extra_field_schema,
+                    ),
+                    fn (array $item): bool => ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::EVENT_NAME_KEY,
+                )),
+                'registrationUrl' => \App\Support\CategoryListTemplate\EventsCpdTemplate::registrationUrl(
+                    $article->extra_fields,
+                ),
+            ]);
+        }
+
+        if ($category && CategoryListTemplateRegistry::isVideoList($category)) {
+            return view('frontend.articles.video', [
+                'article' => $article,
+                'category' => $category,
+                'breadcrumbs' => BreadcrumbBuilder::forArticle($article),
+                'videoUrl' => \App\Support\CategoryListTemplate\VideoListTemplate::videoPublicUrlForArticle($article),
+                'posterUrl' => \App\Support\CategoryListTemplate\VideoListTemplate::posterPublicUrlForArticle($article),
+                'videoMimeType' => \App\Support\CategoryListTemplate\VideoListTemplate::videoMimeType(
+                    \App\Support\CategoryListTemplate\VideoListTemplate::videoPublicUrlForArticle($article),
+                ),
             ]);
         }
 

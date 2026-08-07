@@ -228,7 +228,8 @@ class CategoryResource extends Resource
                     ]))
                     ->visible(fn (Category $record): bool => $record->type === 'article'
                         && ! CategoryListTemplateRegistry::isSpecialCourseList($record)
-                        && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($record)),
+                        && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($record)
+                        && ! CategoryListTemplateRegistry::isSpecialVideoHub($record)),
                 Actions\EditAction::make()
                     ->label('编辑'),
                 Actions\DeleteAction::make()

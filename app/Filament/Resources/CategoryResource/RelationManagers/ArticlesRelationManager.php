@@ -30,13 +30,16 @@ class ArticlesRelationManager extends RelationManager
 
     protected static ?string $pluralModelLabel = '文章';
 
+    private ?int $estimatedArticleSortOrder = null;
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return $ownerRecord instanceof Category
             && $ownerRecord->type === 'article'
             && ! Course::isCourseCategory($ownerRecord->getKey())
             && ! CategoryListTemplateRegistry::isSpecialCourseList($ownerRecord)
-            && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($ownerRecord);
+            && ! CategoryListTemplateRegistry::isSpecialCertificateLookup($ownerRecord)
+            && ! CategoryListTemplateRegistry::isSpecialVideoHub($ownerRecord);
     }
 
     public function form(Schema $schema): Schema
@@ -77,8 +80,23 @@ class ArticlesRelationManager extends RelationManager
             ->headerActions([
                 Actions\CreateAction::make()
                     ->label('新建文章')
+                    ->before(function (): void {
+                        $this->estimatedArticleSortOrder = Article::defaultSortOrderForNew();
+                    })
                     ->mutateFormDataUsing(function (array $data): array {
                         return static::normalizeExtraFields($data, $this->getOwnerRecord());
+                    })
+                    ->after(function (Article $record): void {
+                        $sortOrder = (int) $record->sort_order;
+
+                        if (
+                            $sortOrder === 0
+                            || ($this->estimatedArticleSortOrder !== null && $sortOrder === $this->estimatedArticleSortOrder)
+                        ) {
+                            $record->updateQuietly([
+                                'sort_order' => $record->getKey(),
+                            ]);
+                        }
                     }),
             ])
             ->actions([

@@ -61,6 +61,11 @@
 
 .cms-category-intro-section__header {
   margin-inline: auto;
+  max-width: min(978px, 100%);
+}
+
+.cms-category-intro-section__header.max-w-3xl {
+  max-width: min(978px, 100%);
 }
 
 .cms-category-intro-section__intro > * + * {
@@ -87,7 +92,96 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  max-width: 48rem;
+  max-width: min(978px, 100%);
+  margin-inline: auto;
+}
+
+.cms-events-cpd-article-header__content {
+  margin-inline: auto;
+  align-items: center;
+  text-align: center;
+}
+
+.cms-events-cpd-register__button {
+  text-decoration: none;
+}
+
+.cms-events-cpd-register__button:hover {
+  text-decoration: none;
+}
+
+.cms-video-article-header__content,
+.cms-video-article-body__inner {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.cms-video-player-wrap {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.cms-video-player {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  background: #000;
+}
+
+.video-card__placeholder {
+  background: linear-gradient(
+    135deg,
+    oklch(0.94 0.02 262.41) 0%,
+    oklch(0.9 0.04 336.11) 100%
+  );
+}
+
+.video-card__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.92);
+}
+
+.video-card__play::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-top: 0.65rem solid transparent;
+  border-bottom: 0.65rem solid transparent;
+  border-left: 1rem solid oklch(0.4867 0.1803 336.11);
+}
+
+.video-card__play--large {
+  position: static;
+  transform: none;
+}
+
+.cms-video-hub-block__header {
+  gap: 1rem;
+}
+
+.cms-video-hub-block__footer {
+  width: 100%;
+}
+
+.cms-video-hub-block__more {
+  text-decoration: none;
+}
+
+.cms-video-hub-block__more:hover {
+  text-decoration: none;
+}
+
+.cms-special-video-hub-section__html-top > * + *,
+.cms-special-video-hub-section__html-bottom > * + * {
+  margin-top: 1rem;
 }
 
 .cms-news-article-header__meta {
@@ -104,7 +198,7 @@
 }
 
 .cms-news-article-body__inner {
-  max-width: 48rem;
+  max-width: min(978px, 100%);
   margin-inline: auto;
 }
 

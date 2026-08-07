@@ -71,6 +71,27 @@ class Course extends Model
         'sort_order' => 0,
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (Course $course): void {
+            if ((int) $course->sort_order !== 0) {
+                return;
+            }
+
+            $course->forceFill([
+                'sort_order' => $course->getKey(),
+            ])->saveQuietly();
+        });
+    }
+
+    /**
+     * 新建课程时「排序」字段的预填值（预计下一门课程 ID）。
+     */
+    public static function defaultSortOrderForNew(): int
+    {
+        return (int) static::query()->max('id') + 1;
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -106,6 +127,26 @@ class Course extends Model
             return null;
         }
 
-        return rtrim(rtrim(number_format((float) $this->cpd_credits, 2, '.', ''), '0'), '.');
+        return self::formatCpdCredits($this->cpd_credits);
+    }
+
+    public static function normalizeCpdCredits(mixed $value): ?float
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return round((float) $value, 1);
+    }
+
+    public static function formatCpdCredits(mixed $value): ?string
+    {
+        $normalized = self::normalizeCpdCredits($value);
+
+        if ($normalized === null) {
+            return null;
+        }
+
+        return rtrim(rtrim(number_format($normalized, 1, '.', ''), '0'), '.');
     }
 }

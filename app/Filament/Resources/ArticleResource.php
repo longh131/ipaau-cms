@@ -8,6 +8,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Support\ArticleExtraFields;
 use App\Support\ArticleSlug;
+use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
 use App\Support\MediaUrl;
 use Filament\Actions;
 use Filament\Resources\Resource;
@@ -136,6 +137,22 @@ class ArticleResource extends Resource
         $category = $categoryId ? Category::query()->find($categoryId) : null;
         $schema = ArticleExtraFields::normalizeSchema($category?->article_extra_field_schema);
         $data['extra_fields'] = ArticleExtraFields::normalizeValuesForStorage($data['extra_fields'] ?? [], $schema);
+
+        if ($category !== null && CategoryListTemplateRegistry::isVideoList($category)) {
+            $extraFields = is_array($data['extra_fields']) ? $data['extra_fields'] : [];
+            $filename = \App\Support\CategoryListTemplate\VideoListTemplate::normalizeVideoFilename(
+                $extraFields[\App\Support\CategoryListTemplate\VideoListTemplate::VIDEO_FILENAME_KEY] ?? '',
+            );
+
+            if ($filename !== '') {
+                $extraFields[\App\Support\CategoryListTemplate\VideoListTemplate::VIDEO_FILENAME_KEY] = $filename;
+                $data['extra_fields'] = $extraFields;
+            }
+
+            if (blank($data['content'] ?? null)) {
+                $data['content'] = '';
+            }
+        }
         $data['cover_image'] = filled($data['cover_image'] ?? null)
             ? MediaUrl::normalizeStoredPath($data['cover_image'])
             : null;
@@ -146,7 +163,13 @@ class ArticleResource extends Resource
 
         if (blank($data['slug'] ?? null) && filled($data['title'] ?? null)) {
             $ignoreId = is_numeric($data['id'] ?? null) ? (int) $data['id'] : null;
-            $data['slug'] = ArticleSlug::fromTitle((string) $data['title'], $ignoreId);
+            $categoryId = is_numeric($data['category_id'] ?? null) ? (int) $data['category_id'] : null;
+
+            $data['slug'] = ArticleSlug::fromTitle(
+                (string) $data['title'],
+                $ignoreId,
+                $categoryId > 0 ? $categoryId : null,
+            );
         }
 
         return $data;

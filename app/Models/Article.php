@@ -49,8 +49,29 @@ class Article extends Model
         'is_active' => true,
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (Article $article): void {
+            if ((int) $article->sort_order !== 0) {
+                return;
+            }
+
+            $article->forceFill([
+                'sort_order' => $article->getKey(),
+            ])->saveQuietly();
+        });
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * 新建文章时「排序」字段的预填值（预计下一篇文章 ID）。
+     */
+    public static function defaultSortOrderForNew(): int
+    {
+        return (int) static::withTrashed()->max('id') + 1;
     }
 }

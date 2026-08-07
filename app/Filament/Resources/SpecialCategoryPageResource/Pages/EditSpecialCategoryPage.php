@@ -43,6 +43,10 @@ class EditSpecialCategoryPage extends EditRecord
             $data['certificate_title'] = trim((string) ($data['certificate_title'] ?? ''));
             $data['certificate_summary'] = trim((string) ($data['certificate_summary'] ?? ''));
             $data['course_category_ids'] = null;
+        } elseif (($data['feature_type'] ?? SpecialCategoryPage::FEATURE_COURSE_LIST) === SpecialCategoryPage::FEATURE_VIDEO_HUB) {
+            $data['certificate_title'] = null;
+            $data['certificate_summary'] = null;
+            $data['course_category_ids'] = null;
         } else {
             $data['certificate_title'] = null;
             $data['certificate_summary'] = null;

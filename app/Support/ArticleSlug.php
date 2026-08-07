@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class ArticleSlug
 {
-    public static function fromTitle(string $title, ?int $ignoreId = null): string
+    public static function fromTitle(string $title, ?int $ignoreId = null, ?int $categoryId = null): string
     {
         $title = trim($title);
 
@@ -18,10 +18,23 @@ class ArticleSlug
         $base = Str::slug($title);
 
         if ($base === '') {
-            $base = 'article-'.substr(md5($title), 0, 10);
+            $base = 'article';
         }
 
-        return static::ensureUnique($base, $ignoreId);
+        $hash = substr(md5($title), 0, 8);
+
+        $segments = ['article'];
+
+        if ($categoryId !== null && $categoryId > 0) {
+            $segments[] = (string) $categoryId;
+        }
+
+        $segments[] = $base;
+        $segments[] = $hash;
+
+        $slug = Str::limit(implode('-', $segments), 200, '');
+
+        return static::ensureUnique($slug, $ignoreId);
     }
 
     public static function ensureUnique(string $base, ?int $ignoreId = null): string
