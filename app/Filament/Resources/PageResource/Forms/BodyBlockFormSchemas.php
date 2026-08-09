@@ -831,6 +831,7 @@ class BodyBlockFormSchemas
                     ->helperText('保存后，这一组按钮会作为独立一行显示在前后区块之间'),
             ],
             PageBodyBlocks::TYPE_TABS => self::tabsRepeaterFields(),
+            PageBodyBlocks::TYPE_TABBED_CONTENT => self::generalSecondaryTabbedContentFields(),
             PageBodyBlocks::TYPE_CAROUSEL => self::carouselFields(),
             PageBodyBlocks::TYPE_MEDIA_SPLIT => [
                 ...self::mediaSplitFields(),

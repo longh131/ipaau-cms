@@ -181,7 +181,10 @@ body.cms-about-page .footer-main {
 }
 
 /* CMS 正文页：区块间距统一由父级控制 */
-.cms-body-block--html-body,
+.cms-body-block--html-body {
+  --cms-body-block-content-width: 1200px;
+}
+
 .cms-body-block--narrow {
   --cms-body-block-content-width: 978px;
 }

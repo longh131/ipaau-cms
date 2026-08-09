@@ -42,7 +42,7 @@ class GeneralSecondaryPageForm
                         ->columnSpanFull(),
                     Forms\Components\Repeater::make('sections')
                         ->label('页面板块')
-                        ->helperText('从上到下依次排列；可添加富文本、FAQ、新闻列表 A/B、数据统计、会员推荐、邮件订阅、左右结构、选项卡内容、图文分栏或 HTML 正文。')
+                        ->helperText('从上到下依次排列；可添加富文本、FAQ、新闻列表 A/B、数据统计、会员推荐、邮件订阅、左右结构、选项卡板块（无图版）、图文分栏或 HTML 正文。')
                         ->schema([
                             Forms\Components\Select::make('type')
                                 ->label('板块类型')
@@ -90,7 +90,7 @@ class GeneralSecondaryPageForm
                                     (string) (($state['title'] ?? '') ?: ($state['tagline'] ?? '')),
                                     24,
                                 ),
-                                GeneralSecondarySections::TYPE_TABBED_CONTENT => '选项卡内容（'.count($state['tabs'] ?? []).' 项）',
+                                GeneralSecondarySections::TYPE_TABBED_CONTENT => '选项卡板块（无图版）（'.count($state['tabs'] ?? []).' 项）',
                                 GeneralSecondarySections::TYPE_MEDIA_SPLIT => '图文分栏：'.Str::limit(
                                     (string) ($state['title'] ?? ''),
                                     24,

@@ -49,6 +49,7 @@ class DefaultPageForm
                                 PageBodyBlocks::TYPE_HIGHLIGHT => '渐变强调句：'.Str::limit((string) ($state['text'] ?? ''), 24),
                                 PageBodyBlocks::TYPE_CTA_GROUP => '按钮组（'.count($state['buttons'] ?? []).' 个）',
                                 PageBodyBlocks::TYPE_TABS => '选项卡（'.count($state['tabs'] ?? []).' 项）',
+                                PageBodyBlocks::TYPE_TABBED_CONTENT => '选项卡板块（无图版）（'.count($state['tabs'] ?? []).' 项）',
                                 PageBodyBlocks::TYPE_CAROUSEL => '轮播：'.Str::limit((string) ($state['heading'] ?? '会员推荐'), 20),
                                 PageBodyBlocks::TYPE_MEDIA_SPLIT => '图文分栏：'.Str::limit((string) ($state['title'] ?? ''), 20),
                                 PageBodyBlocks::TYPE_CONTENT_COLUMNS => '左右分栏：'.Str::limit(

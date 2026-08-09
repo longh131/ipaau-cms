@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Filament\RichEditor\Plugins\ImageFloatPlugin;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use App\Services\MenuService;
 use App\Services\PageComponentService;
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
             $editor
                 ->plugins([
                     InlineStylePlugin::make(),
+                    ImageFloatPlugin::make(),
                 ])
                 ->toolbarButtons(RichContent::pageToolbar())
                 ->textColors(RichContent::textColors())
@@ -57,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
                         ->iconAlias('forms:components.rich-editor.toolbar.h4'),
                     RichEditorTool::make('attachFiles')
                         ->label('插入图片')
-                        ->action(arguments: '{ alt: $getEditor().getAttributes(\'image\')?.alt, id: $getEditor().getAttributes(\'image\')?.id, src: $getEditor().getAttributes(\'image\')?.src }')
+                        ->action(arguments: '{ alt: $getEditor().getAttributes(\'image\')?.alt, float: $getEditor().getAttributes(\'image\')?.float ?? null, class: $getEditor().getAttributes(\'image\')?.class ?? null, id: $getEditor().getAttributes(\'image\')?.id, src: $getEditor().getAttributes(\'image\')?.src }')
                         ->activeKey('image')
                         ->icon(Heroicon::Photo)
                         ->iconAlias('forms:components.rich-editor.toolbar.attach-files'),

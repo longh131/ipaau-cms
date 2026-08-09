@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Filament\Forms\StateCasts\JsonDocumentStateCast;
+use App\Filament\RichEditor\Plugins\ImageFloatPlugin;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
@@ -120,7 +121,7 @@ class RichContent
 
     public static function imageUploadHelperText(): string
     {
-        return '工具栏「插入图片」按钮可上传图片并插入正文';
+        return '「插入图片」时可选择布局（左/右浮动）；选中已有图片后再点「插入图片」可修改布局';
     }
 
     /**
@@ -130,6 +131,7 @@ class RichContent
     {
         return [
             InlineStylePlugin::make(),
+            ImageFloatPlugin::make(),
         ];
     }
 
@@ -297,6 +299,24 @@ class RichContent
                             $node->attrs->src = MediaUrl::normalizeRichContentUrl((string) $node->attrs->src);
                         } elseif (filled($node->attrs->id ?? null)) {
                             $node->attrs->src = MediaUrl::toPublicStoragePath($node->attrs->id);
+                        }
+
+                        $float = $node->attrs->float ?? null;
+
+                        if (! is_string($float) || ! in_array($float, ['left', 'right'], true)) {
+                            $class = (string) ($node->attrs->class ?? '');
+
+                            if (str_contains($class, 'cms-img-float-left')) {
+                                $float = 'left';
+                            } elseif (str_contains($class, 'cms-img-float-right')) {
+                                $float = 'right';
+                            }
+                        }
+
+                        if (in_array($float, ['left', 'right'], true)) {
+                            $node->attrs->float = $float;
+                        } elseif (isset($node->attrs->float)) {
+                            unset($node->attrs->float);
                         }
                     })
                     ->toHtml()

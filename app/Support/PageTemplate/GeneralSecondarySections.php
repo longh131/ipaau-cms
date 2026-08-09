@@ -61,7 +61,7 @@ class GeneralSecondarySections
         self::TYPE_NEWSLETTER => '邮件订阅',
         self::TYPE_HTML_BODY => '正文（HTML 源码）',
         self::TYPE_LEFT_RIGHT_LAYOUT => '左右结构',
-        self::TYPE_TABBED_CONTENT => '选项卡内容',
+        self::TYPE_TABBED_CONTENT => '选项卡板块（无图版）',
         self::TYPE_MEDIA_SPLIT => '图文分栏',
     ];
 

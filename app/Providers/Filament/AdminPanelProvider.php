@@ -25,7 +25,6 @@ use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\Navigation\NavigationGroup;
 use Filament\Widgets\AccountWidget;
@@ -67,10 +66,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->assets([
                 Css::make('rich-editor-warm-plum', public_path('css/filament-rich-editor.css')),
-                Js::make(
-                    'rich-content-plugins/inline-style',
-                    public_path('js/filament/rich-content-plugins/inline-style.js'),
-                )->loadedOnRequest(),
             ])
             ->middleware([
                 EncryptCookies::class,

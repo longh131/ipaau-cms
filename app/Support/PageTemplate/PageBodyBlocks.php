@@ -20,6 +20,8 @@ class PageBodyBlocks
 
     public const TYPE_TABS = 'tabs';
 
+    public const TYPE_TABBED_CONTENT = 'tabbed_content';
+
     public const TYPE_CAROUSEL = 'carousel';
 
     public const TYPE_MEDIA_SPLIT = 'media_split';
@@ -42,6 +44,7 @@ class PageBodyBlocks
         self::TYPE_HIGHLIGHT => '渐变强调句',
         self::TYPE_CTA_GROUP => '按钮组',
         self::TYPE_TABS => '选项卡板块',
+        self::TYPE_TABBED_CONTENT => '选项卡板块（无图版）',
         self::TYPE_CAROUSEL => '轮播',
         self::TYPE_MEDIA_SPLIT => '图文分栏',
         self::TYPE_CONTENT_COLUMNS => '左右内容分栏',
@@ -120,6 +123,12 @@ class PageBodyBlocks
                     'type' => self::TYPE_TABS,
                     'tabs' => TabbedContentSectionData::forForm(['tabs' => $block['tabs'] ?? []])['tabs'],
                 ],
+                self::TYPE_TABBED_CONTENT => [
+                    'type' => self::TYPE_TABBED_CONTENT,
+                    ...GeneralSecondaryTabbedContentSectionData::forForm([
+                        'tabs' => $block['tabs'] ?? [],
+                    ]),
+                ],
                 self::TYPE_CAROUSEL => [
                     'type' => self::TYPE_CAROUSEL,
                     'heading' => trim((string) ($block['heading'] ?? '')),
@@ -180,6 +189,12 @@ class PageBodyBlocks
 
             if ($block['type'] === self::TYPE_TABS) {
                 $block['tabs'] = TabbedContentSectionData::forStorage(['tabs' => $block['tabs']])['tabs'];
+            }
+
+            if ($block['type'] === self::TYPE_TABBED_CONTENT) {
+                $block['tabs'] = GeneralSecondaryTabbedContentSectionData::forStorage([
+                    'tabs' => $block['tabs'] ?? [],
+                ])['tabs'];
             }
 
             if ($block['type'] === self::TYPE_FAQ) {
@@ -250,6 +265,12 @@ class PageBodyBlocks
                 self::TYPE_TABS => [
                     'type' => self::TYPE_TABS,
                     'tabs' => TabbedContentSectionData::forFrontend(['tabs' => $block['tabs']])['tabs'],
+                ],
+                self::TYPE_TABBED_CONTENT => [
+                    'type' => self::TYPE_TABBED_CONTENT,
+                    ...GeneralSecondaryTabbedContentSectionData::forFrontend([
+                        'tabs' => $block['tabs'] ?? [],
+                    ]),
                 ],
                 self::TYPE_CAROUSEL => [
                     'type' => self::TYPE_CAROUSEL,
@@ -368,7 +389,7 @@ class PageBodyBlocks
     public static function needsAboutPageScripts(?array $blocks): bool
     {
         foreach (static::forStorage($blocks) as $block) {
-            if (($block['type'] ?? null) === self::TYPE_TABS || ($block['type'] ?? null) === self::TYPE_NEWS_LIST) {
+            if (in_array($block['type'] ?? null, [self::TYPE_TABS, self::TYPE_TABBED_CONTENT, self::TYPE_NEWS_LIST], true)) {
                 return true;
             }
         }
@@ -388,6 +409,9 @@ class PageBodyBlocks
             self::TYPE_HIGHLIGHT => filled(trim((string) ($block['text'] ?? ''))),
             self::TYPE_CTA_GROUP => ($block['buttons'] ?? []) !== [],
             self::TYPE_TABS => ($block['tabs'] ?? []) !== [],
+            self::TYPE_TABBED_CONTENT => GeneralSecondaryTabbedContentSectionData::forStorage([
+                'tabs' => $block['tabs'] ?? [],
+            ])['tabs'] !== [],
             self::TYPE_CAROUSEL => ($block['slides'] ?? []) !== [],
             self::TYPE_MEDIA_SPLIT => filled($block['image'] ?? null)
                 || filled($block['tagline'] ?? null)

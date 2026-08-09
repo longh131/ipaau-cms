@@ -2,14 +2,12 @@
 
 namespace App\Filament\RichEditor\Plugins;
 
-use App\Filament\RichEditor\TipTap\DivNode;
-use App\Filament\RichEditor\TipTap\GenericSpanMark;
-use App\Filament\RichEditor\TipTap\InlineStyleExtension;
+use App\Filament\RichEditor\Actions\AttachFilesWithLayoutAction;
+use App\Filament\RichEditor\TipTap\ImageFloatExtension;
 use Filament\Forms\Components\RichEditor\Plugins\Contracts\RichContentPlugin;
 use Tiptap\Core\Extension;
-use Tiptap\Core\Mark;
 
-class InlineStylePlugin implements RichContentPlugin
+class ImageFloatPlugin implements RichContentPlugin
 {
     public static function make(): static
     {
@@ -18,7 +16,7 @@ class InlineStylePlugin implements RichContentPlugin
 
     public function getId(): string
     {
-        return 'inline-style';
+        return 'image-float';
     }
 
     /**
@@ -27,19 +25,17 @@ class InlineStylePlugin implements RichContentPlugin
     public function getTipTapJsExtensions(): array
     {
         return [
-            asset('js/filament/rich-content-plugins/inline-style.js'),
+            asset('js/filament/rich-content-plugins/image-float.js'),
         ];
     }
 
     /**
-     * @return array<Extension|Mark>
+     * @return array<Extension>
      */
     public function getTipTapPhpExtensions(): array
     {
         return [
-            app(InlineStyleExtension::class),
-            app(DivNode::class),
-            app(GenericSpanMark::class),
+            app(ImageFloatExtension::class),
         ];
     }
 
@@ -56,6 +52,8 @@ class InlineStylePlugin implements RichContentPlugin
      */
     public function getEditorActions(): array
     {
-        return [];
+        return [
+            AttachFilesWithLayoutAction::make(),
+        ];
     }
 }

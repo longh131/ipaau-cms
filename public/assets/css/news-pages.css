@@ -213,6 +213,20 @@
   border-radius: 1rem;
 }
 
+.cms-news-article-body__content img.cms-img-float-left,
+[data-rte="true"] img.cms-img-float-left {
+  float: left;
+  margin: 0 1.25rem 1.25rem 0;
+  max-width: min(50%, 100%);
+}
+
+.cms-news-article-body__content img.cms-img-float-right,
+[data-rte="true"] img.cms-img-float-right {
+  float: right;
+  margin: 0 0 1.25rem 1.25rem;
+  max-width: min(50%, 100%);
+}
+
 .cms-news-article-body__content p:last-child {
   margin-bottom: 0;
 }

@@ -1,4 +1,4 @@
-(() => {
+export default () => {
     const { Extension, Mark, Node } = window.FilamentRichEditor.tiptap.core
 
     const styledNodeTypes = [
@@ -171,12 +171,10 @@
         },
     })
 
-    const inlineStylePlugin = Extension.create({
+    return Extension.create({
         name: 'inlineStylePlugin',
         addExtensions() {
             return [inlineStyleOnNodes, linkStyleAttributes, divNode, genericSpanMark, toggleWarmPlumH4]
         },
     })
-
-    return inlineStylePlugin
-})()
+}
