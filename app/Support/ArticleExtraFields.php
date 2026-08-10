@@ -322,6 +322,22 @@ class ArticleExtraFields
         return trim($value);
     }
 
+    /**
+     * @param  array<string, mixed>|null  $extraFields
+     */
+    public static function memberPosition(?array $extraFields): ?string
+    {
+        $value = is_array($extraFields)
+            ? ($extraFields[\App\Support\CategoryListTemplate\MemberSpotlightTemplate::POSITION_KEY] ?? null)
+            : null;
+
+        if (! is_string($value) || blank($value)) {
+            return null;
+        }
+
+        return trim($value);
+    }
+
     public static function teamCoverUrl(?array $extraFields, ?string $coverImage): ?string
     {
         $fromCover = MediaUrl::resolve($coverImage);

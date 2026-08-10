@@ -31,6 +31,12 @@
   --ipa-rich-h4-color: #992785;
   --ipa-rich-h4-size: 1.125rem;
   --ipa-rich-h4-line-height: 1.35;
+
+  /* 正文内文字链接（海军蓝 + 下划线） */
+  --ipa-link-color: #0d2c6c;
+  --ipa-link-hover-color: oklch(0.2305 0.0781 262.98);
+  --ipa-link-underline-thickness: 2px;
+  --ipa-link-underline-offset: 4px;
 }
 
 html,
@@ -328,9 +334,11 @@ body {
 
 /* Unified section block titles (homepage + secondary page templates) */
 .cms-section-title,
+:is(h1, h2, h3, h4, h5, h6).cms-section-title,
 #root [data-type="section-title"] {
   font-size: var(--ipa-section-title-size);
   line-height: 1.2;
+  font-weight: 700;
 }
 
 @media (min-width: 1024px) {
@@ -344,6 +352,7 @@ body {
 #root [data-type="section-title"] :is(h1, h2, h3, h4, h5, h6, p, span) {
   font-size: inherit !important;
   line-height: inherit !important;
+  font-weight: inherit;
 }
 
 .cms-section-title {
@@ -1008,26 +1017,72 @@ body.cms-page--member-requirements.cms-about-page :is(
   margin: 0 0 1rem 1.25rem;
 }
 
-.cms-page-content a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.cms-page-content a:not(.cta):hover {
-  color: oklch(0.2305 0.0781 262.98);
+/*
+ * Unified in-content text links: navy + underline.
+ * Excludes: nav, .cta buttons, card wrappers, list CTAs, editor custom colors.
+ */
+#root :is(
+    [data-rte="true"],
+    .cms-page-content,
+    .about-rich-text,
+    .cms-basic-content__body,
+    .cms-rich-text__body,
+    .news-rich-text,
+    .bio-profile__body,
+    .cms-governance-content-block__body,
+    .cms-governance-columns,
+    .cms-news-list-curated__intro,
+    .cms-category-intro-section__intro,
+    .cms-course-table__activity,
+    #footer-disclaimer,
+    .footer-copyright-text
+  )
+  a:not(
+    .cta,
+    .news-card,
+    .news-hero-card,
+    .leadership-member__link,
+    .member-spotlight-member__link,
+    .cms-course-table__register-link,
+    .cms-news-list-curated__item,
+    .cms-card-list-curated__item
+  ):not(.color):not([class*="text-gradient"]):not(:has(> span.color)) {
+  color: var(--ipa-link-color);
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration-thickness: var(--ipa-link-underline-thickness);
+  text-underline-offset: var(--ipa-link-underline-offset);
+  text-decoration-color: var(--ipa-link-color);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
-section[data-type="accordion"] [data-rte="true"].cms-page-content a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-section[data-type="accordion"] [data-rte="true"].cms-page-content a:not(.cta):hover {
-  color: oklch(0.2305 0.0781 262.98);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+#root :is(
+    [data-rte="true"],
+    .cms-page-content,
+    .about-rich-text,
+    .cms-basic-content__body,
+    .cms-rich-text__body,
+    .news-rich-text,
+    .bio-profile__body,
+    .cms-governance-content-block__body,
+    .cms-governance-columns,
+    .cms-news-list-curated__intro,
+    .cms-category-intro-section__intro,
+    .cms-course-table__activity,
+    #footer-disclaimer,
+    .footer-copyright-text
+  )
+  a:not(
+    .cta,
+    .news-card,
+    .news-hero-card,
+    .leadership-member__link,
+    .member-spotlight-member__link,
+    .cms-course-table__register-link,
+    .cms-news-list-curated__item,
+    .cms-card-list-curated__item
+  ):not(.color):not([class*="text-gradient"]):not(:has(> span.color)):hover {
+  color: var(--ipa-link-hover-color);
+  text-decoration-color: var(--ipa-link-hover-color);
 }
 
 /* Filament RichEditor 文字颜色（span.color 通过 --color / --dark-color 变量存储） */

@@ -132,6 +132,7 @@ class CategoryResource extends Resource
                     ->default(CategoryListTemplateRegistry::TEMPLATE_SIMPLE)
                     ->helperText(fn (Get $get): string => match ($get('list_template')) {
                         CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO => '团队介绍：上方栏目名称与介绍，下方一行三个成员卡片，点击进入详情页',
+                        CategoryListTemplateRegistry::TEMPLATE_MEMBER_SPOTLIGHT => '会员风采：左图右文逐条展示，样式同 board-executive-committee；扩展字段 position 为职务，摘要为简介',
                         CategoryListTemplateRegistry::TEMPLATE_COURSE_TABLE => '课程表格：从「课程管理」读取数据，按表格展示举办城市、活动时间、报名状态等',
                         CategoryListTemplateRegistry::TEMPLATE_SPECIAL_COURSE_LIST => '功能栏目页：请在「功能栏目页」中配置 HTML 正文与课程范围；标题与介绍在本页下方编辑',
                         CategoryListTemplateRegistry::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP => '功能栏目页：请在「功能栏目页」中配置 HTML 正文与证书查询；标题与介绍在本页下方编辑',
@@ -152,9 +153,11 @@ class CategoryResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Repeater::make('article_extra_field_schema')
                     ->label('文章扩展字段')
-                    ->helperText(fn (Get $get): string => $get('list_template') === CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO
-                        ? '团队介绍建议：job_title / 职位 / 单行文本 / 列表页显示=是；成员照片用文章「封面图片」'
-                        : '定义该栏目下文章的额外字段；前台按模板输出')
+                    ->helperText(fn (Get $get): string => match ($get('list_template')) {
+                        CategoryListTemplateRegistry::TEMPLATE_TEAM_INTRO => '团队介绍建议：job_title / 职位 / 单行文本 / 列表页显示=是；成员照片用文章「封面图片」',
+                        CategoryListTemplateRegistry::TEMPLATE_MEMBER_SPOTLIGHT => '会员风采建议：position / 职务 / 多行文本 / 列表页显示=是；成员照片用文章「封面图片」；摘要用于列表简介',
+                        default => '定义该栏目下文章的额外字段；前台按模板输出',
+                    })
                     ->schema(ArticleExtraFields::categorySchemaRepeaterFields())
                     ->columns(2)
                     ->collapsible()

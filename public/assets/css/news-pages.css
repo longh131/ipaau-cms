@@ -4,16 +4,6 @@
   margin: 0 0 1.25rem;
 }
 
-.news-rich-text a:not(.cta) {
-  color: oklch(0.4867 0.1803 336.11);
-  text-decoration: underline;
-}
-
-.news-section .about-rich-text a:not(.cta) {
-  color: oklch(0.4867 0.1803 336.11);
-  text-decoration: underline;
-}
-
 .news-card {
   color: inherit;
   text-decoration: none;

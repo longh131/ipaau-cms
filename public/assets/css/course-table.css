@@ -79,17 +79,6 @@
   min-width: 280px;
 }
 
-.cms-course-table__activity a {
-  color: oklch(0.35 0 0);
-  text-decoration: none;
-}
-
-.cms-course-table__activity a:hover {
-  color: #0d2c6c;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .cms-course-table__register-link {
   color: oklch(0.6258 0.2041 256.27);
   font-weight: 600;

@@ -1,0 +1,66 @@
+/* 会员风采列表 — 对齐 board-executive-committee 左右布局 */
+
+.member-spotlight-listing {
+  background-color: #fff;
+}
+
+.member-spotlight-member__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .member-spotlight-member__grid {
+    grid-template-columns: minmax(0, 20%) minmax(0, 80%);
+    gap: 3rem;
+  }
+}
+
+.member-spotlight-member__photo img {
+  display: block;
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+}
+
+.member-spotlight-member__body h5 {
+  margin: 0;
+}
+
+.member-spotlight-member__body h5 + h5 {
+  margin-top: 0.5rem;
+}
+
+.member-spotlight-member__body p {
+  margin: 0;
+}
+
+.member-spotlight-member__body p + p,
+.member-spotlight-member__body h5 + p {
+  margin-top: 1rem;
+}
+
+.member-spotlight-member__position {
+  white-space: pre-line;
+}
+
+.member-spotlight-member__link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: oklch(0.4867 0.1803 336.11);
+  text-decoration: none;
+}
+
+.member-spotlight-member__link:hover,
+.member-spotlight-member__link:focus-visible {
+  color: oklch(0.3152 0.1176 262.41);
+  text-decoration: underline;
+}
+
+.member-spotlight-member + .member-spotlight-member {
+  margin-top: 0;
+}

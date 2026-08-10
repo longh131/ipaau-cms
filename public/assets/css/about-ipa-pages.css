@@ -60,21 +60,6 @@ body.cms-about-page .footer-main {
   padding: 0;
 }
 
-.about-rich-text a:not(.cta),
-.cms-about-page .cms-page-content a:not(.cta),
-.cms-basic-content__body a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.about-rich-text a:not(.cta):hover,
-.cms-about-page .cms-page-content a:not(.cta):hover,
-.cms-basic-content__body a:not(.cta):hover {
-  color: oklch(0.2305 0.0781 262.98);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
 /* 内容页正文：内页统一 18px（见 site-fonts.css --ipa-body-text-size） */
 .cms-page-content,
 .about-section .about-rich-text {
@@ -398,17 +383,6 @@ body.cms-about-page .footer-main {
   margin-bottom: 0;
 }
 
-.cms-body-block--faq [data-rte="true"].cms-page-content a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.cms-body-block--faq [data-rte="true"].cms-page-content a:not(.cta):hover {
-  color: oklch(0.2305 0.0781 262.98);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
 .cms-body-block--faq [data-rte="true"].cms-page-content p {
   margin-bottom: 0.75rem;
 }
@@ -718,28 +692,6 @@ body.cms-about-page .footer-main {
   color: oklch(0.464 0 0);
 }
 
-.cms-news-list-curated__intro a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.cms-news-list-curated__intro a:not(.cta):hover {
-  text-decoration: underline;
-}
-
-.cms-governance-columns .cms-page-content a:not(.cta),
-.cms-governance-content-block .cms-page-content a:not(.cta),
-.cms-governance-content-block__body a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.cms-governance-columns .cms-page-content a:not(.cta):hover,
-.cms-governance-content-block .cms-page-content a:not(.cta):hover,
-.cms-governance-content-block__body a:not(.cta):hover {
-  text-decoration: underline;
-}
-
 /* 左右结构：右侧富文本带图标列表时对齐 member-requirements 样式 */
 .cms-left-right-layout__tagline {
   color: #992785;
@@ -782,15 +734,6 @@ body.cms-about-page .footer-main {
   height: auto;
   border-radius: 0.25rem;
   vertical-align: middle;
-}
-
-.cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body a:not(.cta) {
-  color: #0d2c6c;
-  text-decoration: none;
-}
-
-.cms-tabbed-content--no-image .cms-tabbed-content__panel .cms-governance-content-block__body a:not(.cta):hover {
-  text-decoration: underline;
 }
 
 /*
