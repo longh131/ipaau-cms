@@ -109,6 +109,7 @@ class PageBodyBlocks
                     'title' => trim((string) ($block['title'] ?? '')),
                     'title_align' => static::normalizeTitleAlign((string) ($block['title_align'] ?? 'center')),
                     'html' => RichContent::encodeDocumentForForm($block['html'] ?? ''),
+                    'buttons' => self::normalizeButtonsForForm($block['buttons'] ?? []),
                 ],
                 self::TYPE_HIGHLIGHT => [
                     'type' => self::TYPE_HIGHLIGHT,
@@ -183,7 +184,7 @@ class PageBodyBlocks
         $blocks = static::forForm($blocks);
 
         $blocks = array_map(function (array $block): array {
-            if ($block['type'] === self::TYPE_CTA_GROUP || $block['type'] === self::TYPE_MEDIA_SPLIT) {
+            if (in_array($block['type'], [self::TYPE_CTA_GROUP, self::TYPE_MEDIA_SPLIT, self::TYPE_RICH_TEXT], true)) {
                 $block['buttons'] = self::normalizeButtons($block['buttons'] ?? []);
             }
 
@@ -252,6 +253,7 @@ class PageBodyBlocks
                     'title' => $block['title'],
                     'title_align' => $block['title_align'],
                     'html' => RichContent::toHtml($block['html']),
+                    'buttons' => $block['buttons'] ?? [],
                 ],
                 self::TYPE_HIGHLIGHT => [
                     'type' => self::TYPE_HIGHLIGHT,
@@ -307,7 +309,7 @@ class PageBodyBlocks
                     'section_title' => $block['section_title'],
                     'items' => $block['items'],
                 ],
-                self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forFrontend([$block]))->first(),
+                self::TYPE_NEWS_LIST => GeneralSecondarySections::defaultNewsListForFrontend($block),
                 self::TYPE_HTML_BODY => [
                     'type' => self::TYPE_HTML_BODY,
                     'body_html' => trim((string) ($block['body'] ?? '')),
@@ -405,7 +407,8 @@ class PageBodyBlocks
         return match ($block['type'] ?? null) {
             self::TYPE_RICH_TEXT => filled($block['tagline'] ?? null)
                 || filled($block['title'] ?? null)
-                || RichContent::hasVisibleHtml(RichContent::toHtml($block['html'] ?? '')),
+                || RichContent::hasVisibleHtml(RichContent::toHtml($block['html'] ?? ''))
+                || ($block['buttons'] ?? []) !== [],
             self::TYPE_HIGHLIGHT => filled(trim((string) ($block['text'] ?? ''))),
             self::TYPE_CTA_GROUP => ($block['buttons'] ?? []) !== [],
             self::TYPE_TABS => ($block['tabs'] ?? []) !== [],

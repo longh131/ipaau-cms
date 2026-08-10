@@ -13,7 +13,7 @@
 @if(! empty($tabs))
     <section
         data-type="tabbedContent"
-        class="py-12 cms-governance-module cms-general-secondary-module cms-tabbed-content--no-image bg-[color:var(--bg-color)]"
+        class="cms-governance-module cms-general-secondary-module cms-tabbed-content--no-image bg-[color:var(--bg-color)]"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);

@@ -311,9 +311,29 @@ class ArticleExtraFields
      */
     public static function teamJobTitle(?array $extraFields): ?string
     {
-        $value = is_array($extraFields)
-            ? ($extraFields[\App\Support\CategoryListTemplate\TeamIntroTemplate::JOB_TITLE_KEY] ?? null)
-            : null;
+        return self::teamExtraText(
+            $extraFields,
+            \App\Support\CategoryListTemplate\TeamIntroTemplate::JOB_TITLE_KEY,
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $extraFields
+     */
+    public static function teamEnglishName(?array $extraFields): ?string
+    {
+        return self::teamExtraText(
+            $extraFields,
+            \App\Support\CategoryListTemplate\TeamIntroTemplate::ENGLISH_NAME_KEY,
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $extraFields
+     */
+    private static function teamExtraText(?array $extraFields, string $key): ?string
+    {
+        $value = is_array($extraFields) ? ($extraFields[$key] ?? null) : null;
 
         if (! is_string($value) || blank($value)) {
             return null;

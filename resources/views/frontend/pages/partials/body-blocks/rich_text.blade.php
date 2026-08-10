@@ -5,18 +5,24 @@
     $hasTagline = filled($tagline);
     $hasTitle = filled($block['title'] ?? null);
     $hasHtml = RichContent::hasVisibleHtml((string) ($block['html'] ?? ''));
+    $buttons = $block['buttons'] ?? [];
     $layout = $layout ?? 'default';
     $titleAlign = match ($block['title_align'] ?? 'center') {
         'left' => 'text-left',
         'right' => 'text-right',
         default => 'text-center',
     };
+    $buttonAlignClass = match ($block['title_align'] ?? 'center') {
+        'center' => 'justify-center',
+        'right' => 'justify-end',
+        default => 'justify-start',
+    };
     $bodyAlign = ($layout === 'professional_assistance' && ($block['title_align'] ?? 'center') === 'center')
         ? 'text-center'
         : 'text-left';
 @endphp
 
-@if($hasTagline || $hasTitle || $hasHtml)
+@if($hasTagline || $hasTitle || $hasHtml || $buttons !== [])
     <div @class([
         'about-rich-text cms-body-block cms-body-block--rich-text',
         $titleAlign,
@@ -56,6 +62,19 @@
                 data-rte="true"
             >
                 {!! $block['html'] !!}
+            </div>
+        @endif
+
+        @if($buttons !== [])
+            <div class="basis-auto flex flex-col sm:flex-row {{ $buttonAlignClass }} flex-wrap gap-6 mt-12 mb-6">
+                @foreach ($buttons as $button)
+                    <x-cta-button
+                        :label="$button['label']"
+                        :url="$button['url']"
+                        :style="$button['style']"
+                        :target="filled($button['target'] ?? null) ? $button['target'] : null"
+                    />
+                @endforeach
             </div>
         @endif
     </div>

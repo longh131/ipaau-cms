@@ -3,9 +3,25 @@
 namespace App\Support;
 
 use App\Models\Article;
+use Illuminate\Database\Eloquent\Builder;
 
 class ArticleSortOrder
 {
+    /**
+     * 全站文章列表通用排序：置顶 → sort_order 降序 → published_at 降序 → id 降序。
+     *
+     * @param  Builder<Article>  $query
+     * @return Builder<Article>
+     */
+    public static function applyDefaultOrdering(Builder $query): Builder
+    {
+        return $query
+            ->orderByDesc('is_sticky')
+            ->orderByDesc('sort_order')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id');
+    }
+
     /**
      * 按导入先后（id 升序 ≈ 旧站列表从上到下）镜像 sort_order，
      * 使较新的条目在「sort_order 越大越靠前」规则下排在前面。

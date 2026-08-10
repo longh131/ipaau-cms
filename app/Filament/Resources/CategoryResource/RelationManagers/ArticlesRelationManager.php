@@ -72,7 +72,7 @@ class ArticlesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('排序'),
             ])
-            ->defaultSort('published_at', 'desc')
+            ->defaultSort('sort_order', 'desc')
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('已发布'),

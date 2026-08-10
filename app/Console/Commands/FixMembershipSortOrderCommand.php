@@ -10,7 +10,7 @@ class FixMembershipSortOrderCommand extends Command
     protected $signature = 'articles:fix-membership-sort-order
                             {--categories=79,80,81 : 栏目 ID，逗号分隔}';
 
-    protected $description = '修正会员风采/会员专访/会员分享栏目的 sort_order（越大越靠前，与全站一致）';
+    protected $description = '按全站规则校正文章 sort_order（越大越靠前；可与 sort_order → published_at → id 前台排序配合）';
 
     public function handle(): int
     {

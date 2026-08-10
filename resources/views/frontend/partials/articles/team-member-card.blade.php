@@ -2,6 +2,7 @@
     use App\Support\ArticleExtraFields;
 
     $imageUrl = ArticleExtraFields::teamCoverUrl($article->extra_fields, $article->cover_image);
+    $englishName = ArticleExtraFields::teamEnglishName($article->extra_fields);
     $jobTitle = ArticleExtraFields::teamJobTitle($article->extra_fields);
 @endphp
 
@@ -14,7 +15,15 @@
         </div>
     </div>
 
-    <div class="label-xl text-secondary mb-4">{{ $article->title }}</div>
+    <div @class([
+        'label-xl text-secondary',
+        'mb-2' => filled($englishName),
+        'mb-4' => blank($englishName),
+    ])>{{ $article->title }}</div>
+
+    @if(filled($englishName))
+        <p class="leadership-member__english-name mb-4">{{ $englishName }}</p>
+    @endif
 
     @if(filled($jobTitle))
         <p class="text-xl leadership-member__title">{{ $jobTitle }}</p>

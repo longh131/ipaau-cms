@@ -83,6 +83,7 @@
                         <div class="text-left container mx-auto team-bio__content">
                             @php
                                 $displayJobTitle = $jobTitle ?? \App\Support\ArticleExtraFields::teamJobTitle($article->extra_fields);
+                                $displayEnglishName = \App\Support\ArticleExtraFields::teamEnglishName($article->extra_fields);
                             @endphp
 
                             @if(filled($displayJobTitle))
@@ -95,7 +96,7 @@
                                 class="font-apex-book team-bio__name-wrap"
                             >
                                 <h2 class="text-display-xl lg:text-display-2xl text-secondary" id="team-member-title">
-                                    {{ $article->title }}
+                                    {{ $article->title }}@if(filled($displayEnglishName))（{{ $displayEnglishName }}）@endif
                                 </h2>
                             </div>
 

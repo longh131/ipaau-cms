@@ -823,6 +823,7 @@ class BodyBlockFormSchemas
                     ->default('center')
                     ->columnSpanFull(),
                 RichContent::nestedRichEditor('html', '段落内容'),
+                self::sectionButtonsRepeater(),
             ],
             PageBodyBlocks::TYPE_HIGHLIGHT => self::highlightFields(),
             PageBodyBlocks::TYPE_CTA_GROUP => [

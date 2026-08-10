@@ -3,6 +3,7 @@
 namespace App\Support\CategoryListTemplate;
 
 use App\Models\Category;
+use App\Support\ArticleSortOrder;
 use Illuminate\Database\Eloquent\Builder;
 
 class CategoryListTemplateRegistry
@@ -154,10 +155,6 @@ class CategoryListTemplateRegistry
      */
     public static function applyArticleOrdering(Builder $query, Category $category): Builder
     {
-        return $query
-            ->orderByDesc('is_sticky')
-            ->orderByDesc('published_at')
-            ->orderByDesc('sort_order')
-            ->orderByDesc('id');
+        return ArticleSortOrder::applyDefaultOrdering($query);
     }
 }

@@ -29,7 +29,7 @@
 
   /* 会员要求页 h4（子标题，梅紫色） */
   --ipa-rich-h4-color: #992785;
-  --ipa-rich-h4-size: 1.125rem;
+  --ipa-rich-h4-size: var(--ipa-display-sm);
   --ipa-rich-h4-line-height: 1.35;
 
   /* 正文内文字链接（海军蓝 + 下划线） */
@@ -118,6 +118,14 @@ body {
   display: inline;
   margin-bottom: 0;
   min-height: 0;
+}
+
+/* Footer 免责声明 / 版权：富文本强制全站字体（新宋体） */
+#footer-disclaimer [data-rte="true"],
+#footer-disclaimer [data-rte="true"] :is(p, span, a, div, li, strong, em),
+.footer-copyright-text [data-rte="true"],
+.footer-copyright-text [data-rte="true"] :is(p, span, a, div, li, strong, em) {
+  font-family: var(--ipa-font-family) !important;
 }
 
 /*
@@ -346,6 +354,24 @@ body {
   #root [data-type="section-title"] {
     font-size: var(--ipa-section-title-size-lg);
   }
+}
+
+/* 通用二级页左右结构：左侧大标题减小两档（相对 text-display-xl/2xl；压过 section-title inherit） */
+.cms-general-secondary-page #root .cms-left-right-layout [data-type="section-title"] h2.cms-section-title {
+  font-size: var(--ipa-display-lg) !important;
+  line-height: 1.2 !important;
+}
+
+@media (min-width: 1024px) {
+  .cms-general-secondary-page #root .cms-left-right-layout [data-type="section-title"] h2.cms-section-title,
+  .cms-general-secondary-page #root .cms-left-right-layout [data-type="section-title"] h2.cms-section-title.lg\:text-display-2xl {
+    font-size: var(--ipa-display-xl) !important;
+  }
+}
+
+.cms-general-secondary-page #root .cms-left-right-layout [data-type="section-title"] h2.cms-section-title :is(span, strong, em) {
+  font-size: inherit !important;
+  line-height: inherit !important;
 }
 
 .cms-section-title :is(h1, h2, h3, h4, h5, h6, p, span),
@@ -602,6 +628,46 @@ section[data-type="testimonialCarousel"].testimonial-carousel-section:not(.cms-b
 
 .testimonial-carousel .testimonial-card__navigation {
   z-index: 2;
+}
+
+/* 首页会员推荐：板块标题加粗；署名/职位行加粗并与大图底对齐 */
+:not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section > .inner.container {
+  gap: 0;
+}
+
+:not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section > .inner > .w-full.text-center .cms-section-title {
+  font-weight: 700;
+}
+
+:not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__title {
+  font-weight: 700;
+}
+
+@media (min-width: 1024px) {
+  :not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__layout {
+    align-items: stretch;
+  }
+
+  :not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__copy {
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+    min-height: 280px;
+  }
+
+  :not(.cms-body-block) > section[data-type="testimonialCarousel"].testimonial-carousel-section .testimonial-card__media {
+    align-self: end;
+  }
+}
+
+/* 首页塑造未来：去掉 inner 与内容区之间的多余上间距（section 已有 py-12） */
+:not(.cms-body-block) > section[data-type="ctaSection"] > .inner.container {
+  gap: 0;
+}
+
+:not(.cms-body-block) > section[data-type="ctaSection"] > .inner > .container.mx-auto.px-4 {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* 多元与包容：上图下标题，纯白底（盖住装饰层） */

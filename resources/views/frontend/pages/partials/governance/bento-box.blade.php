@@ -13,7 +13,7 @@
 <section
     data-type="bentoBox"
     data-index="1"
-    class="py-16 cms-governance-module cms-governance-bento"
+    class="cms-governance-module cms-governance-bento"
 >
     <div class="inner container px-4 md:px-10 mx-auto">
         @foreach ($groups as $groupIndex => $group)

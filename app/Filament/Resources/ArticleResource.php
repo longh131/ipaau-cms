@@ -70,7 +70,7 @@ class ArticleResource extends Resource
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('published_at', 'desc')
+            ->defaultSort('sort_order', 'desc')
             ->persistFiltersInSession()
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')

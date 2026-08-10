@@ -83,6 +83,10 @@ function initNewsListCurated() {
     toggle.addEventListener('click', function (event) {
       event.preventDefault();
 
+      if (section.classList.contains('is-expanded')) {
+        return;
+      }
+
       section.querySelectorAll('.cms-news-list-curated__item--hidden').forEach(function (item) {
         item.classList.remove('cms-news-list-curated__item--hidden');
       });
@@ -93,6 +97,8 @@ function initNewsListCurated() {
       var actions = section.querySelector('.cms-news-list-curated__actions');
       if (actions) {
         actions.hidden = true;
+        actions.style.display = 'none';
+        actions.setAttribute('aria-hidden', 'true');
       }
     });
   });

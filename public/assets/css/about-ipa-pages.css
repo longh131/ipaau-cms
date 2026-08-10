@@ -114,6 +114,39 @@ body.cms-about-page .footer-main {
   color: inherit;
 }
 
+/*
+ * member-benefits：首个富文本模块标题对齐默认正文页 rich_text 标题
+ * （application-guide 等页的 h3.cms-rich-text__title.cms-section-title）
+ */
+body.cms-page--member-benefits
+  .cms-general-secondary-page
+  > .cms-governance-content-block:first-of-type
+  h3.cms-section-title {
+  font-family: var(--ipa-font-family) !important;
+  font-size: var(--ipa-section-title-size) !important;
+  line-height: 1.2 !important;
+  font-weight: 700;
+}
+
+@media (min-width: 1024px) {
+  body.cms-page--member-benefits
+    .cms-general-secondary-page
+    > .cms-governance-content-block:first-of-type
+    h3.cms-section-title {
+    font-size: var(--ipa-section-title-size-lg) !important;
+  }
+}
+
+body.cms-page--member-benefits
+  .cms-general-secondary-page
+  > .cms-governance-content-block:first-of-type
+  h3.cms-section-title
+  :is(span, strong, em) {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit;
+}
+
 .cms-rich-text__body p:last-child {
   margin-bottom: 0;
 }
@@ -204,7 +237,7 @@ body.cms-about-page .footer-main {
   padding-bottom: 0 !important;
 }
 
-.cms-page-content-section > .cms-body-block + .cms-body-block {
+.cms-page-content-section:not(.cms-general-secondary-page):not(.cms-governance-page) > .cms-body-block + .cms-body-block {
   margin-top: var(--cms-block-gap);
 }
 
@@ -227,9 +260,58 @@ body.cms-about-page .footer-main {
   margin-right: 0;
 }
 
+/*
+ * 选项卡：1280–1440px 时 Tailwind xl:mb-auto 会把标签栏下边距压成 0，
+ * 与 [data-type="tab-content"] 贴在一起；恢复 mb-8 并取消内容区垂直居中。
+ */
+@media (min-width: 1280px) and (max-width: 1439.98px) {
+  section[data-type="tabbedContent"] .flex.h-full.flex-col .flex.flex-wrap.gap-4.mt-8,
+  section[data-type="tabbedContent"] .lg\:hidden .flex.flex-wrap.gap-4.mt-8 {
+    margin-bottom: 2rem !important;
+  }
+
+  section[data-type="tabbedContent"] [data-type="tab-content"] {
+    justify-content: flex-start !important;
+  }
+}
+
 .cms-body-block--stats > section {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+/*
+ * 页面模板「数据统计」：数字与说明各比首页加大四号（首页 stats 无 .cms-body-block--stats 包裹，不受影响）
+ * 首页基准：数字 xl → 2xl → 3xl；说明 text-sm → lg:text-base
+ */
+.cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+  font-size: var(--ipa-display-3xl);
+}
+
+@media (min-width: 1024px) {
+  .cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+    font-size: var(--ipa-display-4xl);
+  }
+}
+
+@media (min-width: 1280px) {
+  .cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+    font-size: calc(var(--ipa-display-4xl) * 1.25);
+  }
+}
+
+.cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum {
+    font-size: 1.875rem;
+  }
+
+  .cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum > div.text-base {
+    font-size: 2.25rem;
+  }
 }
 
 .cms-body-block--testimonials > section,
@@ -446,18 +528,48 @@ body.cms-about-page .footer-main {
   --cms-governance-gap: 100px;
 }
 
-.cms-governance-page > .cms-governance-module {
+/* 块间仅 margin-top；第一块不加；有页头时页头后第一块仍保留 100px */
+.cms-governance-page > .cms-governance-module:first-child,
+.cms-general-secondary-page > .cms-governance-module:first-child {
+  margin-top: 0;
+}
+
+.cms-governance-page > .cms-governance-header ~ .cms-governance-module,
+.cms-governance-page > .cms-governance-module ~ .cms-governance-module,
+.cms-general-secondary-page > .cms-governance-header ~ .cms-governance-module,
+.cms-general-secondary-page > .cms-governance-module ~ .cms-governance-module {
   margin-top: var(--cms-governance-gap);
 }
 
-/* 通用二级页：与治理/基本正文页共用间距与页头宽度 */
+/*
+ * 单页板块：不叠加 section / inner 垂直 padding（块间只靠 margin-top）
+ * 板块内部仍可用 gap-12 等控制元素间距
+ */
+.cms-page-content-section > .cms-governance-module {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.cms-page-content-section :is(
+  .cms-governance-content-block,
+  .cms-governance-bento,
+  .cms-tabbed-content--no-image,
+  .cms-left-right-layout
+) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.cms-page-content-section .cms-body-block--card-list > .inner.container,
+.cms-page-content-section .cms-governance-card-list > .inner.container {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 新闻列表 A/B/默认：inner 保留 py-16，避免有背景时文字贴边（块间仍仅 100px margin） */
 .cms-general-secondary-page {
   --cms-governance-width: 978px;
   --cms-governance-gap: 100px;
-}
-
-.cms-general-secondary-page > .cms-governance-module {
-  margin-top: var(--cms-governance-gap);
 }
 
 .cms-governance-header__inner {
@@ -471,6 +583,19 @@ body.cms-about-page .footer-main {
   max-width: var(--cms-governance-width);
   margin-inline: auto;
   text-align: center;
+}
+
+/* 页头 h1 对齐首个 content_block 的 h3.cms-section-title 刻度 */
+.cms-general-secondary-page .cms-governance-header__title.cms-section-title {
+  font-size: var(--ipa-section-title-size);
+  line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+  .cms-general-secondary-page .cms-governance-header__title.cms-section-title {
+    font-size: var(--ipa-section-title-size-lg);
+    line-height: 1.2;
+  }
 }
 
 .cms-governance-header__title + .cms-governance-header__summary {
@@ -675,12 +800,21 @@ body.cms-about-page .footer-main {
   background-color: transparent;
 }
 
+/* 通用二级页新闻列表 B：卡片标题加粗（覆盖 font-medium） */
+.cms-news-list-curated--general-secondary .cms-news-list-icon-item__title {
+  font-weight: 700 !important;
+}
+
 .cms-news-list-icon-item__icon-image {
   display: block;
   max-width: 100%;
 }
 
 .cms-news-list-curated__item--hidden {
+  display: none !important;
+}
+
+.cms-news-list-curated.is-expanded .cms-news-list-curated__actions {
   display: none !important;
 }
 
@@ -692,10 +826,33 @@ body.cms-about-page .footer-main {
   color: oklch(0.464 0 0);
 }
 
+/* 默认正文页新闻列表：卡片白底，链接卡片 hover 浅灰（覆盖内联 #F2F2F2） */
+.cms-body-block--news-list .cms-news-list-curated__item.cms-card-list-curated__item {
+  --bg-color: #fff;
+  background-color: #fff !important;
+}
+
+.cms-body-block--news-list a.cms-news-list-curated__item.cms-card-list-curated__item:hover {
+  --bg-color: oklch(0.9612 0 0);
+  background-color: oklch(0.9612 0 0) !important;
+}
+
 /* 左右结构：右侧富文本带图标列表时对齐 member-requirements 样式 */
 .cms-left-right-layout__tagline {
   color: #992785;
   font-weight: 400;
+}
+
+/* 通用二级页左右结构：左侧大标题 / 小标题各减小两档（display-xl/2xl → lg/xl） */
+.cms-general-secondary-page .cms-left-right-layout .cms-left-right-layout__tagline {
+  font-size: var(--ipa-display-lg) !important;
+  line-height: 1.2 !important;
+}
+
+@media (min-width: 1024px) {
+  .cms-general-secondary-page .cms-left-right-layout .cms-left-right-layout__tagline {
+    font-size: var(--ipa-display-xl) !important;
+  }
 }
 
 [data-type="basicContentWithColumns"].cms-left-right-layout [class*="lg:grid-cols-2"] [data-rte="true"] div:has(> img[width="24"][height="24"]) {

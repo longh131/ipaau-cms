@@ -47,6 +47,13 @@
   color: inherit;
 }
 
+.leadership-member__english-name {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  color: oklch(0.464 0 0);
+}
+
 .leadership-member__link {
   display: inline-flex;
   align-items: center;

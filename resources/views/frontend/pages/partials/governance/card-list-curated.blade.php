@@ -14,7 +14,7 @@
         'cms-news-list-curated--expandable' => $hasHiddenItems,
     ])
 >
-    <div class="inner container px-4 md:px-10 mx-auto py-16">
+    <div class="inner container px-4 md:px-10 mx-auto">
         @include('frontend.pages.partials.shared.card-list-curated', [
             'sectionTitle' => $sectionTitle ?? '',
             'cardItems' => $cardItems,

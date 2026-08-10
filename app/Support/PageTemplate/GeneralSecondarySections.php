@@ -444,6 +444,27 @@ class GeneralSecondarySections
     }
 
     /**
+     * 默认正文页「新闻列表」板块（initial_visible = 3，卡片式条目）。
+     *
+     * @param  array<string, mixed>  $section
+     * @return array<string, mixed>
+     */
+    public static function defaultNewsListForFrontend(array $section): array
+    {
+        $viewMoreLabel = trim((string) ($section['view_more_label'] ?? ''));
+
+        return [
+            'type' => self::TYPE_NEWS_LIST,
+            'section_title' => trim((string) ($section['section_title'] ?? '')),
+            'summary_html' => RichContent::toHtml($section['summary'] ?? ''),
+            'view_more_label' => filled($viewMoreLabel) ? $viewMoreLabel : '查看更多',
+            'section_background' => self::normalizeNewsListBackground((string) ($section['section_background'] ?? '')),
+            'initial_visible' => self::NEWS_LIST_INITIAL_VISIBLE,
+            'items' => self::normalizeDefaultNewsListItemsForFrontend($section['items'] ?? []),
+        ];
+    }
+
+    /**
      * @return array<int, array{
      *     title: string,
      *     summary: string,

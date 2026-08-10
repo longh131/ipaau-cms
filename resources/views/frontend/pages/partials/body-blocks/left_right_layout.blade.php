@@ -19,7 +19,7 @@
 @if($hasLeft || $hasRight)
     <section
         data-type="basicContentWithColumns"
-        class="py-12 cms-governance-module cms-general-secondary-module cms-left-right-layout bg-[color:var(--bg-color)]"
+        class="cms-governance-module cms-general-secondary-module cms-left-right-layout bg-[color:var(--bg-color)]"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
