@@ -591,6 +591,10 @@ body.cms-page--member-benefits
   line-height: 1.2;
 }
 
+.cms-tagline-before-title {
+  margin-bottom: 0.5rem;
+}
+
 @media (min-width: 1024px) {
   .cms-general-secondary-page .cms-governance-header__title.cms-section-title {
     font-size: var(--ipa-section-title-size-lg);
@@ -602,8 +606,13 @@ body.cms-page--member-benefits
   margin-top: 1.5rem;
 }
 
+.cms-governance-header__tagline + .cms-governance-header__summary {
+  margin-top: 1.5rem;
+}
+
 .cms-governance-header__summary + .cms-governance-header__actions,
-.cms-governance-header__title + .cms-governance-header__actions {
+.cms-governance-header__title + .cms-governance-header__actions,
+.cms-governance-header__tagline + .cms-governance-header__actions {
   margin-top: 2rem;
 }
 

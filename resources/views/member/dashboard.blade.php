@@ -42,29 +42,33 @@
                     </a>
                 @endforeach
             </div>
-        </div>
 
-        <div class="member-dashboard__bottom-tiles">
-            @foreach([
-                ['label' => 'My Portal', 'subtitle' => '全球官网', 'icon' => 'portal', 'url' => 'https://www.publicaccountants.org.au/', 'external' => true],
-                ['label' => '全球活动', 'subtitle' => null, 'icon' => 'events', 'url' => '#'],
-                ['label' => 'MyCommunity', 'icon' => 'community', 'url' => '#'],
-                ['label' => '会籍资格升级', 'icon' => 'member-levels', 'url' => url('/category/member-levels')],
-            ] as $tile)
-                <a
-                    href="{{ $tile['url'] }}"
-                    @class(['member-tile', 'member-tile--wide', 'member-tile--link'])
-                    @if($tile['external'] ?? false) target="_blank" rel="noopener noreferrer" @endif
-                >
-                    <span class="member-tile__icon" aria-hidden="true">
-                        @include('member.partials.tile-icon', ['name' => $tile['icon']])
-                    </span>
-                    <span class="member-tile__label">{{ $tile['label'] }}</span>
-                    @if(filled($tile['subtitle'] ?? null))
-                        <span class="member-tile__subtitle">{{ $tile['subtitle'] }}</span>
-                    @endif
-                </a>
-            @endforeach
+            <div class="member-dashboard__bottom">
+                @foreach([
+                    ['label' => 'My Portal', 'subtitle' => '全球官网', 'icon' => 'portal', 'url' => 'https://www.publicaccountants.org.au/', 'external' => true],
+                    ['label' => '全球活动', 'subtitle' => null, 'icon' => 'events', 'url' => '#'],
+                    ['label' => 'MyCommunity', 'icon' => 'community', 'url' => '#'],
+                    ['label' => '会籍资格升级', 'icon' => 'member-levels', 'url' => url('/category/member-levels')],
+                ] as $index => $tile)
+                    <a
+                        href="{{ $tile['url'] }}"
+                        @class([
+                            'member-tile',
+                            'member-tile--link',
+                            'member-tile--portal' => $index === 0,
+                        ])
+                        @if($tile['external'] ?? false) target="_blank" rel="noopener noreferrer" @endif
+                    >
+                        <span class="member-tile__icon" aria-hidden="true">
+                            @include('member.partials.tile-icon', ['name' => $tile['icon']])
+                        </span>
+                        <span class="member-tile__label">{{ $tile['label'] }}</span>
+                        @if(filled($tile['subtitle'] ?? null))
+                            <span class="member-tile__subtitle">{{ $tile['subtitle'] }}</span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
         </div>
     </section>
 @endsection

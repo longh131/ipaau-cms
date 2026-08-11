@@ -37,10 +37,7 @@ class PortalController extends Controller
                 'region' => '持证会籍资格所属区',
                 'level_valid_until' => '会员等级有效期',
             ],
-            'membershipFields' => array_diff(
-                array_keys(MemberFieldMap::DB_LABELS),
-                MemberFieldMap::profileFields(),
-            ),
+            'membershipFields' => MemberFieldMap::membershipPortalFields(),
             'fieldLabels' => MemberFieldMap::DB_LABELS,
         ]);
     }

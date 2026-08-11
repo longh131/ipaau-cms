@@ -31,7 +31,7 @@
             <span
                 @class([
                     'eyebrow-md block',
-                    'mb-4' => $hasTitle,
+                    'cms-tagline-before-title' => $hasTitle,
                     $titleAlign,
                 ])
                 style="

@@ -4,10 +4,9 @@
 ])
 
 @php
-    /** @var array{tab_label: string, tagline: string, title: string, description: string, button_label: string, url: ?string, image: ?string} $tab */
-    $descriptionParagraphs = filled($tab['description'] ?? null)
-        ? preg_split('/\R\R+/', trim($tab['description'])) ?: []
-        : [];
+    /** @var array{tab_label: string, tagline: string, title: string, description_html?: string, description?: string, button_label: string, url: ?string, image: ?string} $tab */
+    $descriptionHtml = (string) ($tab['description_html'] ?? $tab['description'] ?? '');
+    $hasDescription = \App\Support\RichContent::hasVisibleHtml($descriptionHtml);
 @endphp
 
 <div
@@ -48,9 +47,12 @@
             </h3>
         </div>
         @endif
-        @if(! empty($descriptionParagraphs))
+        @if($hasDescription)
         <div
-            class="text-[color:var(--ipa-color)] mt-8 text-xl font-din"
+            @class([
+                'cms-page-content cms-governance-content-block__body text-[color:var(--ipa-color)] text-xl font-din text-primary cms-rich-text__body',
+                'mt-8' => filled($tab['title'] ?? null) || filled($tab['tagline'] ?? null),
+            ])
             data-type="section-description"
             data-rte="true"
             style="
@@ -59,13 +61,7 @@
                 color: var(--ipa-color-light);
             "
         >
-            @foreach ($descriptionParagraphs as $paragraph)
-            @if(filled(trim($paragraph)))
-            <div style="text-align: left">
-                <span class="text-primary">{{ trim($paragraph) }}</span>
-            </div>
-            @endif
-            @endforeach
+            {!! $descriptionHtml !!}
         </div>
         @endif
     </div>

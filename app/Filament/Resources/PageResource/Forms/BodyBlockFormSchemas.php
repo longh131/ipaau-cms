@@ -37,11 +37,7 @@ class BodyBlockFormSchemas
                         ->label('大标题')
                         ->maxLength(255)
                         ->columnSpanFull(),
-                    Forms\Components\Textarea::make('description')
-                        ->label('内容')
-                        ->rows(4)
-                        ->helperText('空行可分段显示')
-                        ->columnSpanFull(),
+                    RichContent::nestedRichEditor('description', '内容'),
                     self::tabButtonsRepeater(),
                     ImageUpload::make(
                         'image',
@@ -793,6 +789,7 @@ class BodyBlockFormSchemas
             ['bulletList', 'orderedList'],
             ['link', 'textColor'],
             ['undo', 'redo'],
+            ['source-ai'],
         ];
     }
 

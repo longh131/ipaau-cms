@@ -32,8 +32,8 @@
         "
     >
         <div class="inner container px-4 md:px-10 mx-auto">
-            <header class="cms-course-table-section__header mb-8 lg:mb-10">
-                <h1 class="font-apex-book cms-section-title text-secondary">
+            <header class="cms-course-table-section__header cms-category-intro-section__header text-center mb-8 lg:mb-10">
+                <h1 class="font-apex-book cms-section-title text-secondary mb-0">
                     {{ $category->name }}
                 </h1>
 
@@ -63,4 +63,6 @@
             @endif
         </div>
     </section>
+
+    @include('frontend.pages.partials.page-content-footer-spacer')
 @endsection

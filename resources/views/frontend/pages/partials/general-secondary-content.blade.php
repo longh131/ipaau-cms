@@ -2,12 +2,13 @@
     use App\Support\RichContent;
 
     $heading = trim((string) ($pageView['heading'] ?? ''));
+    $tagline = trim((string) ($pageView['tagline'] ?? ''));
     $summaryHtml = (string) ($pageView['summary_html'] ?? '');
     $hasSummary = RichContent::hasVisibleHtml($summaryHtml);
     $buttons = $pageView['buttons'] ?? [];
     $sections = $pageView['sections'] ?? [];
     $hasBreadcrumbs = $hasBreadcrumbs ?? false;
-    $hasPageHeader = filled($heading) || $hasSummary || $buttons !== [];
+    $hasPageHeader = filled($tagline) || filled($heading) || $hasSummary || $buttons !== [];
     $cmsSectionStyle = '
         --bg-color: transparent;
         --ipa-color-light: oklch(0.464 0 0);
@@ -31,6 +32,17 @@
             <div class="cms-governance-header">
                 <div class="inner container px-4 md:px-10 mx-auto cms-governance-header__inner">
                     <header class="cms-governance-header__header">
+                        @if(filled($tagline))
+                            <span
+                                class="cms-governance-header__tagline eyebrow-md block {{ filled($heading) ? 'cms-tagline-before-title' : '' }}"
+                                style="
+                                    --ipa-color-light: oklch(0.4867 0.1803 336.11);
+                                    --ipa-color-dark: oklch(0.8944 0.0357 331.62);
+                                    color: var(--ipa-color-light);
+                                "
+                            >{{ $tagline }}</span>
+                        @endif
+
                         @if(filled($heading))
                             <h1 class="cms-governance-header__title font-apex-book cms-section-title text-secondary mb-0">
                                 {{ $heading }}

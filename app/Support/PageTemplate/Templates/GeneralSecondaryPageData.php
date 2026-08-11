@@ -10,6 +10,7 @@ class GeneralSecondaryPageData
 {
     /**
      * @return array{
+     *     tagline: string,
      *     heading: string,
      *     summary: string,
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
@@ -19,6 +20,7 @@ class GeneralSecondaryPageData
     public static function emptyStorage(): array
     {
         return [
+            'tagline' => '',
             'heading' => '',
             'summary' => '',
             'buttons' => [],
@@ -29,6 +31,7 @@ class GeneralSecondaryPageData
     /**
      * @param  array<string, mixed>|null  $data
      * @return array{
+     *     tagline: string,
      *     heading: string,
      *     summary: string,
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
@@ -40,6 +43,7 @@ class GeneralSecondaryPageData
         $data = is_array($data) ? $data : [];
 
         return [
+            'tagline' => trim((string) ($data['tagline'] ?? '')),
             'heading' => trim((string) ($data['heading'] ?? '')),
             'summary' => RichContent::encodeDocumentForForm($data['summary'] ?? ''),
             'buttons' => GeneralSecondarySections::buttonsForForm($data['buttons'] ?? []),
@@ -50,6 +54,7 @@ class GeneralSecondaryPageData
     /**
      * @param  array<string, mixed>  $data
      * @return array{
+     *     tagline: string,
      *     heading: string,
      *     summary: string,
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
@@ -61,6 +66,7 @@ class GeneralSecondaryPageData
         $form = static::forForm($data);
 
         return [
+            'tagline' => $form['tagline'],
             'heading' => $form['heading'],
             'summary' => $form['summary'],
             'buttons' => GeneralSecondarySections::buttonsForStorage($form['buttons']),
@@ -71,6 +77,7 @@ class GeneralSecondaryPageData
     /**
      * @param  array<string, mixed>|null  $data
      * @return array{
+     *     tagline: string,
      *     heading: string,
      *     summary: string,
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>,
@@ -84,6 +91,7 @@ class GeneralSecondaryPageData
         $storage = static::forStorage($data ?? []);
 
         return [
+            'tagline' => $form['tagline'],
             'heading' => $form['heading'],
             'summary_html' => RichContent::toHtml($form['summary'] ?? ''),
             'buttons' => $storage['buttons'],
@@ -99,7 +107,7 @@ class GeneralSecondaryPageData
     {
         $data = static::forForm($data);
 
-        if (static::summaryHasContent($data['summary'] ?? null) || filled($data['heading'])) {
+        if (static::summaryHasContent($data['summary'] ?? null) || filled($data['heading']) || filled($data['tagline'] ?? null)) {
             return true;
         }
 
@@ -117,6 +125,10 @@ class GeneralSecondaryPageData
     {
         $form = static::forForm($data);
         $parts = [];
+
+        if (filled($form['tagline'] ?? null)) {
+            $parts[] = '<p>'.e($form['tagline']).'</p>';
+        }
 
         if (static::summaryHasContent($form['summary'] ?? null)) {
             $parts[] = RichContent::toHtml($form['summary']);

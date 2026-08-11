@@ -26,6 +26,12 @@ class GeneralSecondaryPageForm
                 ->schema([
                     Fieldset::make('页面头部')
                         ->schema([
+                            Forms\Components\TextInput::make('tagline')
+                                ->label('小标题')
+                                ->placeholder('例如：ABOUT THE IPA')
+                                ->helperText('样式与富文本模块小标题一致；留空则不显示')
+                                ->maxLength(255)
+                                ->columnSpanFull(),
                             Forms\Components\TextInput::make('heading')
                                 ->label('标题')
                                 ->placeholder('例如：Member Resources')

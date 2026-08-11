@@ -3,6 +3,7 @@
 namespace App\Support\HomeSection;
 
 use App\Support\MediaUrl;
+use App\Support\RichContent;
 
 class TabbedContentSectionData
 {
@@ -30,7 +31,10 @@ class TabbedContentSectionData
                 continue;
             }
 
-            $tabs[] = static::normalizeItem($tab, forForm: true);
+            $normalized = static::normalizeItem($tab, forForm: true);
+            $normalized['description'] = RichContent::encodeDocumentForForm($normalized['description']);
+
+            $tabs[] = $normalized;
         }
 
         return ['tabs' => $tabs];
@@ -67,16 +71,15 @@ class TabbedContentSectionData
      */
     public static function forFrontend(?array $data): array
     {
-        $form = static::forForm($data);
+        $stored = static::forStorage(is_array($data) ? $data : []);
 
         return [
-            'tabs' => collect($form['tabs'])
-                ->filter(fn (array $tab): bool => filled($tab['tab_label']))
+            'tabs' => collect($stored['tabs'])
                 ->map(fn (array $tab): array => [
                     'tab_label' => $tab['tab_label'],
                     'tagline' => $tab['tagline'],
                     'title' => $tab['title'],
-                    'description' => $tab['description'],
+                    'description_html' => RichContent::toHtml($tab['description']),
                     'buttons' => $tab['buttons'],
                     'image' => MediaUrl::resolve($tab['image']),
                 ])
@@ -115,7 +118,7 @@ class TabbedContentSectionData
             'tab_label' => trim((string) ($tab['tab_label'] ?? $tab['label'] ?? '')),
             'tagline' => trim((string) ($tab['tagline'] ?? $tab['eyebrow'] ?? '')),
             'title' => trim((string) ($tab['title'] ?? '')),
-            'description' => trim((string) ($tab['description'] ?? $tab['body'] ?? '')),
+            'description' => $tab['description'] ?? $tab['body'] ?? '',
             'buttons' => $buttons,
             'image' => MediaUrl::normalizeStoredPath($tab['image'] ?? ''),
         ];

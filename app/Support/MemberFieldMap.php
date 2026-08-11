@@ -157,30 +157,29 @@ final class MemberFieldMap
     public static function profileFields(): array
     {
         return [
-            'first_name',
             'full_name',
+            'first_name',
             'last_name',
             'salutation',
-            'job_title_zh',
-            'job_title_en',
-            'company_name_zh',
-            'company_name_en',
-            'birth_date',
             'gender',
+            'birth_date',
             'mobile_phone',
-            'home_phone',
-            'work_phone',
             'email',
-            'alternate_email',
-            'id_type',
-            'id_number',
-            'wechat',
-            'other_social_platform',
-            'other_social_account',
             'region',
-            'fax',
-            'assistant_contact',
-            'assistant_phone',
+            'job_title_zh',
+            'company_name_zh',
+        ];
+    }
+
+    public static function membershipPortalFields(): array
+    {
+        return [
+            'member_number',
+            'membership_status',
+            'member_level_short',
+            'joined_at',
+            'level_valid_until',
+            'membership_upgraded_at',
         ];
     }
 
