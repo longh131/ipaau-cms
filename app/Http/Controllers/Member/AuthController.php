@@ -45,17 +45,17 @@ class AuthController extends Controller
         $code = trim((string) $request->input('code', ''));
 
         if ($mobile === '' || $code === '') {
-            return back()->withErrors(['code' => '请输入手机号和验证码。']);
+            return $this->verifyFailure($request, ['code' => '请输入手机号和验证码。']);
         }
 
         if (! $smsService->verifyCode($mobile, $code)) {
-            return back()->withErrors(['code' => '验证码错误或已过期。'])->withInput();
+            return $this->verifyFailure($request, ['code' => '验证码错误或已过期。'], $mobile);
         }
 
         $member = $smsService->findLoginMember($mobile);
 
         if ($member === null) {
-            return back()->withErrors(['mobile' => '手机号码不存在！'])->withInput();
+            return $this->verifyFailure($request, ['mobile' => '手机号码不存在！'], $mobile);
         }
 
         $request->session()->regenerate();
@@ -66,10 +66,44 @@ class AuthController extends Controller
         if (filled($intended)
             && $this->isSafeRedirect($intended)
             && ! $this->isLoginUrl($intended)) {
-            return redirect()->to($intended);
+            return $this->verifySuccess($request, $intended);
         }
 
-        return redirect()->route('member.dashboard');
+        return $this->verifySuccess($request, route('member.dashboard'));
+    }
+
+    /**
+     * @param  array<string, string>  $errors
+     */
+    private function verifyFailure(Request $request, array $errors, ?string $mobile = null): RedirectResponse|JsonResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'ok' => false,
+                'message' => reset($errors) ?: '登录失败，请重试。',
+                'errors' => $errors,
+            ], 422);
+        }
+
+        $redirect = back()->withErrors($errors);
+
+        if ($mobile !== null) {
+            $redirect->withInput(['mobile' => $mobile]);
+        }
+
+        return $redirect;
+    }
+
+    private function verifySuccess(Request $request, string $redirectTo): RedirectResponse|JsonResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'ok' => true,
+                'redirect' => $redirectTo,
+            ]);
+        }
+
+        return redirect()->to($redirectTo);
     }
 
     public function logout(Request $request): RedirectResponse

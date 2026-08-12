@@ -12,6 +12,8 @@
                 <div class="member-alert member-alert--error" role="alert">
                     {{ $errors->first() }}
                 </div>
+            @else
+                <div class="member-alert member-alert--error" role="alert" hidden></div>
             @endif
 
             <form method="POST" action="{{ route('member.verify') }}" class="member-login-form" id="member-login-form">

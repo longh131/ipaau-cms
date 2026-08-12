@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Wed, 12 Aug 2026 01:29:34 GMT
+Server: Apache/2.4.66 (Win64) OpenSSL/3.0.18 PHP/8.3.30
+X-Powered-By: PHP/8.3.30
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlkyNVRRRW55dmtlWWpRcTdnZnN2T2c9PSIsInZhbHVlIjoiK1BqelowT1lBbGdRTU0zRExjZTljUlFidlJPby96OHdVR2xsVFBhR0Vwd010a2ZsRWhzNEFrVFkyM21EcmhDaTA0ZnhmWlJDQjl3dEpWODlvekVoTVpvMzNacjJ0NHZUK1RrSENuSzUyWjd0SjVYTnZyQ0lJeDA5b1Z0L1ZqUkgiLCJtYWMiOiJkNzZiYTY3MjJkOWI0OWE0YjAzMzBhZjQ3NjIwYzc3ZTk4MTU3NTdlMzBmNDYwMDk5YjZlODE1ZmQ3YzQ5ZmQxIiwidGFnIjoiIn0%3D; expires=Wed, 12 Aug 2026 03:29:35 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6Im1XMlVrdGxSb3h2bnRaZ3JWS013bGc9PSIsInZhbHVlIjoiUXd0c2tuNmNtL21wMjNEdnhRbUhZdUg0eVBqcmlaV2k0QTFzZVlrMC9hekR2RTZXV2pnYlhlVTdKd2dmRVQxTjBPUmJWR2dWUGU5MmFhQTFPdEs4SUJOYkQ4V2tUSS9NOUdMc3FlMENGZGNaT1EvRG9PTEdhRFdPS0ErZnM4cDYiLCJtYWMiOiI3NzEzZDA1ODUzNzMzY2FiMzZiMmJkNDViNzM4N2NiMTRlZjM1ZjE0MjFhZjUzODEzYTQ0ZTY2ZjU0NjI4ZDY5IiwidGFnIjoiIn0%3D; expires=Wed, 12 Aug 2026 03:29:35 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=utf-8
+

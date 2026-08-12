@@ -6,6 +6,86 @@
         return meta ? meta.getAttribute('content') : '';
     }
 
+    function syncCsrfToken(form) {
+        if (!form) {
+            return;
+        }
+
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        const tokenInput = form.querySelector('input[name="_token"]');
+
+        if (meta && tokenInput) {
+            tokenInput.value = meta.getAttribute('content') || '';
+        }
+    }
+
+    function initLoginForm() {
+        const form = document.getElementById('member-login-form');
+        const message = document.getElementById('send-code-message');
+        const errorBox = document.querySelector('.member-alert--error');
+
+        if (!form) {
+            return;
+        }
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            syncCsrfToken(form);
+
+            const submitButton = form.querySelector('[type="submit"]');
+
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form),
+                });
+
+                const data = await response.json().catch(function () {
+                    return null;
+                });
+
+                if (response.status === 419) {
+                    if (message) {
+                        message.textContent = '页面已过期，请刷新后重试。';
+                    }
+                    return;
+                }
+
+                if (response.ok && data && data.ok && data.redirect) {
+                    window.location.assign(data.redirect);
+                    return;
+                }
+
+                const errorMessage = (data && (data.message || Object.values(data.errors || {})[0])) || '登录失败，请重试。';
+
+                if (errorBox) {
+                    errorBox.textContent = errorMessage;
+                    errorBox.hidden = false;
+                } else if (message) {
+                    message.textContent = errorMessage;
+                }
+            } catch (error) {
+                if (message) {
+                    message.textContent = '登录失败，请稍后重试。';
+                }
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
+        });
+    }
+
     function initSendCode() {
         const button = document.getElementById('send-code-btn');
         const mobileInput = document.getElementById('mobile');
@@ -46,12 +126,16 @@
             button.disabled = true;
 
             try {
+                syncCsrfToken(document.getElementById('member-login-form'));
+
                 const response = await fetch('/member/send-code', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                     body: JSON.stringify({ mobile: mobile }),
                 });
@@ -60,6 +144,14 @@
 
                 if (message) {
                     message.textContent = data.message || '';
+                }
+
+                if (response.status === 419) {
+                    if (message) {
+                        message.textContent = '页面已过期，请刷新后重试。';
+                    }
+                    button.disabled = false;
+                    return;
                 }
 
                 if (data.ok) {
@@ -153,6 +245,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        initLoginForm();
         initSendCode();
         initUserMenu();
         initProfileTabs();
