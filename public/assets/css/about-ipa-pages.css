@@ -488,6 +488,21 @@ body.cms-page--member-benefits
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.testimonial-carousel--text-only .testimonial-card__name {
+  white-space: pre-line;
+}
+
+@media (min-width: 1024px) {
+  .testimonial-carousel--text-only .testimonial-card__copy {
+    gap: 1rem;
+  }
 }
 
 .testimonial-carousel--text-only .testimonial-card__figure--text-only {
@@ -846,21 +861,34 @@ body.cms-page--member-benefits
   background-color: oklch(0.9612 0 0) !important;
 }
 
-/* 左右结构：右侧富文本带图标列表时对齐 member-requirements 样式 */
+/* 左右结构：小标题默认标题蓝；句内渐变 span 继承 cms-highlight 规则 */
 .cms-left-right-layout__tagline {
-  color: #992785;
+  color: #0d2c6c;
   font-weight: 400;
 }
 
-/* 通用二级页左右结构：左侧大标题 / 小标题各减小两档（display-xl/2xl → lg/xl） */
+.cms-left-right-layout__tagline :is(
+    .text-gradient-purple-reverse,
+    .text-gradient-pink,
+    .text-gradient-orange,
+    .text-gradient-pink-reverse
+  ) {
+  display: inline;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* 通用二级页左右结构：小标题比大标题再小两档（lg/xl → md/lg） */
 .cms-general-secondary-page .cms-left-right-layout .cms-left-right-layout__tagline {
-  font-size: var(--ipa-display-lg) !important;
-  line-height: 1.2 !important;
+  font-size: var(--ipa-display-md) !important;
+  line-height: 1.3 !important;
 }
 
 @media (min-width: 1024px) {
   .cms-general-secondary-page .cms-left-right-layout .cms-left-right-layout__tagline {
-    font-size: var(--ipa-display-xl) !important;
+    font-size: var(--ipa-display-lg) !important;
   }
 }
 

@@ -225,12 +225,19 @@ class BodyBlockFormSchemas
                 ->options(PageBodyBlocks::GRADIENT_OPTIONS)
                 ->default('purple-reverse')
                 ->columnSpanFull(),
-            Forms\Components\TextInput::make('tagline')
-                ->label('小标题')
+            Forms\Components\Textarea::make('tagline')
+                ->label('小标题（HTML）')
+                ->rows(4)
                 ->placeholder('例如：Insurance Requirements')
-                ->helperText('显示在大标题下方，颜色 #992785，字号与大标题相同、非粗体')
-                ->maxLength(255)
-                ->columnSpanFull(),
+                ->helperText(
+                    '支持 HTML。仅部分文字需要渐变时，用 <span class="text-gradient-pink">关键词</span> 包裹；未包裹部分默认显示为标题蓝色 #0d2c6c。'
+                    .'渐变样式可用 class：text-gradient-purple-reverse、text-gradient-pink、text-gradient-orange、text-gradient-pink-reverse'
+                )
+                ->columnSpanFull()
+                ->extraInputAttributes([
+                    'class' => 'font-mono text-sm',
+                    'spellcheck' => 'false',
+                ]),
             RichContent::nestedRichEditor('content', '右侧内容'),
             self::sectionButtonsRepeater(),
         ];

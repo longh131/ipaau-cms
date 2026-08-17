@@ -7,7 +7,7 @@
           data-index="0.5"
           class=""
           style="
-            --ipa-card-basis-sm: calc(100%);
+            --ipa-card-basis-sm: calc(100% / 2 - 0.5rem);
             --ipa-card-basis-md: calc(100% / 2 - 2.5rem);
             --ipa-card-basis-lg: calc(100% / 6 - 2.5rem);
           "

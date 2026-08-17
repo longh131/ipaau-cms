@@ -229,8 +229,8 @@ class GeneralSecondaryPageData
             }
 
             if (($section['type'] ?? '') === GeneralSecondarySections::TYPE_LEFT_RIGHT_LAYOUT) {
-                if (filled($section['tagline'] ?? null)) {
-                    $parts[] = '<p>'.e($section['tagline']).'</p>';
+                if (filled(strip_tags((string) ($section['tagline'] ?? '')))) {
+                    $parts[] = strip_tags((string) $section['tagline']);
                 }
 
                 if (filled($section['title'] ?? null)) {

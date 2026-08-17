@@ -712,7 +712,7 @@ class GeneralSecondarySections
             self::TYPE_NEWSLETTER => filled($section['title'] ?? null)
                 || filled(strip_tags(RichContent::toHtml($section['content'] ?? ''))),
             self::TYPE_HTML_BODY => RichContent::hasVisibleHtml((string) ($section['body'] ?? '')),
-            self::TYPE_LEFT_RIGHT_LAYOUT => filled($section['tagline'] ?? null)
+            self::TYPE_LEFT_RIGHT_LAYOUT => filled(strip_tags((string) ($section['tagline'] ?? '')))
                 || filled($section['title'] ?? null)
                 || filled(strip_tags(RichContent::toHtml($section['content'] ?? '')))
                 || ($section['buttons'] ?? []) !== [],

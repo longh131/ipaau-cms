@@ -93,7 +93,7 @@ class GeneralSecondaryPageForm
                                     24,
                                 ),
                                 GeneralSecondarySections::TYPE_LEFT_RIGHT_LAYOUT => '左右结构：'.Str::limit(
-                                    (string) (($state['title'] ?? '') ?: ($state['tagline'] ?? '')),
+                                    strip_tags((string) (($state['title'] ?? '') ?: ($state['tagline'] ?? ''))),
                                     24,
                                 ),
                                 GeneralSecondarySections::TYPE_TABBED_CONTENT => '选项卡板块（无图版）（'.count($state['tabs'] ?? []).' 项）',

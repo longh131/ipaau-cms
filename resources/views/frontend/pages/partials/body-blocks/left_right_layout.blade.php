@@ -7,12 +7,13 @@
      *     buttons: array<int, array{label: string, url: string, style: string, target: string}>
      * } $block */
     $tagline = trim((string) ($block['tagline'] ?? ''));
+    $hasTagline = filled(strip_tags($tagline));
     $title = trim((string) ($block['title'] ?? ''));
     $titleGradientClass = trim((string) ($block['title_gradient_class'] ?? 'text-gradient-purple-reverse'));
     $contentHtml = (string) ($block['content_html'] ?? '');
     $buttons = $block['buttons'] ?? [];
 
-    $hasLeft = filled($tagline) || filled($title);
+    $hasLeft = $hasTagline || filled($title);
     $hasRight = filled(strip_tags($contentHtml)) || $buttons !== [];
 @endphp
 
@@ -53,11 +54,11 @@
                                 </div>
                             @endif
 
-                            @if(filled($tagline))
-                                <p @class([
-                                    'cms-left-right-layout__tagline max-w-prose text-display-xl lg:text-display-2xl mb-0 text-left font-normal',
+                            @if($hasTagline)
+                                <div @class([
+                                    'cms-left-right-layout__tagline max-w-prose mb-0 text-left font-normal',
                                     'mt-4' => filled($title),
-                                ])>{{ $tagline }}</p>
+                                ])>{!! $tagline !!}</div>
                             @endif
                         </div>
                     </div>
