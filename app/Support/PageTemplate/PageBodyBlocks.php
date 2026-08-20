@@ -38,6 +38,8 @@ class PageBodyBlocks
 
     public const TYPE_HTML_BODY = 'html_body';
 
+    public const TYPE_NEWSLETTER = 'newsletter';
+
     /** @var array<string, string> */
     public const TYPE_OPTIONS = [
         self::TYPE_RICH_TEXT => '富文本段落',
@@ -52,6 +54,7 @@ class PageBodyBlocks
         self::TYPE_STATS => '数字统计',
         self::TYPE_CARD_LIST_CURATED => '精选卡片列表',
         self::TYPE_NEWS_LIST => '新闻列表',
+        self::TYPE_NEWSLETTER => '邮件订阅',
         self::TYPE_HTML_BODY => '正文（HTML 源码）',
     ];
 
@@ -160,6 +163,7 @@ class PageBodyBlocks
                     'items' => self::normalizeCardListItems($block['items'] ?? []),
                 ],
                 self::TYPE_NEWS_LIST => collect(GeneralSecondarySections::forForm([$block]))->first(),
+                self::TYPE_NEWSLETTER => collect(GeneralSecondarySections::forForm([$block]))->first(),
                 self::TYPE_HTML_BODY => [
                     'type' => self::TYPE_HTML_BODY,
                     'body' => BasicContentPageData::normalizeBodyForForm($block['body'] ?? ''),
@@ -206,7 +210,7 @@ class PageBodyBlocks
                 $block['items'] = StatsSectionData::forStorage(['items' => $block['items']])['items'];
             }
 
-            if ($block['type'] === self::TYPE_NEWS_LIST) {
+            if (in_array($block['type'], [self::TYPE_NEWS_LIST, self::TYPE_NEWSLETTER], true)) {
                 return GeneralSecondarySections::forStorage([$block])[0] ?? $block;
             }
 
@@ -310,6 +314,7 @@ class PageBodyBlocks
                     'items' => $block['items'],
                 ],
                 self::TYPE_NEWS_LIST => GeneralSecondarySections::defaultNewsListForFrontend($block),
+                self::TYPE_NEWSLETTER => collect(GeneralSecondarySections::forFrontend([$block]))->first(),
                 self::TYPE_HTML_BODY => [
                     'type' => self::TYPE_HTML_BODY,
                     'body_html' => trim((string) ($block['body'] ?? '')),
@@ -358,6 +363,20 @@ class PageBodyBlocks
                     if (filled($item['summary'] ?? null)) {
                         $parts[] = '<p>'.e($item['summary']).'</p>';
                     }
+                }
+
+                continue;
+            }
+
+            if ($block['type'] === self::TYPE_NEWSLETTER) {
+                if (filled($block['title'] ?? null)) {
+                    $parts[] = '<h2>'.e($block['title']).'</h2>';
+                }
+
+                $newsletterHtml = RichContent::toHtml($block['content'] ?? '');
+
+                if (filled(strip_tags($newsletterHtml))) {
+                    $parts[] = $newsletterHtml;
                 }
 
                 continue;
@@ -428,6 +447,8 @@ class PageBodyBlocks
             self::TYPE_CARD_LIST_CURATED => filled($block['section_title'] ?? null)
                 || ($block['items'] ?? []) !== [],
             self::TYPE_NEWS_LIST => GeneralSecondarySections::forStorage([$block]) !== [],
+            self::TYPE_NEWSLETTER => filled($block['title'] ?? null)
+                || filled(strip_tags(RichContent::toHtml($block['content'] ?? ''))),
             self::TYPE_HTML_BODY => RichContent::hasVisibleHtml((string) ($block['body'] ?? '')),
             default => false,
         };

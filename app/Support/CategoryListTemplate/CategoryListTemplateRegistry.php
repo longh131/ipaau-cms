@@ -155,6 +155,14 @@ class CategoryListTemplateRegistry
      */
     public static function applyArticleOrdering(Builder $query, Category $category): Builder
     {
+        if (self::isTeamIntro($category)) {
+            return $query
+                ->orderBy('sort_order')
+                ->orderByRaw('published_at IS NULL')
+                ->orderByDesc('published_at')
+                ->orderBy('id');
+        }
+
         return ArticleSortOrder::applyDefaultOrdering($query);
     }
 }

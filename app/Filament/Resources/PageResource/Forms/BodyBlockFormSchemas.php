@@ -849,6 +849,7 @@ class BodyBlockFormSchemas
             PageBodyBlocks::TYPE_STATS => self::statsFields(),
             PageBodyBlocks::TYPE_CARD_LIST_CURATED => self::cardListCuratedFields(),
             PageBodyBlocks::TYPE_NEWS_LIST => self::newsListFields(),
+            PageBodyBlocks::TYPE_NEWSLETTER => self::newsletterFields(),
             PageBodyBlocks::TYPE_HTML_BODY => self::htmlBodyFields(),
             default => [],
         };

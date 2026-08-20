@@ -69,6 +69,10 @@ class DefaultPageForm
                                     (string) (($state['section_title'] ?? '') ?: (collect($state['items'] ?? [])->first()['title'] ?? '')),
                                     24,
                                 ),
+                                PageBodyBlocks::TYPE_NEWSLETTER => '邮件订阅：'.Str::limit(
+                                    (string) ($state['title'] ?? ''),
+                                    24,
+                                ),
                                 PageBodyBlocks::TYPE_HTML_BODY => 'HTML 正文：'.Str::limit(
                                     strip_tags((string) ($state['body'] ?? '')),
                                     24,

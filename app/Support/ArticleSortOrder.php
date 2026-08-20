@@ -18,6 +18,7 @@ class ArticleSortOrder
         return $query
             ->orderByDesc('is_sticky')
             ->orderByDesc('sort_order')
+            ->orderByRaw('published_at IS NULL')
             ->orderByDesc('published_at')
             ->orderByDesc('id');
     }

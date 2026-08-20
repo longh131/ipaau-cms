@@ -275,41 +275,42 @@ body.cms-page--member-benefits
   }
 }
 
-.cms-body-block--stats > section {
+/* 三块布局（会员权益）：去掉 section 上下内边距，字号加大 */
+.cms-body-block--stats-three > section {
   padding-top: 0;
   padding-bottom: 0;
 }
 
 /*
- * 页面模板「数据统计」：数字与说明各比首页加大四号（首页 stats 无 .cms-body-block--stats 包裹，不受影响）
+ * 三块：数字与说明各比首页加大四号（四块走首页字号，见 site-fonts.css）
  * 首页基准：数字 xl → 2xl → 3xl；说明 text-sm → lg:text-base
  */
-.cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+.cms-body-block--stats-three [data-type="statsCards"] .stats-card__number {
   font-size: var(--ipa-display-3xl);
 }
 
 @media (min-width: 1024px) {
-  .cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+  .cms-body-block--stats-three [data-type="statsCards"] .stats-card__number {
     font-size: var(--ipa-display-4xl);
   }
 }
 
 @media (min-width: 1280px) {
-  .cms-body-block--stats [data-type="statsCards"] .stats-card__number {
+  .cms-body-block--stats-three [data-type="statsCards"] .stats-card__number {
     font-size: calc(var(--ipa-display-4xl) * 1.25);
   }
 }
 
-.cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum {
+.cms-body-block--stats-three [data-type="statsCards"] .stats-card > .text-warm-plum {
   font-size: 1.5rem;
 }
 
 @media (min-width: 1024px) {
-  .cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum {
+  .cms-body-block--stats-three [data-type="statsCards"] .stats-card > .text-warm-plum {
     font-size: 1.875rem;
   }
 
-  .cms-body-block--stats [data-type="statsCards"] .stats-card > .text-warm-plum > div.text-base {
+  .cms-body-block--stats-three [data-type="statsCards"] .stats-card > .text-warm-plum > div.text-base {
     font-size: 2.25rem;
   }
 }
