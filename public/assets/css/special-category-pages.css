@@ -1,0 +1,26 @@
+/* Shared layout for special category pages (功能栏目页) */
+
+.cms-special-category-page-section {
+  --cms-special-block-gap: 4rem;
+  --cms-special-footer-gap: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .cms-special-category-page-section {
+    --cms-special-block-gap: 6.25rem;
+    --cms-special-footer-gap: 100px;
+  }
+}
+
+.cms-special-category-page-section .inner > * + * {
+  margin-top: var(--cms-special-block-gap);
+}
+
+.cms-special-category-page-section__header {
+  margin-bottom: 0;
+}
+
+/* Spacer 放在 section 内（与其它 CMS 内页一致），才能继承 --cms-special-footer-gap */
+.cms-special-category-page-section > .cms-page-content-footer-spacer {
+  height: var(--cms-special-footer-gap);
+}

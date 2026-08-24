@@ -10,6 +10,7 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/about-ipa-pages.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/news-pages.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/special-category-pages.css') }}" />
 @endpush
 
 @section('content')
@@ -28,7 +29,7 @@
     <section
         data-type="videoHub"
         @class([
-            'bg-[color:var(--bg-color)] cms-page-content-section cms-special-video-hub-section',
+            'bg-[color:var(--bg-color)] cms-page-content-section cms-special-category-page-section cms-special-video-hub-section',
             'cms-page-content-section--with-breadcrumb' => ! empty($breadcrumbs ?? []),
             'py-16 lg:py-24' => empty($breadcrumbs ?? []),
         ])
@@ -41,7 +42,7 @@
         "
     >
         <div class="inner container px-4 md:px-10 mx-auto">
-            <header class="cms-category-intro-section__header cms-special-video-hub-section__header text-center max-w-3xl mx-auto">
+            <header class="cms-category-intro-section__header cms-special-category-page-section__header text-center max-w-3xl mx-auto">
                 <h1 class="font-apex-book cms-section-title text-secondary mb-0">
                     {{ $category->name }}
                 </h1>
@@ -71,6 +72,8 @@
                 </div>
             @endif
         </div>
+
+        @include('frontend.pages.partials.page-content-footer-spacer')
     </section>
 @endsection
 

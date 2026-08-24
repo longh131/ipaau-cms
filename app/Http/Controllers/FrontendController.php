@@ -221,14 +221,22 @@ class FrontendController extends Controller
             ->where('feature_type', SpecialCategoryPage::FEATURE_CPD_RECORDS)
             ->first();
 
+        $loggedInMember = session()->has('ipa_member_id')
+            ? \App\Models\IpaMember::query()->find(session('ipa_member_id'))
+            : null;
+
+        $searchResult = session('cpd_search_result');
+
         return view(CategoryListTemplateRegistry::viewFor($category), [
             'category' => $category,
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
             'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
             'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
-            'cpdButtonLabel' => $pageSettings?->cpdRecordsButtonLabelForFrontend() ?? SpecialCategoryPage::CPD_RECORDS_BUTTON_LABEL,
-            'cpdButtonUrl' => $pageSettings?->cpdRecordsButtonUrlForFrontend() ?? SpecialCategoryPage::CPD_RECORDS_BUTTON_URL,
+            'loggedInMember' => $loggedInMember,
+            'cpdSearchFrom' => session('cpd_search_from'),
+            'cpdSearchTo' => session('cpd_search_to'),
+            'cpdSearchResult' => is_array($searchResult) ? $searchResult : null,
         ]);
     }
 

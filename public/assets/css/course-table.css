@@ -12,25 +12,6 @@
   max-width: 100%;
 }
 
-/* 功能栏目页（events-cpd 等）：各板块间距与正文页 --cms-block-gap 一致 */
-.cms-special-course-list-section {
-  --cms-special-block-gap: 4rem;
-}
-
-@media (min-width: 1024px) {
-  .cms-special-course-list-section {
-    --cms-special-block-gap: 6.25rem;
-  }
-}
-
-.cms-special-course-list-section .inner > * + * {
-  margin-top: var(--cms-special-block-gap);
-}
-
-.cms-special-course-list-section__header {
-  margin-bottom: 0;
-}
-
 .cms-course-table-wrap {
   width: 100%;
   overflow-x: auto;

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
+use App\Http\Controllers\Member\CpdRecordsController;
 use App\Http\Controllers\Member\PortalController as MemberPortalController;
 use App\Http\Controllers\NewsletterSubscriptionController;
 use App\Http\Controllers\SearchController;
@@ -38,6 +39,10 @@ Route::prefix('member')->name('member.')->group(function (): void {
     Route::middleware('ipa.member')->group(function (): void {
         Route::get('/', [MemberPortalController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [MemberPortalController::class, 'profile'])->name('profile');
+        Route::post('/cpd-records/search', [CpdRecordsController::class, 'search'])
+            ->middleware('throttle:30,1')
+            ->name('cpd-records.search');
+        Route::get('/cpd-records/print', [CpdRecordsController::class, 'print'])->name('cpd-records.print');
     });
 });
 

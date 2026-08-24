@@ -1,23 +1,142 @@
-/* My CPD records (special category page) */
+/* My CPD records (special category page) — layout spacing: special-category-pages.css */
 
-.cms-special-cpd-records-section {
-  --cms-special-block-gap: 4rem;
+.cms-cpd-records-search__panel {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid #d8dce3;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(13, 44, 108, 0.04);
 }
 
-@media (min-width: 1024px) {
-  .cms-special-cpd-records-section {
-    --cms-special-block-gap: 6.25rem;
+.cms-cpd-records-search__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  color: oklch(0.3152 0.1176 262.41);
+  text-align: center;
+}
+
+.cms-cpd-records-search__intro {
+  margin: 0 0 1.5rem;
+  line-height: 1.75;
+  color: oklch(0.35 0 0);
+  text-align: center;
+}
+
+.cms-cpd-records-search__alert {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #fdecec;
+  color: #9b1c1c;
+}
+
+.cms-cpd-records-search__login {
+  text-align: center;
+}
+
+.cms-cpd-records-search__login-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background: #192a66;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cms-cpd-records-search__label {
+  margin: 0 0 1rem;
+  font-weight: 700;
+}
+
+.cms-cpd-records-search__fields {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .cms-cpd-records-search__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.cms-special-cpd-records-section .inner > * + * {
-  margin-top: var(--cms-special-block-gap);
+.cms-cpd-records-search__field {
+  display: grid;
+  gap: 0.5rem;
 }
 
-.cms-special-cpd-records-section__header {
-  margin-bottom: 0;
+.cms-cpd-records-search__field span {
+  font-weight: 600;
 }
 
-.cms-special-cpd-records-section__action {
+.cms-cpd-records-search__field input {
   width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #c7ccd6;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.cms-cpd-records-search__submit,
+.cms-cpd-records-search__print-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 0.625rem 1.25rem;
+  border: 0;
+  border-radius: 4px;
+  background: #192a66;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cms-cpd-records-search__result {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e3e6ec;
+  text-align: center;
+}
+
+.cms-cpd-records-search__summary {
+  margin: 0 0 1rem;
+  line-height: 1.75;
+}
+
+.cms-cpd-records-search__summary--empty {
+  color: oklch(0.45 0 0);
+}
+
+.cms-cpd-records-print__header h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+}
+
+.cms-cpd-records-print__header p {
+  margin: 0.25rem 0;
+}
+
+.cms-cpd-records-print__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.cms-cpd-records-print__table th,
+.cms-cpd-records-print__table td {
+  border: 1px solid #d8dce3;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.cms-cpd-records-print__table th {
+  background: #eef0f4;
 }

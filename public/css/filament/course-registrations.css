@@ -1,0 +1,361 @@
+.course-registrations {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.course-registrations__hero {
+    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    border: 1px solid #dbeafe;
+    border-radius: 1rem;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.dark .course-registrations__hero {
+    background: linear-gradient(135deg, #111827 0%, #1e3a5f 100%);
+    border-color: #374151;
+}
+
+.course-registrations__hero-title {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #0f172a;
+}
+
+.dark .course-registrations__hero-title {
+    color: #f8fafc;
+}
+
+.course-registrations__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+
+.course-registrations__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e2e8f0;
+    font-size: 0.8125rem;
+    color: #475569;
+}
+
+.dark .course-registrations__meta-item {
+    background: rgba(17, 24, 39, 0.75);
+    border-color: #4b5563;
+    color: #cbd5e1;
+}
+
+.course-registrations__meta-item strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.dark .course-registrations__meta-item strong {
+    color: #f1f5f9;
+}
+
+.course-registrations__summary {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .course-registrations__summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.course-registrations__summary-card {
+    border-radius: 0.875rem;
+    padding: 1.125rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+}
+
+.dark .course-registrations__summary-card {
+    background: #111827;
+    border-color: #374151;
+}
+
+.course-registrations__summary-card--registered {
+    border-color: #bfdbfe;
+    background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
+}
+
+.course-registrations__summary-card--present {
+    border-color: #bbf7d0;
+    background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%);
+}
+
+.course-registrations__summary-card--absent {
+    border-color: #e5e7eb;
+    background: linear-gradient(180deg, #f9fafb 0%, #fff 100%);
+}
+
+.dark .course-registrations__summary-card--registered {
+    background: linear-gradient(180deg, #1e3a8a 0%, #111827 100%);
+    border-color: #3b82f6;
+}
+
+.dark .course-registrations__summary-card--present {
+    background: linear-gradient(180deg, #14532d 0%, #111827 100%);
+    border-color: #22c55e;
+}
+
+.dark .course-registrations__summary-card--absent {
+    background: #111827;
+}
+
+.course-registrations__summary-label {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.course-registrations__summary-value {
+    margin: 0.375rem 0 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0f172a;
+}
+
+.dark .course-registrations__summary-value {
+    color: #f8fafc;
+}
+
+.course-registrations__section {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.dark .course-registrations__section {
+    background: #111827;
+    border-color: #374151;
+}
+
+.course-registrations__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .course-registrations__section-header {
+    border-bottom-color: #374151;
+}
+
+.course-registrations__section-header--registered {
+    background: #eff6ff;
+}
+
+.course-registrations__section-header--present {
+    background: #f0fdf4;
+}
+
+.course-registrations__section-header--absent {
+    background: #f9fafb;
+}
+
+.dark .course-registrations__section-header--registered {
+    background: rgba(30, 58, 138, 0.25);
+}
+
+.dark .course-registrations__section-header--present {
+    background: rgba(20, 83, 45, 0.25);
+}
+
+.dark .course-registrations__section-header--absent {
+    background: rgba(31, 41, 55, 0.75);
+}
+
+.course-registrations__section-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.dark .course-registrations__section-title {
+    color: #f9fafb;
+}
+
+.course-registrations__section-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #dbeafe;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #1d4ed8;
+}
+
+.course-registrations__section-count--present {
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
+.course-registrations__section-count--absent {
+    border-color: #e5e7eb;
+    color: #64748b;
+}
+
+.course-registrations__empty {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    font-size: 0.9375rem;
+    color: #94a3b8;
+}
+
+.course-registrations__table-wrap {
+    overflow-x: auto;
+}
+
+.course-registrations__table {
+    width: 100%;
+    min-width: 920px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+}
+
+.course-registrations__table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.875rem 1.125rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #64748b;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.dark .course-registrations__table thead th {
+    background: #1f2937;
+    border-bottom-color: #374151;
+    color: #94a3b8;
+}
+
+.course-registrations__table tbody td {
+    padding: 1rem 1.125rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.dark .course-registrations__table tbody td {
+    border-bottom-color: #1f2937;
+    color: #cbd5e1;
+}
+
+.course-registrations__table tbody tr:nth-child(even) td {
+    background: #fcfdff;
+}
+
+.dark .course-registrations__table tbody tr:nth-child(even) td {
+    background: rgba(31, 41, 55, 0.35);
+}
+
+.course-registrations__table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+.dark .course-registrations__table tbody tr:hover td {
+    background: rgba(55, 65, 81, 0.45);
+}
+
+.course-registrations__table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.course-registrations__index {
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+}
+
+.course-registrations__member-no {
+    font-weight: 600;
+    color: #0f172a;
+    font-variant-numeric: tabular-nums;
+}
+
+.dark .course-registrations__member-no {
+    color: #f8fafc;
+}
+
+.course-registrations__name {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.dark .course-registrations__name {
+    color: #f8fafc;
+}
+
+.course-registrations__email {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.course-registrations__phones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 120px;
+}
+
+.course-registrations__phone-line {
+    display: flex;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+}
+
+.course-registrations__phone-label {
+    flex: 0 0 auto;
+    color: #94a3b8;
+}
+
+.course-registrations__method {
+    display: inline-flex;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    font-size: 0.8125rem;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.dark .course-registrations__method {
+    background: #374151;
+    color: #e2e8f0;
+}
+
+.course-registrations__dash {
+    color: #cbd5e1;
+}

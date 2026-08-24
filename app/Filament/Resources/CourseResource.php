@@ -157,6 +157,10 @@ class CourseResource extends Resource
                     ->label('是否开通'),
             ])
             ->actions([
+                Actions\Action::make('registrations')
+                    ->label('报名信息')
+                    ->icon(Heroicon::Users)
+                    ->url(fn (Course $record): string => CourseResource::getUrl('registrations', ['record' => $record])),
                 Actions\EditAction::make()->label('编辑'),
                 Actions\DeleteAction::make()->label('删除'),
             ])
@@ -173,6 +177,7 @@ class CourseResource extends Resource
             'index' => Pages\ListCourses::route('/'),
             'create' => Pages\CreateCourse::route('/create'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'registrations' => Pages\ManageCourseRegistrations::route('/{record}/registrations'),
         ];
     }
 }

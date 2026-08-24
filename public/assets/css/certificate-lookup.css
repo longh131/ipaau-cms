@@ -1,22 +1,4 @@
-/* Certificate lookup (special category page) */
-
-.cms-special-certificate-lookup-section {
-  --cms-special-block-gap: 4rem;
-}
-
-@media (min-width: 1024px) {
-  .cms-special-certificate-lookup-section {
-    --cms-special-block-gap: 6.25rem;
-  }
-}
-
-.cms-special-certificate-lookup-section .inner > * + * {
-  margin-top: var(--cms-special-block-gap);
-}
-
-.cms-special-certificate-lookup-section__header {
-  margin-bottom: 0;
-}
+/* Certificate lookup (special category page) — layout spacing: special-category-pages.css */
 
 .cms-certificate-lookup__summary {
   line-height: 1.75;
