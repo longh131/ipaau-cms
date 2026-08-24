@@ -264,7 +264,7 @@ class Settings extends Page implements HasForms
             ['bold', 'italic', 'underline', 'link', 'textColor'],
             ['h2', 'h3', 'h4', 'bulletList', 'orderedList'],
             ['alignStart', 'alignCenter', 'alignEnd'],
-            ['undo', 'redo'],
+            ['clearFormat', 'undo', 'redo'],
             ['source-ai'],
         ];
     }

@@ -47,7 +47,7 @@ class ProductResource extends Resource
                         ['alignStart', 'alignCenter', 'alignEnd'],
                         ['bulletList', 'orderedList'],
                         ['link', 'textColor', 'attachFiles'],
-                        ['undo', 'redo'],
+                        ['clearFormat', 'undo', 'redo'],
                         ['source-ai'],
                     ]),
                 Forms\Components\FileUpload::make('image')

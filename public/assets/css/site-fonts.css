@@ -1168,6 +1168,21 @@ body.cms-page--member-requirements.cms-about-page :is(
   vertical-align: middle;
 }
 
+/* 富文本图片浮动：全站富文本区块通用（文章页、默认正文页、通用二级页等） */
+[data-rte="true"] img.cms-img-float-left,
+.cms-news-article-body__content img.cms-img-float-left {
+  float: left;
+  margin: 0 1.25rem 1.25rem 0;
+  max-width: min(50%, 100%);
+}
+
+[data-rte="true"] img.cms-img-float-right,
+.cms-news-article-body__content img.cms-img-float-right {
+  float: right;
+  margin: 0 0 1.25rem 1.25rem;
+  max-width: min(50%, 100%);
+}
+
 /* 富文本表格：默认水平居中（宽度由内容/编辑器列宽决定） */
 [data-rte="true"] table {
   margin-left: auto;

@@ -174,7 +174,13 @@ export default () => {
     return Extension.create({
         name: 'inlineStylePlugin',
         addExtensions() {
-            return [inlineStyleOnNodes, linkStyleAttributes, divNode, genericSpanMark, toggleWarmPlumH4]
+            return [
+                inlineStyleOnNodes,
+                linkStyleAttributes,
+                divNode,
+                genericSpanMark,
+                toggleWarmPlumH4,
+            ]
         },
     })
 }

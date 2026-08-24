@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Filament\RichEditor\Plugins\ClearFormattingPlugin;
 use App\Filament\RichEditor\Plugins\ImageFloatPlugin;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
 use App\Services\MenuService;
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
                 ->plugins([
                     InlineStylePlugin::make(),
                     ImageFloatPlugin::make(),
+                    ClearFormattingPlugin::make(),
                 ])
                 ->toolbarButtons(RichContent::pageToolbar())
                 ->textColors(RichContent::textColors())
@@ -63,6 +65,11 @@ class AppServiceProvider extends ServiceProvider
                         ->activeKey('image')
                         ->icon(Heroicon::Photo)
                         ->iconAlias('forms:components.rich-editor.toolbar.attach-files'),
+                    RichEditorTool::make('clearFormat')
+                        ->label('清除格式')
+                        ->jsHandler('(() => { const editor = $getEditor(); if (!editor) { return }; editor.chain().focus().clearFormatting().run() })()')
+                        ->icon(Heroicon::ArrowPath)
+                        ->iconAlias('forms:components.rich-editor.toolbar.clear-format'),
                 ])
                 ->enableToolbarButtons(['source-ai']);
         });

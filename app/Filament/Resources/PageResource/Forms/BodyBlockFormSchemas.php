@@ -795,7 +795,7 @@ class BodyBlockFormSchemas
             ['alignStart', 'alignCenter', 'alignEnd'],
             ['bulletList', 'orderedList'],
             ['link', 'textColor'],
-            ['undo', 'redo'],
+            ['clearFormat', 'undo', 'redo'],
             ['source-ai'],
         ];
     }

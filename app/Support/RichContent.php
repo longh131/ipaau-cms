@@ -43,7 +43,7 @@ class RichContent
             ['bulletList', 'orderedList'],
             ['link', 'textColor'],
             ['attachFiles'],
-            ['undo', 'redo'],
+            ['clearFormat', 'undo', 'redo'],
             ['source-ai'],
         ];
     }
