@@ -34,12 +34,19 @@
                     </td>
                     <td data-label="报名状态">
                         @if($course->isRegistrationOpen())
-                            @if($course->canRegisterOnline())
+                            @if(session()->has('ipa_member_id') && $course->canRegisterOnline())
                                 <a
                                     href="{{ route('courses.register', $course) }}"
                                     class="cms-course-table__register-link"
                                 >
                                     {{ $course->registrationStatusLabel() }}
+                                </a>
+                            @elseif(! session()->has('ipa_member_id'))
+                                <a
+                                    href="{{ route('member.login', ['redirect' => route('courses.register', $course)]) }}"
+                                    class="cms-course-table__register-link"
+                                >
+                                    请登录
                                 </a>
                             @else
                                 <span class="cms-course-table__register-open">

@@ -28,10 +28,10 @@ class CourseRegistrationController extends Controller
             return redirect()->back()->with('course_registration_error', '报名已结束');
         }
 
-        if (blank($course->registration_url)) {
+        if (blank($course->resolvedRegistrationUrl())) {
             abort(404);
         }
 
-        return redirect()->away($course->registration_url);
+        return redirect()->away((string) $course->resolvedRegistrationUrl());
     }
 }

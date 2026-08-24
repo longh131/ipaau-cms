@@ -58,6 +58,10 @@ class AuthController extends Controller
             return $this->verifyFailure($request, ['mobile' => '手机号码不存在！'], $mobile);
         }
 
+        if (! $member->canAccessMemberPortal()) {
+            return $this->verifyFailure($request, ['membership' => $member->memberPortalLoginDeniedMessage()], $mobile);
+        }
+
         $request->session()->regenerate();
         $request->session()->put('ipa_member_id', $member->id);
 

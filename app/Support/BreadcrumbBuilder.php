@@ -31,7 +31,7 @@ class BreadcrumbBuilder
 
             $items[] = [
                 'label' => $label,
-                'url' => $isLast ? null : route('category.show', $chainCategory->slug),
+                'url' => $isLast ? null : $chainCategory->breadcrumbUrl(),
                 'is_home' => false,
                 'is_current' => $isLast,
             ];
@@ -68,7 +68,7 @@ class BreadcrumbBuilder
         $lastIndex = count($items) - 1;
 
         if ($lastIndex >= 0) {
-            $items[$lastIndex]['url'] = route('category.show', $article->category->slug);
+            $items[$lastIndex]['url'] = $article->category->breadcrumbUrl();
             $items[$lastIndex]['is_current'] = false;
         }
 

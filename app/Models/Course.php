@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\SiteSettingsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -113,7 +114,18 @@ class Course extends Model
 
     public function canRegisterOnline(): bool
     {
-        return $this->isRegistrationOpen() && filled($this->registration_url);
+        return $this->isRegistrationOpen() && filled($this->resolvedRegistrationUrl());
+    }
+
+    public function resolvedRegistrationUrl(): ?string
+    {
+        $courseUrl = trim((string) ($this->registration_url ?? ''));
+
+        if ($courseUrl !== '') {
+            return $courseUrl;
+        }
+
+        return app(SiteSettingsService::class)->getEventsCpdRegistrationUrl();
     }
 
     public function registrationStatusLabel(): string

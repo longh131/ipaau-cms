@@ -36,8 +36,14 @@ class MemberSmsService
             return ['ok' => false, 'message' => '手机号格式不合法！'];
         }
 
-        if ($this->findLoginMember($mobile) === null) {
+        $member = $this->findLoginMember($mobile);
+
+        if ($member === null) {
             return ['ok' => false, 'message' => '手机号码不存在！'];
+        }
+
+        if (! $member->canAccessMemberPortal()) {
+            return ['ok' => false, 'message' => $member->memberPortalLoginDeniedMessage()];
         }
 
         $cooldownKey = "member_sms_cooldown:{$mobile}";

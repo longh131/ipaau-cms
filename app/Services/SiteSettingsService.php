@@ -116,6 +116,13 @@ class SiteSettingsService
         return filled($url) ? $url : null;
     }
 
+    public function getEventsCpdRegistrationUrl(): ?string
+    {
+        $url = trim((string) Setting::get('events_cpd_registration_url', ''));
+
+        return filled($url) ? $url : null;
+    }
+
     private function toBoolean(mixed $value, bool $default = false): bool
     {
         if ($value === null) {

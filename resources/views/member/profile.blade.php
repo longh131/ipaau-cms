@@ -23,6 +23,10 @@
                     <dt>Paid through</dt>
                     <dd>{{ $member->level_valid_until?->format('d/m/Y') ?: '—' }}</dd>
                 </div>
+                <div>
+                    <dt>会员级别有效期</dt>
+                    <dd>{{ $member->levelValidUntilBannerLabel() ?: '—' }}</dd>
+                </div>
             </dl>
         </div>
     </div>

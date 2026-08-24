@@ -95,6 +95,8 @@ class Settings extends Page implements HasForms
 
     public ?bool $maintenance_mode = false;
 
+    public ?string $events_cpd_registration_url = '';
+
     public function mount(): void
     {
         $defaultDisclaimer = '<p>我们是一家全球领先的会计专业组织，专注服务中小企业（SME）领域，代表50,000余名会员及学员。请使用预留协会的有效手机号扫码「IPA服务」，浏览手机端微信会员中心。</p>';
@@ -131,6 +133,7 @@ class Settings extends Page implements HasForms
             'seo_description' => Setting::get('seo_description', ''),
             'seo_keywords' => Setting::get('seo_keywords', ''),
             'maintenance_mode' => $this->normalizeBoolean(Setting::get('maintenance_mode'), false),
+            'events_cpd_registration_url' => Setting::get('events_cpd_registration_url', ''),
         ]);
     }
 
@@ -250,6 +253,21 @@ class Settings extends Page implements HasForms
                                         ->columnSpanFull(),
                                 ]),
                         ]),
+                    Tab::make('events_cpd')
+                        ->label('活动与CPD')
+                        ->icon(Heroicon::CalendarDays)
+                        ->schema([
+                            Section::make('默认报名链接')
+                                ->description('活动与CPD 栏目下课程列表中，未单独填写「报名链接」的课程将使用此地址。')
+                                ->schema([
+                                    Forms\Components\TextInput::make('events_cpd_registration_url')
+                                        ->label('链接地址')
+                                        ->placeholder('https://')
+                                        ->maxLength(2048)
+                                        ->helperText('可省略 https://，保存时会自动补全')
+                                        ->columnSpanFull(),
+                                ]),
+                        ]),
                 ])
                 ->columnSpanFull(),
         ];
@@ -342,6 +360,7 @@ class Settings extends Page implements HasForms
         Setting::set('seo_description', $state['seo_description'] ?? '');
         Setting::set('seo_keywords', $state['seo_keywords'] ?? '');
         Setting::set('maintenance_mode', (bool) ($state['maintenance_mode'] ?? false));
+        Setting::set('events_cpd_registration_url', $this->normalizeSocialUrl($state['events_cpd_registration_url'] ?? ''));
 
         Notification::make()
             ->title('修改成功')

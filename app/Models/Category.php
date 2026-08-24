@@ -62,6 +62,43 @@ class Category extends Model
         return $this->hasOne(Page::class);
     }
 
+    public function hasBrowsableFrontend(): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        if ($this->type === 'page') {
+            return Page::query()
+                ->where('category_id', $this->id)
+                ->where('is_active', true)
+                ->exists();
+        }
+
+        return in_array($this->type, [
+            'article',
+            'product',
+            'case',
+            'gallery',
+            'event',
+            'download',
+            'faq',
+        ], true);
+    }
+
+    public function breadcrumbUrl(): string
+    {
+        if ($this->slug === 'member-portal') {
+            return route('member.dashboard');
+        }
+
+        if ($this->hasBrowsableFrontend()) {
+            return route('category.show', $this->slug);
+        }
+
+        return route('home');
+    }
+
     public function specialCategoryPage(): HasOne
     {
         return $this->hasOne(SpecialCategoryPage::class);

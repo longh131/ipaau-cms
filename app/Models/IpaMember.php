@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class IpaMember extends Model
 {
+    /** @var list<string> */
+    public const PORTAL_ALLOWED_MEMBERSHIP_STATUSES = [
+        '活跃',
+        '延长活跃',
+    ];
+
     protected $fillable;
 
     protected function casts(): array
@@ -49,6 +55,33 @@ class IpaMember extends Model
     public function canLoginViaSms(): bool
     {
         return filled($this->mobile_phone);
+    }
+
+    public function canAccessMemberPortal(): bool
+    {
+        $status = trim((string) ($this->membership_status ?? ''));
+
+        return in_array($status, self::PORTAL_ALLOWED_MEMBERSHIP_STATUSES, true);
+    }
+
+    public function memberPortalLoginDeniedMessage(): string
+    {
+        $status = trim((string) ($this->membership_status ?? ''));
+
+        if ($status === '') {
+            return '您的会籍状态不允许登录，请直接联系我们客服团队。';
+        }
+
+        return "'{$status}用户'，请直接联系我们客服团队。";
+    }
+
+    public function levelValidUntilBannerLabel(): ?string
+    {
+        if (! $this->level_valid_until instanceof Carbon) {
+            return null;
+        }
+
+        return $this->level_valid_until->format('Y/m/d');
     }
 
     public function isMembershipExpired(): bool
