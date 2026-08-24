@@ -1,0 +1,23 @@
+/* My CPD records (special category page) */
+
+.cms-special-cpd-records-section {
+  --cms-special-block-gap: 4rem;
+}
+
+@media (min-width: 1024px) {
+  .cms-special-cpd-records-section {
+    --cms-special-block-gap: 6.25rem;
+  }
+}
+
+.cms-special-cpd-records-section .inner > * + * {
+  margin-top: var(--cms-special-block-gap);
+}
+
+.cms-special-cpd-records-section__header {
+  margin-bottom: 0;
+}
+
+.cms-special-cpd-records-section__action {
+  width: 100%;
+}

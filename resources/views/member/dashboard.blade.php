@@ -26,7 +26,7 @@
                     ['label' => '会员奖项', 'icon' => 'award', 'url' => '#'],
                     ['label' => '活动与CPD', 'icon' => 'events-cpd', 'url' => url('/category/events-cpd')],
                     ['label' => '会员资源', 'icon' => 'member-resources', 'url' => url('/category/member-resources')],
-                    ['label' => '我的CPD记录', 'icon' => 'cpd', 'url' => '#'],
+                    ['label' => '我的CPD记录', 'icon' => 'cpd', 'url' => url('/category/my-cpd-records')],
                     ['label' => '会籍资格有效证明申请', 'icon' => 'certificate', 'url' => 'https://forms.office.com/pages/responsepage.aspx?id=GmIdzLySS06Ym6kNqTWDdopFsLmM2MBMvV8t5wLn4vVUODVBR0pYSlZKMzlDSDlBTjI1MkVETk81RS4u&route=shorturl', 'external' => true],
                     ['label' => '会员中心与商城交易（微信版）', 'icon' => 'shop', 'url' => asset('assets/files/会员中心与商城交易（微信版）.pdf'), 'external' => true],
                 ] as $tile)

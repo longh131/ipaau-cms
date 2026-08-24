@@ -80,6 +80,10 @@ class FrontendController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        if (CategoryListTemplateRegistry::isSpecialCategoryPage($category)) {
+            return $this->renderSpecialCategoryPage($category);
+        }
+
         if ($category->type === 'page') {
             $page = Page::query()
                 ->with('category')
@@ -92,18 +96,6 @@ class FrontendController extends Controller
 
         if (CategoryListTemplateRegistry::isCourseTable($category)) {
             return $this->renderCourseCategory($category);
-        }
-
-        if (CategoryListTemplateRegistry::isSpecialCourseList($category)) {
-            return $this->renderSpecialCourseListCategory($category);
-        }
-
-        if (CategoryListTemplateRegistry::isSpecialCertificateLookup($category)) {
-            return $this->renderSpecialCertificateLookupCategory($category);
-        }
-
-        if (CategoryListTemplateRegistry::isSpecialVideoHub($category)) {
-            return $this->renderSpecialVideoHubCategory($category);
         }
 
         $articles = CategoryListTemplateRegistry::applyArticleOrdering(
@@ -139,6 +131,27 @@ class FrontendController extends Controller
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
         ]);
+    }
+
+    private function renderSpecialCategoryPage(Category $category): View
+    {
+        if (CategoryListTemplateRegistry::isSpecialCourseList($category)) {
+            return $this->renderSpecialCourseListCategory($category);
+        }
+
+        if (CategoryListTemplateRegistry::isSpecialCertificateLookup($category)) {
+            return $this->renderSpecialCertificateLookupCategory($category);
+        }
+
+        if (CategoryListTemplateRegistry::isSpecialVideoHub($category)) {
+            return $this->renderSpecialVideoHubCategory($category);
+        }
+
+        if (CategoryListTemplateRegistry::isSpecialCpdRecords($category)) {
+            return $this->renderSpecialCpdRecordsCategory($category);
+        }
+
+        abort(404);
     }
 
     private function renderSpecialCourseListCategory(Category $category): View
@@ -198,6 +211,24 @@ class FrontendController extends Controller
             'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
             'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
             'videoSections' => \App\Support\CategoryListTemplate\VideoHubSectionData::sectionsForFrontend(),
+        ]);
+    }
+
+    private function renderSpecialCpdRecordsCategory(Category $category): View
+    {
+        $pageSettings = SpecialCategoryPage::query()
+            ->where('category_id', $category->id)
+            ->where('feature_type', SpecialCategoryPage::FEATURE_CPD_RECORDS)
+            ->first();
+
+        return view(CategoryListTemplateRegistry::viewFor($category), [
+            'category' => $category,
+            'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
+            'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'bodyHtmlTop' => $pageSettings?->bodyHtmlTopForFrontend() ?? '',
+            'bodyHtmlBottom' => $pageSettings?->bodyHtmlBottomForFrontend() ?? '',
+            'cpdButtonLabel' => $pageSettings?->cpdRecordsButtonLabelForFrontend() ?? SpecialCategoryPage::CPD_RECORDS_BUTTON_LABEL,
+            'cpdButtonUrl' => $pageSettings?->cpdRecordsButtonUrlForFrontend() ?? SpecialCategoryPage::CPD_RECORDS_BUTTON_URL,
         ]);
     }
 

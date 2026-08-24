@@ -30,6 +30,8 @@ class CategoryListTemplateRegistry
 
     public const TEMPLATE_SPECIAL_VIDEO_HUB = 'special_video_hub';
 
+    public const TEMPLATE_SPECIAL_CPD_RECORDS = 'special_cpd_records';
+
     public const DEFAULT_PER_PAGE = 12;
 
     public const COURSE_TABLE_PER_PAGE = 20;
@@ -51,6 +53,7 @@ class CategoryListTemplateRegistry
         self::TEMPLATE_SPECIAL_COURSE_LIST => '功能栏目页（课程汇总）',
         self::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP => '功能栏目页（证书查询）',
         self::TEMPLATE_SPECIAL_VIDEO_HUB => '功能栏目页（IPA 视频）',
+        self::TEMPLATE_SPECIAL_CPD_RECORDS => '功能栏目页（我的 CPD 记录）',
     ];
 
     public static function resolve(Category $category): string
@@ -148,6 +151,21 @@ class CategoryListTemplateRegistry
     public static function isSpecialVideoHub(Category $category): bool
     {
         return self::resolve($category) === self::TEMPLATE_SPECIAL_VIDEO_HUB;
+    }
+
+    public static function isSpecialCpdRecords(Category $category): bool
+    {
+        return self::resolve($category) === self::TEMPLATE_SPECIAL_CPD_RECORDS;
+    }
+
+    public static function isSpecialCategoryPage(Category $category): bool
+    {
+        return in_array(self::resolve($category), [
+            self::TEMPLATE_SPECIAL_COURSE_LIST,
+            self::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP,
+            self::TEMPLATE_SPECIAL_VIDEO_HUB,
+            self::TEMPLATE_SPECIAL_CPD_RECORDS,
+        ], true);
     }
 
     /**

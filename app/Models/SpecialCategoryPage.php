@@ -14,11 +14,18 @@ class SpecialCategoryPage extends Model
 
     public const FEATURE_VIDEO_HUB = 'video_hub';
 
+    public const FEATURE_CPD_RECORDS = 'cpd_records';
+
+    public const CPD_RECORDS_BUTTON_LABEL = '查询学分证明';
+
+    public const CPD_RECORDS_BUTTON_URL = 'http://crm.ipaau.org.cn/member/cpe/ser.aspx';
+
     /** @var array<string, string> */
     public const FEATURE_TYPE_OPTIONS = [
         self::FEATURE_COURSE_LIST => '课程汇总',
         self::FEATURE_CERTIFICATE_LOOKUP => '证书查询',
         self::FEATURE_VIDEO_HUB => 'IPA 视频汇总',
+        self::FEATURE_CPD_RECORDS => '我的 CPD 记录',
     ];
 
     protected $fillable = [
@@ -44,6 +51,7 @@ class SpecialCategoryPage extends Model
         return match ($this->feature_type) {
             self::FEATURE_CERTIFICATE_LOOKUP => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP,
             self::FEATURE_VIDEO_HUB => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_VIDEO_HUB,
+            self::FEATURE_CPD_RECORDS => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_CPD_RECORDS,
             default => CategoryListTemplateRegistry::TEMPLATE_SPECIAL_COURSE_LIST,
         };
     }
@@ -94,5 +102,15 @@ class SpecialCategoryPage extends Model
     public function bodyHtmlBottomForFrontend(): string
     {
         return trim((string) ($this->body_html_bottom ?? ''));
+    }
+
+    public function cpdRecordsButtonLabelForFrontend(): string
+    {
+        return self::CPD_RECORDS_BUTTON_LABEL;
+    }
+
+    public function cpdRecordsButtonUrlForFrontend(): string
+    {
+        return self::CPD_RECORDS_BUTTON_URL;
     }
 }

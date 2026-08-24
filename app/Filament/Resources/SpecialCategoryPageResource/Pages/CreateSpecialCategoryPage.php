@@ -31,7 +31,10 @@ class CreateSpecialCategoryPage extends CreateRecord
             $data['course_category_ids'] = null;
         }
 
-        if (($data['feature_type'] ?? SpecialCategoryPage::FEATURE_COURSE_LIST) === SpecialCategoryPage::FEATURE_VIDEO_HUB) {
+        if (in_array($data['feature_type'] ?? SpecialCategoryPage::FEATURE_COURSE_LIST, [
+            SpecialCategoryPage::FEATURE_VIDEO_HUB,
+            SpecialCategoryPage::FEATURE_CPD_RECORDS,
+        ], true)) {
             $data['certificate_title'] = null;
             $data['certificate_summary'] = null;
             $data['course_category_ids'] = null;

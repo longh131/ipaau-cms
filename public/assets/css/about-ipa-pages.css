@@ -115,32 +115,84 @@ body.cms-about-page .footer-main {
 }
 
 /*
- * member-benefits：首个富文本模块标题对齐默认正文页 rich_text 标题
- * （application-guide 等页的 h3.cms-rich-text__title.cms-section-title）
+ * 内页第一板块大标题（非 tagline/小标题）：对齐治理页 h1 刻度
+ * 范围：cms-content-page；排除首页（无此类）、文章页
  */
-body.cms-page--member-benefits
-  .cms-general-secondary-page
-  > .cms-governance-content-block:first-of-type
-  h3.cms-section-title {
+body.cms-content-page:not(.cms-news-article-page):not(.cms-events-cpd-article-page):not(.cms-video-article-page):not(.cms-leadership-bio-page)
+  :is(
+    .cms-governance-header__title.cms-section-title,
+    .cms-basic-content__title.cms-section-title,
+    .cms-page-content-section:not(:has(> .cms-governance-header)):not(.cms-basic-content-section)
+      > .cms-body-block:first-child
+      :is(.cms-rich-text__title, h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      :is(h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      .cms-left-right-layout
+      [data-type="section-title"]
+      h2.cms-section-title,
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      .cms-tabbed-content--no-image
+      [data-type="section-title"]
+      h3.cms-section-title
+  ) {
   font-family: var(--ipa-font-family) !important;
-  font-size: var(--ipa-section-title-size) !important;
+  font-size: var(--ipa-page-title-size) !important;
   line-height: 1.2 !important;
   font-weight: 700;
 }
 
 @media (min-width: 1024px) {
-  body.cms-page--member-benefits
-    .cms-general-secondary-page
-    > .cms-governance-content-block:first-of-type
-    h3.cms-section-title {
-    font-size: var(--ipa-section-title-size-lg) !important;
+  body.cms-content-page:not(.cms-news-article-page):not(.cms-events-cpd-article-page):not(.cms-video-article-page):not(.cms-leadership-bio-page)
+    :is(
+      .cms-governance-header__title.cms-section-title,
+      .cms-basic-content__title.cms-section-title,
+      .cms-page-content-section:not(:has(> .cms-governance-header)):not(.cms-basic-content-section)
+        > .cms-body-block:first-child
+        :is(.cms-rich-text__title, h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+      .cms-page-content-section:not(:has(> .cms-governance-header))
+        > .cms-governance-module:first-child
+        :is(h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+      .cms-page-content-section:not(:has(> .cms-governance-header))
+        > .cms-governance-module:first-child
+        .cms-left-right-layout
+        [data-type="section-title"]
+        h2.cms-section-title,
+      .cms-page-content-section:not(:has(> .cms-governance-header))
+        > .cms-governance-module:first-child
+        .cms-tabbed-content--no-image
+        [data-type="section-title"]
+        h3.cms-section-title
+    ) {
+    font-size: var(--ipa-page-title-size-lg) !important;
+    line-height: 1.15 !important;
   }
 }
 
-body.cms-page--member-benefits
-  .cms-general-secondary-page
-  > .cms-governance-content-block:first-of-type
-  h3.cms-section-title
+body.cms-content-page:not(.cms-news-article-page):not(.cms-events-cpd-article-page):not(.cms-video-article-page):not(.cms-leadership-bio-page)
+  :is(
+    .cms-governance-header__title.cms-section-title,
+    .cms-basic-content__title.cms-section-title,
+    .cms-page-content-section:not(:has(> .cms-governance-header)):not(.cms-basic-content-section)
+      > .cms-body-block:first-child
+      :is(.cms-rich-text__title, h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      :is(h1.cms-section-title, h2.cms-section-title, h3.cms-section-title),
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      .cms-left-right-layout
+      [data-type="section-title"]
+      h2.cms-section-title,
+    .cms-page-content-section:not(:has(> .cms-governance-header))
+      > .cms-governance-module:first-child
+      .cms-tabbed-content--no-image
+      [data-type="section-title"]
+      h3.cms-section-title
+  )
   :is(span, strong, em) {
   font-size: inherit !important;
   line-height: inherit !important;
@@ -601,21 +653,8 @@ body.cms-page--member-benefits
   text-align: center;
 }
 
-/* 页头 h1 对齐首个 content_block 的 h3.cms-section-title 刻度 */
-.cms-general-secondary-page .cms-governance-header__title.cms-section-title {
-  font-size: var(--ipa-section-title-size);
-  line-height: 1.2;
-}
-
 .cms-tagline-before-title {
   margin-bottom: 0.5rem;
-}
-
-@media (min-width: 1024px) {
-  .cms-general-secondary-page .cms-governance-header__title.cms-section-title {
-    font-size: var(--ipa-section-title-size-lg);
-    line-height: 1.2;
-  }
 }
 
 .cms-governance-header__title + .cms-governance-header__summary {
