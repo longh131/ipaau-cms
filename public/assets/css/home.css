@@ -4325,15 +4325,6 @@ iframe[data-processed=true]{
     width: 24px;
     height: 24px;
   }
-.footer-main .footer-wechat-accounts {
-    margin-top: 1rem;
-  }
-.footer-main .footer-wechat-accounts__image {
-    display: block;
-    width: auto;
-    max-width: min(100%, 280px);
-    height: auto;
-  }
 .footer-main .footer-social-qrcode {
     position: relative;
     display: inline-block;

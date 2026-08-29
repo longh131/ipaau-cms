@@ -2,13 +2,7 @@
     $heading = trim((string) ($pageView['heading'] ?? ''));
     $summary = trim((string) ($pageView['summary'] ?? ''));
     $hasBreadcrumbs = $hasBreadcrumbs ?? false;
-    $contentBlock = $pageView['content_block'] ?? [];
-    $cardListTitle = trim((string) ($pageView['card_list_title'] ?? ''));
-    $cardListItems = $pageView['card_list_items'] ?? [];
-    $showContentBlock = filled($contentBlock['title'] ?? null)
-        || filled(strip_tags((string) ($contentBlock['content_html'] ?? '')))
-        || filled($contentBlock['button'] ?? null);
-    $showCardList = filled($cardListTitle) || $cardListItems !== [];
+    $sections = $pageView['sections'] ?? [];
     $cmsSectionStyle = '
         --bg-color: transparent;
         --ipa-color-light: oklch(0.464 0 0);
@@ -46,25 +40,29 @@
             </div>
         </div>
 
-        @if($pageView['has_bento'] ?? false)
-            @include('frontend.pages.partials.governance.bento-box', [
-                'bentoStyle' => $pageView['bento_style'] ?? 'five',
-                'bentoCards' => $pageView['bento_cards'] ?? [],
-            ])
-        @endif
-
-        @if($showContentBlock)
-            @include('frontend.pages.partials.governance.content-block', [
-                'block' => $contentBlock,
-            ])
-        @endif
-
-        @if($showCardList)
-            @include('frontend.pages.partials.governance.card-list-curated', [
-                'sectionTitle' => $cardListTitle,
-                'cardItems' => $cardListItems,
-            ])
-        @endif
+        @foreach ($sections as $section)
+            @if(($section['type'] ?? '') === 'bento')
+                @include('frontend.pages.partials.governance.bento-box', [
+                    'bentoStyle' => $section['bento_style'] ?? 'five',
+                    'bentoCards' => $section['bento_cards'] ?? [],
+                ])
+            @elseif(($section['type'] ?? '') === 'content_block')
+                @include('frontend.pages.partials.shared.content-block', [
+                    'block' => $section,
+                    'sectionClass' => 'cms-governance-module cms-governance-content-block',
+                ])
+            @elseif(($section['type'] ?? '') === 'html_body')
+                @include('frontend.pages.partials.body-blocks.html_body', [
+                    'block' => $section,
+                    'layout' => 'general_secondary',
+                ])
+            @elseif(($section['type'] ?? '') === 'card_list_curated')
+                @include('frontend.pages.partials.governance.card-list-curated', [
+                    'sectionTitle' => $section['section_title'] ?? '',
+                    'cardItems' => $section['items'] ?? [],
+                ])
+            @endif
+        @endforeach
 
         @include('frontend.pages.partials.page-content-footer-spacer')
     </section>

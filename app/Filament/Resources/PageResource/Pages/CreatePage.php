@@ -82,7 +82,7 @@ class CreatePage extends CreateRecord
 
         if ($template === Page::TEMPLATE_GOVERNANCE && ! GovernancePageData::hasContent($data['data'])) {
             throw ValidationException::withMessages([
-                'data.summary' => '请填写标题、摘要或下方模块中的至少一项。',
+                'data.sections' => '请填写标题、摘要或至少添加一个有效板块。',
             ]);
         }
 

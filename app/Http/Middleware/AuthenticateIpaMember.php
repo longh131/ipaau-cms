@@ -12,6 +12,10 @@ class AuthenticateIpaMember
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->session()->has('ipa_member_id')) {
+            if ($request->isMethod('GET')) {
+                $request->session()->put('url.intended', $request->fullUrl());
+            }
+
             return redirect()->route('member.login');
         }
 

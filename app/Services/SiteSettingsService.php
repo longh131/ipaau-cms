@@ -20,7 +20,7 @@ class SiteSettingsService
         'linkedin' => ['label' => 'LinkedIn', 'icon' => 'linkedin.svg', 'type' => 'link'],
         'douyin' => ['label' => '抖音', 'icon' => 'douyin.svg', 'type' => 'link'],
         'xiaohongshu' => ['label' => '小红书', 'icon' => 'xiaohongshu.svg', 'type' => 'link'],
-        'wechat_channels' => ['label' => '视频号', 'icon' => 'wechat-channels.svg', 'type' => 'link'],
+        'wechat_channels' => ['label' => '视频号', 'icon' => 'wechat-channels.svg', 'type' => 'qrcode'],
         'wechat' => ['label' => '微信', 'icon' => 'wechat.svg', 'type' => 'qrcode'],
         'facebook' => ['label' => 'Facebook', 'icon' => 'facebook.svg', 'type' => 'link'],
         'twitter' => ['label' => 'Twitter', 'icon' => 'twitter.svg', 'type' => 'link'],
@@ -59,7 +59,7 @@ class SiteSettingsService
 
             $platform = self::SOCIAL_PLATFORMS[$key];
             $type = $platform['type'] ?? 'link';
-            $qrcode = $type === 'qrcode' ? $this->getWechatQrcodeUrl() : null;
+            $qrcode = $type === 'qrcode' ? $this->getSocialQrcodeUrl($key) : null;
 
             $links[] = [
                 'key' => $key,
@@ -74,9 +74,9 @@ class SiteSettingsService
         return $links;
     }
 
-    public function getWechatQrcodeUrl(): ?string
+    public function getSocialQrcodeUrl(string $key): ?string
     {
-        $value = Setting::get('social_wechat_qrcode', '');
+        $value = Setting::get("social_{$key}_qrcode", '');
 
         if (is_array($value)) {
             $value = $value[0] ?? '';
@@ -93,6 +93,11 @@ class SiteSettingsService
         }
 
         return $path;
+    }
+
+    public function getWechatQrcodeUrl(): ?string
+    {
+        return $this->getSocialQrcodeUrl('wechat');
     }
 
     public function isSocialEnabled(string $key): bool

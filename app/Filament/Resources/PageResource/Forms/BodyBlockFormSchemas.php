@@ -4,8 +4,10 @@ namespace App\Filament\Resources\PageResource\Forms;
 
 use App\Filament\Forms\ImageUpload;
 use App\Support\PageTemplate\GeneralSecondarySections;
+use App\Support\PageTemplate\GovernanceSections;
 use App\Support\PageTemplate\PageBodyBlocks;
 use App\Support\PageTemplate\ProfessionalAssistanceSections;
+use App\Support\PageTemplate\Templates\GovernancePageData;
 use App\Support\RichContent;
 use Filament\Forms;
 use Filament\Schemas\Components\Fieldset;
@@ -853,6 +855,109 @@ class BodyBlockFormSchemas
             PageBodyBlocks::TYPE_HTML_BODY => self::htmlBodyFields(),
             default => [],
         };
+    }
+
+    public static function governanceBlockFields(?string $type): array
+    {
+        return match ($type) {
+            GovernanceSections::TYPE_BENTO => self::governanceBentoFields(),
+            GeneralSecondarySections::TYPE_CONTENT_BLOCK => self::generalSecondaryContentBlockFields(),
+            GeneralSecondarySections::TYPE_HTML_BODY => self::htmlBodyFields(),
+            PageBodyBlocks::TYPE_CARD_LIST_CURATED => self::governanceCardListCuratedFields(),
+            default => [],
+        };
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function governanceBentoFields(): array
+    {
+        return [
+            Forms\Components\Select::make('bento_style')
+                ->label('布局样式')
+                ->options(GovernancePageData::BENTO_STYLE_OPTIONS)
+                ->default(GovernancePageData::BENTO_STYLE_FIVE)
+                ->required()
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('cards')
+                ->label('卡片')
+                ->schema([
+                    Forms\Components\TextInput::make('title')
+                        ->label('标题')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    ImageUpload::make(
+                        'image',
+                        'page-components/pages/governance-bento',
+                        '背景图',
+                        '可选；无图时使用浅灰底',
+                    )->columnSpanFull(),
+                    Forms\Components\TextInput::make('url')
+                        ->label('链接')
+                        ->placeholder('/category/ 或 https://')
+                        ->maxLength(2048)
+                        ->columnSpan(1),
+                    Forms\Components\Select::make('target')
+                        ->label('打开方式')
+                        ->options([
+                            '' => '当前窗口',
+                            '_blank' => '新窗口',
+                        ])
+                        ->default('')
+                        ->columnSpan(1),
+                ])
+                ->minItems(0)
+                ->maxItems(10)
+                ->reorderable()
+                ->addActionLabel('添加卡片')
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    public static function governanceCardListCuratedFields(): array
+    {
+        return [
+            Forms\Components\TextInput::make('section_title')
+                ->label('板块标题')
+                ->placeholder('例如：Annual Reports')
+                ->maxLength(255)
+                ->columnSpanFull(),
+            Forms\Components\Repeater::make('items')
+                ->label('卡片')
+                ->helperText('前台默认显示 3 条，其余通过「查看更多」展开；每行 3 个卡片')
+                ->schema([
+                    Forms\Components\TextInput::make('title')
+                        ->label('标题')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('url')
+                        ->label('链接')
+                        ->placeholder('https:// 或 /category/...')
+                        ->maxLength(2048)
+                        ->columnSpan(1),
+                    Forms\Components\Select::make('target')
+                        ->label('打开方式')
+                        ->options([
+                            '' => '当前窗口',
+                            '_blank' => '新窗口',
+                        ])
+                        ->default('_blank')
+                        ->columnSpan(1),
+                ])
+                ->minItems(0)
+                ->maxItems(24)
+                ->reorderable()
+                ->addActionLabel('添加卡片')
+                ->columns(2)
+                ->columnSpanFull(),
+        ];
     }
 
     /**

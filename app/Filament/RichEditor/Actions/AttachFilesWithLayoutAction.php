@@ -8,12 +8,16 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\EditorCommand;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 class AttachFilesWithLayoutAction
 {
+    public const DEFAULT_IMAGE_WIDTH = 800;
+
     /**
      * @return array<string, string>
      */
@@ -52,16 +56,47 @@ class AttachFilesWithLayoutAction
         return null;
     }
 
+    public static function normalizeWidth(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (is_numeric($value)) {
+            $width = (int) $value;
+
+            return $width > 0 ? $width : null;
+        }
+
+        if (is_string($value) && preg_match('/^(\d+)/', $value, $matches)) {
+            $width = (int) $matches[1];
+
+            return $width > 0 ? $width : null;
+        }
+
+        return null;
+    }
+
+    public static function shouldLimitWidthByDefault(array $arguments): bool
+    {
+        if (blank($arguments['src'] ?? null)) {
+            return true;
+        }
+
+        return filled(static::normalizeWidth($arguments['width'] ?? null));
+    }
+
     /**
      * @return array<string, mixed>
      */
-    public static function imageAttributes(?string $alt, ?string $id, ?string $src, ?string $float): array
+    public static function imageAttributes(?string $alt, ?string $id, ?string $src, ?string $float, ?int $width = null): array
     {
         return [
             'alt' => $alt,
             'id' => $id,
             'src' => $src,
             'float' => $float,
+            'width' => $width,
         ];
     }
 
@@ -76,6 +111,8 @@ class AttachFilesWithLayoutAction
                 'float' => static::normalizeFloat($arguments['float'] ?? null)
                     ?? static::floatFromClass($arguments['class'] ?? null)
                     ?? '',
+                'limit_width' => static::shouldLimitWidthByDefault($arguments),
+                'width' => static::normalizeWidth($arguments['width'] ?? null) ?? static::DEFAULT_IMAGE_WIDTH,
             ])
             ->schema(fn (array $arguments, RichEditor $component): array => [
                 FileUpload::make('file')
@@ -97,9 +134,24 @@ class AttachFilesWithLayoutAction
                     ->options(static::floatOptions())
                     ->default('')
                     ->native(false),
+                Toggle::make('limit_width')
+                    ->label('固定图片宽度')
+                    ->default(true)
+                    ->live(),
+                TextInput::make('width')
+                    ->label('图片宽度')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(5000)
+                    ->default(static::DEFAULT_IMAGE_WIDTH)
+                    ->suffix('px')
+                    ->visible(fn (Get $get): bool => (bool) $get('limit_width')),
             ])
             ->action(function (array $arguments, array $data, RichEditor $component, Component $livewire): void {
                 $float = static::normalizeFloat($data['float'] ?? null);
+                $width = ($data['limit_width'] ?? false)
+                    ? (static::normalizeWidth($data['width'] ?? static::DEFAULT_IMAGE_WIDTH) ?? static::DEFAULT_IMAGE_WIDTH)
+                    : null;
 
                 if ($data['file'] ?? null) {
                     $id = (string) Str::orderedUuid();
@@ -123,7 +175,7 @@ class AttachFilesWithLayoutAction
                         [
                             EditorCommand::make('updateAttributes', arguments: [
                                 'image',
-                                static::imageAttributes($data['alt'] ?? null, $id, $src, $float),
+                                static::imageAttributes($data['alt'] ?? null, $id, $src, $float, $width),
                             ]),
                         ],
                         editorSelection: $arguments['editorSelection'],
@@ -144,7 +196,7 @@ class AttachFilesWithLayoutAction
                     [
                         EditorCommand::make('insertContent', arguments: [[
                             'type' => 'image',
-                            'attrs' => static::imageAttributes($data['alt'] ?? null, $id, $src, $float),
+                            'attrs' => static::imageAttributes($data['alt'] ?? null, $id, $src, $float, $width),
                         ]]),
                     ],
                     editorSelection: $arguments['editorSelection'],

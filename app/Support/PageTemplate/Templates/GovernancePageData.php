@@ -3,8 +3,10 @@
 namespace App\Support\PageTemplate\Templates;
 
 use App\Models\Page;
-use App\Support\MediaUrl;
+use App\Support\PageTemplate\GeneralSecondarySections;
+use App\Support\PageTemplate\GovernanceSections;
 use App\Support\PageTemplate\PageBodyBlocks;
+use App\Support\RichContent;
 
 class GovernancePageData
 {
@@ -31,16 +33,7 @@ class GovernancePageData
         return [
             'heading' => '',
             'summary' => '',
-            'bento_style' => self::BENTO_STYLE_FIVE,
-            'bento_cards' => [],
-            'content_title' => '',
-            'content_title_align' => 'left',
-            'content_body' => '',
-            'content_button_label' => '',
-            'content_button_url' => '',
-            'content_button_target' => '',
-            'card_list_title' => '',
-            'card_list_items' => [],
+            'sections' => [],
         ];
     }
 
@@ -51,22 +44,99 @@ class GovernancePageData
     public static function forForm(?array $data): array
     {
         $data = self::resolveStoredData($data);
-        $content = self::normalizeContentBlock($data);
 
         return [
             'heading' => trim((string) ($data['heading'] ?? '')),
             'summary' => trim((string) ($data['summary'] ?? '')),
-            'bento_style' => self::normalizeBentoStyle((string) ($data['bento_style'] ?? self::BENTO_STYLE_FIVE)),
-            'bento_cards' => self::normalizeBentoCards(self::value($data, 'bento_cards') ?? []),
-            'content_title' => $content['title'],
-            'content_title_align' => $content['title_align'],
-            'content_body' => $content['body'],
-            'content_button_label' => $content['button_label'],
-            'content_button_url' => $content['button_url'],
-            'content_button_target' => $content['button_target'],
-            'card_list_title' => trim((string) (self::value($data, 'card_list_title') ?? '')),
-            'card_list_items' => self::normalizeCardListItems(self::value($data, 'card_list_items') ?? []),
+            'sections' => self::resolveSectionsForForm($data),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<int, array<string, mixed>>
+     */
+    protected static function resolveSectionsForForm(array $data): array
+    {
+        $sections = GovernanceSections::forForm($data['sections'] ?? []);
+        $hasBentoInSections = collect($sections)->contains(
+            fn (array $section): bool => ($section['type'] ?? '') === GovernanceSections::TYPE_BENTO,
+        );
+        $hasCardListInSections = collect($sections)->contains(
+            fn (array $section): bool => ($section['type'] ?? '') === PageBodyBlocks::TYPE_CARD_LIST_CURATED,
+        );
+
+        $legacyBentoCards = GovernanceSections::normalizeBentoCards(self::value($data, 'bento_cards') ?? []);
+        $legacyCardListItems = GovernanceSections::normalizeCardListItems(self::value($data, 'card_list_items') ?? []);
+        $legacyCardListTitle = trim((string) (self::value($data, 'card_list_title') ?? ''));
+        $legacyContentSections = self::legacyContentBlockAsSections($data);
+
+        $result = [];
+
+        if ($legacyBentoCards !== [] && ! $hasBentoInSections) {
+            $result[] = [
+                'type' => GovernanceSections::TYPE_BENTO,
+                'bento_style' => self::normalizeBentoStyle((string) ($data['bento_style'] ?? self::BENTO_STYLE_FIVE)),
+                'cards' => $legacyBentoCards,
+            ];
+        }
+
+        if ($sections !== []) {
+            $result = array_merge($result, $sections);
+        } elseif ($legacyContentSections !== []) {
+            $result = array_merge($result, $legacyContentSections);
+        }
+
+        if (($legacyCardListTitle !== '' || $legacyCardListItems !== []) && ! $hasCardListInSections) {
+            $result[] = [
+                'type' => PageBodyBlocks::TYPE_CARD_LIST_CURATED,
+                'section_title' => $legacyCardListTitle,
+                'items' => $legacyCardListItems,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<int, array<string, mixed>>
+     */
+    protected static function legacyContentBlockAsSections(array $data): array
+    {
+        $content = self::normalizeContentBlock($data);
+
+        if (! self::flatContentBlockHasContent($content)) {
+            return [];
+        }
+
+        $bodyParts = [];
+
+        if (filled($content['title'])) {
+            $align = match ($content['title_align']) {
+                'center' => 'center',
+                'right' => 'right',
+                default => 'left',
+            };
+            $bodyParts[] = '<h2 style="text-align:'.$align.'">'.e($content['title']).'</h2>';
+        }
+
+        if (filled(strip_tags($content['body']))) {
+            $bodyParts[] = $content['body'];
+        }
+
+        if (filled($content['button_label']) && filled($content['button_url'])) {
+            $target = $content['button_target'] === '_blank'
+                ? ' target="_blank" rel="noopener noreferrer"'
+                : '';
+            $bodyParts[] = '<p><a href="'.e($content['button_url']).'" class="cta secondary"'.$target.'>'
+                .e($content['button_label']).'</a></p>';
+        }
+
+        return [[
+            'type' => GeneralSecondarySections::TYPE_HTML_BODY,
+            'body' => implode("\n", $bodyParts),
+        ]];
     }
 
     /**
@@ -75,7 +145,13 @@ class GovernancePageData
      */
     public static function forStorage(array $data): array
     {
-        return static::forForm($data);
+        $form = static::forForm($data);
+
+        return [
+            'heading' => $form['heading'],
+            'summary' => $form['summary'],
+            'sections' => GovernanceSections::forStorage($form['sections']),
+        ];
     }
 
     /**
@@ -88,53 +164,14 @@ class GovernancePageData
         $form = static::forForm($data);
         $heading = filled($form['heading']) ? $form['heading'] : $page->displayTitle();
 
-        $contentBody = trim($form['content_body']);
-        if ($contentBody === '' && filled(strip_tags((string) $page->content))) {
-            $contentBody = trim((string) $page->content);
-        }
-
-        $contentBlock = [
-            'title' => $form['content_title'],
-            'title_align' => $form['content_title_align'],
-            'content_html' => $contentBody,
-            'button' => self::normalizeOptionalLink(
-                $form['content_button_label'],
-                $form['content_button_url'],
-                $form['content_button_target'],
-            ),
-        ];
-
-        $bentoCards = collect($form['bento_cards'])
-            ->map(fn (array $card): array => [
-                'title' => $card['title'],
-                'image' => MediaUrl::resolve($card['image']),
-                'url' => $card['url'],
-                'target' => $card['target'],
-            ])
-            ->values()
-            ->all();
-
-        $cardListItems = collect($form['card_list_items'])
-            ->map(fn (array $item): array => [
-                'title' => $item['title'],
-                'url' => $item['url'],
-                'target' => $item['target'],
-            ])
-            ->values()
-            ->all();
+        $sections = GovernanceSections::forFrontend($form['sections']);
 
         return [
             'heading' => $heading,
             'summary' => $form['summary'],
-            'bento_style' => $form['bento_style'],
-            'bento_cards' => $bentoCards,
-            'content_block' => $contentBlock,
-            'card_list_title' => $form['card_list_title'],
-            'card_list_items' => $cardListItems,
+            'sections' => $sections,
             'has_content' => static::hasContent($form, $page),
-            'has_bento' => $bentoCards !== [],
-            'has_content_block' => static::contentBlockHasContent($contentBlock),
-            'has_card_list' => filled($form['card_list_title']) || $cardListItems !== [],
+            'has_sections' => $sections !== [],
         ];
     }
 
@@ -149,15 +186,7 @@ class GovernancePageData
             return true;
         }
 
-        if ($data['bento_cards'] !== []) {
-            return true;
-        }
-
-        if (static::flatContentBlockHasContent(self::normalizeContentBlock($data))) {
-            return true;
-        }
-
-        if (filled($data['card_list_title']) || $data['card_list_items'] !== []) {
+        if (GovernanceSections::hasContent($data['sections'] ?? [])) {
             return true;
         }
 
@@ -176,12 +205,38 @@ class GovernancePageData
             $parts[] = '<p>'.e($form['summary']).'</p>';
         }
 
-        if (filled($form['content_title'])) {
-            $parts[] = '<h2>'.e($form['content_title']).'</h2>';
-        }
+        foreach (GovernanceSections::forStorage($form['sections'] ?? []) as $section) {
+            if ($section['type'] === GeneralSecondarySections::TYPE_CONTENT_BLOCK) {
+                if (filled($section['title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['title']).'</h2>';
+                }
 
-        if (filled(strip_tags($form['content_body']))) {
-            $parts[] = $form['content_body'];
+                $parts[] = RichContent::toHtml($section['content'] ?? '');
+            }
+
+            if ($section['type'] === GeneralSecondarySections::TYPE_HTML_BODY && filled(strip_tags((string) ($section['body'] ?? '')))) {
+                $parts[] = (string) $section['body'];
+            }
+
+            if ($section['type'] === GovernanceSections::TYPE_BENTO) {
+                foreach ($section['cards'] ?? [] as $card) {
+                    if (filled($card['title'] ?? null)) {
+                        $parts[] = '<h3>'.e($card['title']).'</h3>';
+                    }
+                }
+            }
+
+            if ($section['type'] === PageBodyBlocks::TYPE_CARD_LIST_CURATED) {
+                if (filled($section['section_title'] ?? null)) {
+                    $parts[] = '<h2>'.e($section['section_title']).'</h2>';
+                }
+
+                foreach ($section['items'] ?? [] as $item) {
+                    if (filled($item['title'] ?? null)) {
+                        $parts[] = '<p>'.e($item['title']).'</p>';
+                    }
+                }
+            }
         }
 
         return implode("\n", $parts);
@@ -206,37 +261,7 @@ class GovernancePageData
      */
     protected static function normalizeBentoCards(mixed $cards): array
     {
-        if (! is_array($cards)) {
-            return [];
-        }
-
-        $normalized = [];
-
-        foreach ($cards as $card) {
-            if (! is_array($card)) {
-                continue;
-            }
-
-            $title = trim((string) ($card['title'] ?? ''));
-            $url = trim((string) ($card['url'] ?? ''));
-            $image = MediaUrl::normalizeStoredPath($card['image'] ?? '');
-
-            if ($title === '' && $url === '' && $image === '') {
-                continue;
-            }
-
-            $target = (string) ($card['target'] ?? '');
-            $target = $target === '_blank' ? '_blank' : '';
-
-            $normalized[] = [
-                'title' => $title,
-                'image' => $image,
-                'url' => $url,
-                'target' => $target,
-            ];
-        }
-
-        return $normalized;
+        return GovernanceSections::normalizeBentoCards($cards);
     }
 
     /**
@@ -353,6 +378,7 @@ class GovernancePageData
             }
 
             foreach ([
+                'sections',
                 'content_title',
                 'content_title_align',
                 'content_body',
@@ -454,35 +480,7 @@ class GovernancePageData
      */
     protected static function normalizeCardListItems(mixed $items): array
     {
-        if (! is_array($items)) {
-            return [];
-        }
-
-        $normalized = [];
-
-        foreach ($items as $item) {
-            if (! is_array($item)) {
-                continue;
-            }
-
-            $title = trim((string) ($item['title'] ?? ''));
-            $url = trim((string) ($item['url'] ?? ''));
-
-            if ($title === '' && $url === '') {
-                continue;
-            }
-
-            $target = (string) ($item['target'] ?? '');
-            $target = $target === '_blank' ? '_blank' : '';
-
-            $normalized[] = [
-                'title' => $title,
-                'url' => $url,
-                'target' => $target,
-            ];
-        }
-
-        return $normalized;
+        return GovernanceSections::normalizeCardListItems($items);
     }
 
     /**

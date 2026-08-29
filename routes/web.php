@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
+use App\Http\Controllers\Member\BolueSsoController;
 use App\Http\Controllers\Member\CpdRecordsController;
 use App\Http\Controllers\Member\PortalController as MemberPortalController;
 use App\Http\Controllers\NewsletterSubscriptionController;
@@ -37,6 +38,9 @@ Route::prefix('member')->name('member.')->group(function (): void {
     Route::post('/logout', [MemberAuthController::class, 'logout'])->name('logout');
 
     Route::middleware('ipa.member')->group(function (): void {
+        Route::get('/bolue-sso', BolueSsoController::class)
+            ->middleware('throttle:10,1')
+            ->name('bolue-sso');
         Route::get('/', [MemberPortalController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [MemberPortalController::class, 'profile'])->name('profile');
         Route::post('/cpd-records/search', [CpdRecordsController::class, 'search'])

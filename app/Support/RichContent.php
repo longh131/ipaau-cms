@@ -121,7 +121,7 @@ class RichContent
 
     public static function imageUploadHelperText(): string
     {
-        return '「插入图片」时可选择布局（左/右浮动）；选中已有图片后再点「插入图片」可修改布局';
+        return '「插入图片」时可选择布局（左/右浮动）与是否固定宽度（默认 800px）；不固定宽度时可在编辑器中拖拽调整大小';
     }
 
     /**

@@ -76,16 +76,6 @@
                 @endforeach
               </ul>
               @endif
-              <div class="footer-wechat-accounts">
-                <img
-                  src="{{ asset('assets/img/erweima.jpg') }}"
-                  alt="公共会计师IPA与IPA服务微信公众号"
-                  class="footer-wechat-accounts__image"
-                  width="280"
-                  height="120"
-                  loading="lazy"
-                />
-              </div>
             </div>
             <div
               class="col-span-4 md:col-span-8 xl:col-span-8 p-4 order-2 md:order-1 xl:order-2 font-inter"

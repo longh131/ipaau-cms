@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Forms\ImageUpload;
 use App\Models\Setting;
+use App\Services\LearningPlatformSettingsService;
 use App\Support\RichContent;
 use Illuminate\Support\Arr;
 use Filament\Actions\Action;
@@ -62,7 +63,8 @@ class Settings extends Page implements HasForms
 
     public ?bool $social_xiaohongshu_enabled = false;
 
-    public ?string $social_wechat_channels = '';
+    /** @var array<int, string>|string|null */
+    public array|string|null $social_wechat_channels_qrcode = null;
 
     public ?bool $social_wechat_channels_enabled = false;
 
@@ -97,10 +99,22 @@ class Settings extends Page implements HasForms
 
     public ?string $events_cpd_registration_url = '';
 
-    public function mount(): void
+    public ?string $learning_platform_a_api_code = '';
+
+    public ?string $learning_platform_a_api_secret = '';
+
+    public ?string $learning_platform_a_api_url = '';
+
+    public ?string $learning_platform_a_sso_login_url = '';
+
+    public ?string $learning_platform_a_default_jump_url = '';
+
+    public function mount(LearningPlatformSettingsService $learningPlatformSettings): void
     {
         $defaultDisclaimer = '<p>我们是一家全球领先的会计专业组织，专注服务中小企业（SME）领域，代表50,000余名会员及学员。请使用预留协会的有效手机号扫码「IPA服务」，浏览手机端微信会员中心。</p>';
         $defaultCopyright = '<div>© {year} Institute of Public Accountants <span class="text-warm-plum">Copyright</span></div>';
+
+        $platformA = $learningPlatformSettings->getPlatformAFormDefaults();
 
         $this->form->fill([
             'site_name' => Setting::get('site_name', ''),
@@ -117,7 +131,7 @@ class Settings extends Page implements HasForms
             'social_douyin_enabled' => $this->normalizeBoolean(Setting::get('social_douyin_enabled'), false),
             'social_xiaohongshu' => Setting::get('social_xiaohongshu', ''),
             'social_xiaohongshu_enabled' => $this->normalizeBoolean(Setting::get('social_xiaohongshu_enabled'), false),
-            'social_wechat_channels' => Setting::get('social_wechat_channels', ''),
+            'social_wechat_channels_qrcode' => filled($channelsQrcode = Setting::get('social_wechat_channels_qrcode', '')) ? $channelsQrcode : null,
             'social_wechat_channels_enabled' => $this->normalizeBoolean(Setting::get('social_wechat_channels_enabled'), false),
             'social_wechat_qrcode' => filled($qrcode = Setting::get('social_wechat_qrcode', '')) ? $qrcode : null,
             'social_wechat_enabled' => $this->normalizeBoolean(Setting::get('social_wechat_enabled'), false),
@@ -134,6 +148,11 @@ class Settings extends Page implements HasForms
             'seo_keywords' => Setting::get('seo_keywords', ''),
             'maintenance_mode' => $this->normalizeBoolean(Setting::get('maintenance_mode'), false),
             'events_cpd_registration_url' => Setting::get('events_cpd_registration_url', ''),
+            'learning_platform_a_api_code' => $platformA['api_code'],
+            'learning_platform_a_api_secret' => $platformA['api_secret'],
+            'learning_platform_a_api_url' => $platformA['api_url'],
+            'learning_platform_a_sso_login_url' => $platformA['sso_login_url'],
+            'learning_platform_a_default_jump_url' => $platformA['default_jump_url'],
         ]);
     }
 
@@ -206,15 +225,27 @@ class Settings extends Page implements HasForms
                         ->icon(Heroicon::Link)
                         ->schema([
                             Section::make('页脚显示顺序')
-                                ->description('LinkedIn → 抖音 → 小红书 → 视频号 → 微信。开启「显示」后图标即出现在页脚；填写链接后图标可点击跳转（微信为悬停展示二维码）。')
+                                ->description('LinkedIn → 抖音 → 小红书 → 视频号 → 微信。开启「显示」后图标即出现在页脚；视频号与微信为悬停展示二维码，其他平台填写链接后可点击跳转。')
                                 ->schema(array_merge(
                                     $this->socialPlatformFieldsets([
                                         'social_linkedin' => 'LinkedIn',
                                         'social_douyin' => '抖音',
                                         'social_xiaohongshu' => '小红书',
-                                        'social_wechat_channels' => '视频号',
                                     ]),
-                                    [$this->wechatSocialFieldset()],
+                                    [
+                                        $this->qrcodeSocialFieldset(
+                                            label: '视频号',
+                                            enabledKey: 'social_wechat_channels_enabled',
+                                            qrcodeKey: 'social_wechat_channels_qrcode',
+                                            helperText: '上传后在页脚悬停视频号图标时展示，无需填写链接。',
+                                        ),
+                                        $this->qrcodeSocialFieldset(
+                                            label: '微信',
+                                            enabledKey: 'social_wechat_enabled',
+                                            qrcodeKey: 'social_wechat_qrcode',
+                                            helperText: '上传后在页脚悬停微信图标时展示，无需填写链接。',
+                                        ),
+                                    ],
                                 ))
                                 ->columns(2),
                             Section::make('其他平台')
@@ -268,6 +299,55 @@ class Settings extends Page implements HasForms
                                         ->columnSpanFull(),
                                 ]),
                         ]),
+                    Tab::make('learning_platform')
+                        ->label('学习平台接口')
+                        ->icon(Heroicon::AcademicCap)
+                        ->schema([
+                            Section::make('学习平台 A（铂略）接口参数')
+                                ->description('用于会员 SSO 跳转铂略学习平台。保存后即时生效；若留空 API Secret 则保持原值不变。未填写时依次回退：已保存设置 → .env → 系统默认值。')
+                                ->schema([
+                                    Forms\Components\TextInput::make('learning_platform_a_api_code')
+                                        ->label('API Code')
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->columnSpanFull(),
+                                    Forms\Components\TextInput::make('learning_platform_a_api_secret')
+                                        ->label('API Secret')
+                                        ->password()
+                                        ->revealable()
+                                        ->helperText('留空表示不修改已保存的 Secret')
+                                        ->columnSpanFull(),
+                                    Forms\Components\TextInput::make('learning_platform_a_api_url')
+                                        ->label('API URL')
+                                        ->required()
+                                        ->placeholder('https://papi.bolue.cn/openApi/getOpenSsoToken')
+                                        ->maxLength(2048)
+                                        ->helperText('可省略 https://，保存时会自动补全')
+                                        ->columnSpanFull(),
+                                    Forms\Components\TextInput::make('learning_platform_a_sso_login_url')
+                                        ->label('SSO Login URL')
+                                        ->required()
+                                        ->placeholder('https://www.bolue.cn/uums/openSsoLogin')
+                                        ->maxLength(2048)
+                                        ->helperText('可省略 https://，保存时会自动补全')
+                                        ->columnSpanFull(),
+                                    Forms\Components\TextInput::make('learning_platform_a_default_jump_url')
+                                        ->label('默认 Jump URL')
+                                        ->required()
+                                        ->placeholder('https://www.bolue.cn/products/9015')
+                                        ->maxLength(2048)
+                                        ->helperText('未指定 jumpUrl / target 时进入的铂略页面；可省略 https://')
+                                        ->columnSpanFull(),
+                                ]),
+                            Section::make('学习平台 A 链接用法')
+                                ->description('只读参考，复制到文章、栏目 HTML 或按钮链接中使用。')
+                                ->schema([
+                                    Forms\Components\Placeholder::make('learning_platform_a_link_usage')
+                                        ->label('')
+                                        ->content(fn (LearningPlatformSettingsService $learningPlatformSettings): \Illuminate\Support\HtmlString => $learningPlatformSettings->platformALinkUsageHtml())
+                                        ->columnSpanFull(),
+                                ]),
+                        ]),
                 ])
                 ->columnSpanFull(),
         ];
@@ -313,20 +393,24 @@ class Settings extends Page implements HasForms
         return $fieldsets;
     }
 
-    private function wechatSocialFieldset(): Fieldset
-    {
-        return Fieldset::make('微信')
+    private function qrcodeSocialFieldset(
+        string $label,
+        string $enabledKey,
+        string $qrcodeKey,
+        string $helperText,
+    ): Fieldset {
+        return Fieldset::make($label)
             ->schema([
-                Forms\Components\Toggle::make('social_wechat_enabled')
+                Forms\Components\Toggle::make($enabledKey)
                     ->label('显示')
                     ->inline(false),
-                ImageUpload::make('social_wechat_qrcode', 'settings/social', '二维码')
-                    ->helperText('上传后在页脚悬停微信图标时展示，无需填写链接。'),
+                ImageUpload::make($qrcodeKey, 'settings/social', '二维码')
+                    ->helperText($helperText),
             ])
             ->columns(1);
     }
 
-    public function save(): void
+    public function save(LearningPlatformSettingsService $learningPlatformSettings): void
     {
         $state = $this->form->getState();
 
@@ -344,7 +428,7 @@ class Settings extends Page implements HasForms
         Setting::set('social_douyin_enabled', (bool) ($state['social_douyin_enabled'] ?? false));
         Setting::set('social_xiaohongshu', $this->normalizeSocialUrl($state['social_xiaohongshu'] ?? ''));
         Setting::set('social_xiaohongshu_enabled', (bool) ($state['social_xiaohongshu_enabled'] ?? false));
-        Setting::set('social_wechat_channels', $this->normalizeSocialUrl($state['social_wechat_channels'] ?? ''));
+        Setting::set('social_wechat_channels_qrcode', $this->normalizeUploadedPath($state['social_wechat_channels_qrcode'] ?? ''));
         Setting::set('social_wechat_channels_enabled', (bool) ($state['social_wechat_channels_enabled'] ?? false));
         Setting::set('social_wechat_qrcode', $this->normalizeUploadedPath($state['social_wechat_qrcode'] ?? ''));
         Setting::set('social_wechat_enabled', (bool) ($state['social_wechat_enabled'] ?? false));
@@ -361,6 +445,7 @@ class Settings extends Page implements HasForms
         Setting::set('seo_keywords', $state['seo_keywords'] ?? '');
         Setting::set('maintenance_mode', (bool) ($state['maintenance_mode'] ?? false));
         Setting::set('events_cpd_registration_url', $this->normalizeSocialUrl($state['events_cpd_registration_url'] ?? ''));
+        $learningPlatformSettings->savePlatformAConfig($state);
 
         Notification::make()
             ->title('修改成功')

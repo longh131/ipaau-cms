@@ -21,7 +21,7 @@ class GeneralSecondaryPageForm
     {
         return [
             Section::make('通用二级页内容')
-                ->description('页面头部（标题、摘要、按钮）+ 可自由组合的下方板块；样式与基本/治理正文页统一。')
+                ->description('页面头部（标题、摘要、按钮）+ 可自由组合的下方板块；样式与基本/治理倡导页统一。')
                 ->statePath('data')
                 ->schema([
                     Fieldset::make('页面头部')
