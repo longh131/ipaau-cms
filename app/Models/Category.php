@@ -23,10 +23,12 @@ class Category extends Model
         'introduction',
         'sort_order',
         'is_active',
+        'requires_member_login',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'requires_member_login' => 'boolean',
         'article_extra_field_schema' => 'array',
     ];
 

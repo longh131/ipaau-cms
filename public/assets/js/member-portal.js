@@ -217,6 +217,62 @@
         });
     }
 
+    function initQrcodeModal() {
+        const modal = document.querySelector('[data-member-qrcode-modal]');
+        const image = document.querySelector('[data-member-qrcode-image]');
+        const triggers = document.querySelectorAll('[data-member-qrcode-trigger]');
+
+        if (!modal || !image || triggers.length === 0) {
+            return;
+        }
+
+        const closeElements = modal.querySelectorAll('[data-member-qrcode-close]');
+        let lastTrigger = null;
+
+        function closeModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('member-qrcode-modal-open');
+
+            if (lastTrigger) {
+                lastTrigger.focus();
+            }
+        }
+
+        function openModal(trigger) {
+            const src = trigger.getAttribute('data-qrcode-src') || image.getAttribute('src');
+            const alt = trigger.getAttribute('data-qrcode-alt') || '二维码';
+
+            if (!src) {
+                return;
+            }
+
+            lastTrigger = trigger;
+            image.src = src;
+            image.alt = alt;
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('member-qrcode-modal-open');
+            modal.querySelector('.member-qrcode-modal__close')?.focus();
+        }
+
+        triggers.forEach(function (trigger) {
+            trigger.addEventListener('click', function () {
+                openModal(trigger);
+            });
+        });
+
+        closeElements.forEach(function (element) {
+            element.addEventListener('click', closeModal);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
+    }
+
     function initProfileTabs() {
         const tabRoot = document.querySelector('[data-member-profile-tabs]');
 
@@ -248,6 +304,7 @@
         initLoginForm();
         initSendCode();
         initUserMenu();
+        initQrcodeModal();
         initProfileTabs();
     });
 })();

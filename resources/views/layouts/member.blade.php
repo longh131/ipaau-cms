@@ -24,6 +24,7 @@
         @include('partials.footer.footer-main')
         @include('partials.footer.site-extras')
     </div>
+    @stack('overlays')
     @stack('scripts')
 </body>
 </html>

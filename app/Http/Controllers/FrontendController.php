@@ -11,6 +11,7 @@ use App\Services\MenuService;
 use App\Services\PageComponentService;
 use App\Support\BreadcrumbBuilder;
 use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+use App\Support\MemberCategoryAccess;
 use App\Support\PageTemplate\PageTemplateRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -73,12 +74,16 @@ class FrontendController extends Controller
         }
     }
 
-    private function renderCategory(string $slug): View
+    private function renderCategory(string $slug): View|RedirectResponse
     {
         $category = Category::query()
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
+
+        if ($redirect = MemberCategoryAccess::guard(request(), $category)) {
+            return $redirect;
+        }
 
         if (CategoryListTemplateRegistry::isSpecialCategoryPage($category)) {
             return $this->renderSpecialCategoryPage($category);
@@ -255,6 +260,10 @@ class FrontendController extends Controller
         $article->increment('view_count');
 
         $category = $article->category;
+
+        if ($redirect = MemberCategoryAccess::guard(request(), $category)) {
+            return $redirect;
+        }
 
         if ($category && CategoryListTemplateRegistry::isTeamIntro($category)) {
             return view('frontend.articles.team_intro', [

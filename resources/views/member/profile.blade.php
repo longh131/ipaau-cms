@@ -5,7 +5,7 @@
 @section('content')
     <div class="member-profile-banner">
         <div class="container px-4 md:px-10 mx-auto member-profile-banner__inner">
-            <a href="{{ route('member.dashboard') }}" class="member-profile-banner__back">← Back to Dashboard</a>
+            <a href="{{ route('member.dashboard') }}" class="member-profile-banner__back">← 返回 会员门户</a>
             <dl class="member-profile-banner__meta">
                 <div>
                     <dt>Member ID</dt>

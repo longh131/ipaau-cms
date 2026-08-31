@@ -1,6 +1,6 @@
 @extends('layouts.member', ['bodyClass' => 'member-dashboard-page'])
 
-@section('title', 'Dashboard')
+@section('title', '会员门户')
 
 @section('content')
     @if($member->isMembershipExpired())
@@ -23,31 +23,47 @@
 
             <div class="member-dashboard__tiles">
                 @foreach([
-                    ['label' => '会员奖项', 'icon' => 'award', 'url' => '#'],
-                    ['label' => '活动与CPD', 'icon' => 'events-cpd', 'url' => url('/category/events-cpd')],
+                    ['label' => '会员奖项', 'icon' => 'award', 'url' => url('/category/member-awards')],
+                    ['label' => '活动与CPD', 'icon' => 'events-cpd', 'url' => url('/category/events-cpd-preview')],
                     ['label' => '会员资源', 'icon' => 'member-resources', 'url' => url('/category/member-resources')],
                     ['label' => '我的CPD记录', 'icon' => 'cpd', 'url' => url('/category/my-cpd-records')],
-                    ['label' => '会籍资格有效证明申请', 'icon' => 'certificate', 'url' => 'https://forms.office.com/pages/responsepage.aspx?id=GmIdzLySS06Ym6kNqTWDdopFsLmM2MBMvV8t5wLn4vVUODVBR0pYSlZKMzlDSDlBTjI1MkVETk81RS4u&route=shorturl', 'external' => true],
-                    ['label' => '会员中心与商城交易（微信版）', 'icon' => 'shop', 'url' => asset('assets/files/会员中心与商城交易（微信版）.pdf'), 'external' => true],
+                    ['label' => '会籍资格有效证明申请', 'icon' => 'certificate', 'url' => 'https://forms.cloud.microsoft/pages/responsepage.aspx?id=GmIdzLySS06Ym6kNqTWDdopFsLmM2MBMvV8t5wLn4vVUODVBR0pYSlZKMzlDSDlBTjI1MkVETk81RS4u&route=shorturl', 'external' => true],
+                    ['label' => '会员中文与商城交易（微信版）', 'icon' => 'shop', 'type' => 'qrcode', 'qrcode' => asset('assets/img/erweima.jpg'), 'qrcode_alt' => 'IPA服务二维码'],
                 ] as $tile)
-                    <a
-                        href="{{ $tile['url'] }}"
-                        @class(['member-tile', 'member-tile--link'])
-                        @if($tile['external'] ?? false) target="_blank" rel="noopener noreferrer" @endif
-                    >
-                        <span class="member-tile__icon" aria-hidden="true">
-                            @include('member.partials.tile-icon', ['name' => $tile['icon']])
-                        </span>
-                        <span class="member-tile__label">{{ $tile['label'] }}</span>
-                    </a>
+                    @if(($tile['type'] ?? 'link') === 'qrcode')
+                        <button
+                            type="button"
+                            class="member-tile member-tile--link member-tile--qrcode"
+                            data-member-qrcode-trigger
+                            data-qrcode-src="{{ $tile['qrcode'] }}"
+                            data-qrcode-alt="{{ $tile['qrcode_alt'] ?? $tile['label'] }}"
+                            aria-haspopup="dialog"
+                        >
+                            <span class="member-tile__icon" aria-hidden="true">
+                                @include('member.partials.tile-icon', ['name' => $tile['icon']])
+                            </span>
+                            <span class="member-tile__label">{{ $tile['label'] }}</span>
+                        </button>
+                    @else
+                        <a
+                            href="{{ $tile['url'] }}"
+                            @class(['member-tile', 'member-tile--link'])
+                            @if($tile['external'] ?? false) target="_blank" rel="noopener noreferrer" @endif
+                        >
+                            <span class="member-tile__icon" aria-hidden="true">
+                                @include('member.partials.tile-icon', ['name' => $tile['icon']])
+                            </span>
+                            <span class="member-tile__label">{{ $tile['label'] }}</span>
+                        </a>
+                    @endif
                 @endforeach
             </div>
 
             <div class="member-dashboard__bottom">
                 @foreach([
                     ['label' => 'My Portal', 'subtitle' => '全球官网', 'icon' => 'portal', 'url' => 'https://www.publicaccountants.org.au/', 'external' => true],
-                    ['label' => '全球活动', 'subtitle' => null, 'icon' => 'events', 'url' => '#'],
-                    ['label' => 'MyCommunity', 'icon' => 'community', 'url' => '#'],
+                    ['label' => '全球活动', 'subtitle' => null, 'icon' => 'events', 'url' => 'https://www.publicaccountants.org.au/education-events/events/', 'external' => true],
+                    ['label' => '我的社区', 'icon' => 'community', 'url' => url('/category/my-community')],
                     ['label' => '会籍资格升级', 'icon' => 'member-levels', 'url' => url('/category/member-levels')],
                 ] as $index => $tile)
                     <a
@@ -72,6 +88,22 @@
         </div>
     </section>
 @endsection
+
+@push('overlays')
+    <div class="member-qrcode-modal" data-member-qrcode-modal aria-hidden="true">
+        <div class="member-qrcode-modal__backdrop" data-member-qrcode-close tabindex="-1"></div>
+        <div class="member-qrcode-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="member-qrcode-modal-title">
+            <h2 id="member-qrcode-modal-title" class="member-qrcode-modal__title font-apex-book">IPA服务</h2>
+            <button type="button" class="member-qrcode-modal__close" data-member-qrcode-close aria-label="关闭">&times;</button>
+            <img
+                src="{{ asset('assets/img/erweima.jpg') }}"
+                alt="IPA服务二维码"
+                class="member-qrcode-modal__image"
+                data-member-qrcode-image
+            />
+        </div>
+    </div>
+@endpush
 
 @push('scripts')
     <script src="{{ asset('assets/js/member-portal.js') }}" defer></script>

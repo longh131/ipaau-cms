@@ -172,6 +172,10 @@ class CategoryResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->label('是否启用')
                     ->default(true),
+                Forms\Components\Toggle::make('requires_member_login')
+                    ->label('仅登录会员可访问')
+                    ->helperText('启用后，未登录会员访问本栏目及其文章时将跳转至会员登录页')
+                    ->default(false),
             ]);
     }
 
@@ -193,6 +197,9 @@ class CategoryResource extends Resource
                     ->label('排序'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('启用')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('requires_member_login')
+                    ->label('会员专享')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('创建时间')

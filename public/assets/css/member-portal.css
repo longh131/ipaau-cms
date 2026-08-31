@@ -600,3 +600,73 @@
     color: #0f5bd7;
     text-decoration: underline;
 }
+
+.member-tile--qrcode {
+    appearance: none;
+    background: #fff;
+    border: 1px solid #d9dee5;
+    font: inherit;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+}
+
+.member-qrcode-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.member-qrcode-modal.is-open {
+    display: flex;
+}
+
+.member-qrcode-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 35, 66, 0.55);
+}
+
+.member-qrcode-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 22rem);
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    box-shadow: 0 16px 40px rgba(15, 35, 66, 0.18);
+}
+
+.member-qrcode-modal__title {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: #0f2342;
+    text-align: center;
+}
+
+.member-qrcode-modal__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    border: none;
+    background: transparent;
+    color: #5c6775;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.member-qrcode-modal__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+body.member-qrcode-modal-open {
+    overflow: hidden;
+}
