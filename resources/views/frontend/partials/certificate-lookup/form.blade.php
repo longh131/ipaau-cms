@@ -111,7 +111,7 @@
                         <li>尚未获得该项目证书</li>
                     </ol>
                     <p class="cms-certificate-lookup__notes mt-6 mb-0">
-                        如需进一步确认，请致电 400-999-0590 联系 IPA 中国办公室。
+                        如需进一步确认，请致电 400-999-0590 联系IPA中国办公室。
                     </p>
                 </div>
             @endif

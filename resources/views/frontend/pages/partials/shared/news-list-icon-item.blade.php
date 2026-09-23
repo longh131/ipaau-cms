@@ -29,7 +29,7 @@
     @endif
 
     @if(filled($title))
-        <h2 class="cms-news-list-icon-item__title mb-0 font-medium font-din text-2xl leading-[1.4] tracking-[.04em] uppercase text-left text-secondary">
+        <h2 class="cms-news-list-icon-item__title mb-0 font-medium font-din text-2xl leading-[1.4] tracking-[.04em] text-left text-secondary">
             {{ $title }}
         </h2>
     @endif

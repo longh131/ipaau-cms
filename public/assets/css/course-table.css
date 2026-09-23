@@ -18,8 +18,7 @@
   -webkit-overflow-scrolling: touch;
   border: 1px solid #d8dce3;
   border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(13, 44, 108, 0.04);
+  background: transparent;
 }
 
 .cms-course-table {
@@ -27,11 +26,13 @@
   min-width: 820px;
   border-collapse: collapse;
   color: oklch(0.35 0 0);
+  background: transparent;
+  table-layout: fixed;
 }
 
 .cms-course-table thead th {
-  padding: 0.875rem 1rem;
-  background: #eef0f4;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
   border: 1px solid #d8dce3;
   font-weight: 600;
   text-align: center;
@@ -40,24 +41,51 @@
 }
 
 .cms-course-table tbody td {
-  padding: 0.875rem 1rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #e3e6ec;
   vertical-align: middle;
   text-align: center;
-  background: #fff;
+  background: transparent;
 }
 
 .cms-course-table tbody tr:nth-child(even) td {
-  background: #fafbfc;
+  background: transparent;
 }
 
 .cms-course-table tbody tr:hover td {
-  background: #f3f6fb;
+  background: transparent;
+}
+
+.cms-course-table col.cms-course-table__col-city {
+  width: 8%;
+}
+
+.cms-course-table col.cms-course-table__col-activity {
+  width: 48%;
+}
+
+.cms-course-table col.cms-course-table__col-time {
+  width: 11%;
+}
+
+.cms-course-table col.cms-course-table__col-deadline {
+  width: 13%;
+}
+
+.cms-course-table col.cms-course-table__col-credits {
+  width: 8%;
+}
+
+.cms-course-table col.cms-course-table__col-status {
+  width: 12%;
 }
 
 .cms-course-table__activity {
   text-align: left !important;
-  min-width: 280px;
+}
+
+.cms-course-table__time {
+  white-space: nowrap;
 }
 
 .cms-course-table__register-link {
@@ -91,7 +119,7 @@
 
   .cms-course-table thead th,
   .cms-course-table tbody td {
-    padding: 0.75rem 0.625rem;
+    padding: 0.4rem 0.5rem;
     font-size: 1rem;
   }
 }

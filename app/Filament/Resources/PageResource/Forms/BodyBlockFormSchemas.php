@@ -519,7 +519,7 @@ class BodyBlockFormSchemas
                 'content',
                 '正文',
                 RichContent::pageToolbar(),
-                '与首页「邮件订阅」相同；左侧说明文字，右侧表单字段固定',
+                '与首页「提交评估意向」相同；左侧说明文字，右侧表单字段固定',
             ),
             Forms\Components\TextInput::make('button_text')
                 ->label('提交按钮文字')

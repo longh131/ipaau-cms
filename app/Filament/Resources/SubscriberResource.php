@@ -55,7 +55,7 @@ class SubscriberResource extends Resource
                     ->label('现任职务')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('education')
-                    ->label('第一高等学历')
+                    ->label('从哪里知晓IPA？')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('subscribed_at')
                     ->label('订阅时间')

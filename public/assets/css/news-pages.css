@@ -255,3 +255,9 @@
   cursor: default;
   background: transparent;
 }
+
+body.cms-member-spotlight-article-page .cms-news-article-body__content table,
+body.cms-member-spotlight-article-page .cms-news-article-body__content table td,
+body.cms-member-spotlight-article-page .cms-news-article-body__content table th {
+  border: 0;
+}

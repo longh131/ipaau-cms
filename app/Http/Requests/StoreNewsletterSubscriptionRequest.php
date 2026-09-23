@@ -20,8 +20,8 @@ class StoreNewsletterSubscriptionRequest extends FormRequest
             'fullName' => ['required', 'string', 'max:120'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['required', 'email', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'jobTitle' => ['nullable', 'string', 'max:255'],
+            'company' => ['required', 'string', 'max:255'],
+            'jobTitle' => ['required', 'string', 'max:255'],
             'education' => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -37,7 +37,7 @@ class StoreNewsletterSubscriptionRequest extends FormRequest
             'email' => '邮箱',
             'company' => '公司',
             'jobTitle' => '现任职务',
-            'education' => '第一高等学历',
+            'education' => '从哪里知晓IPA？',
         ];
     }
 

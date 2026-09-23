@@ -120,25 +120,33 @@
                       />
                     </div>
                     <div>
-                      <label for="company">公司</label
+                      <label for="company"
+                        >公司<span class="text-error-bold ml-1"
+                          >*</span
+                        ></label
                       ><input
                         type="text"
                         id="company"
                         name="company"
+                        required=""
                         value=""
                       />
                     </div>
                     <div>
-                      <label for="jobTitle">现任职务</label
+                      <label for="jobTitle"
+                        >现任职务<span class="text-error-bold ml-1"
+                          >*</span
+                        ></label
                       ><input
                         type="text"
                         id="jobTitle"
                         name="jobTitle"
+                        required=""
                         value=""
                       />
                     </div>
                     <div class="lg:col-span-2">
-                      <label for="education">第一高等学历</label
+                      <label for="education">从哪里知晓IPA？</label
                       ><input
                         type="text"
                         id="education"

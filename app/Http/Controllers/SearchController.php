@@ -23,12 +23,14 @@ class SearchController extends Controller
                     ->with('category')
                     ->where('is_active', true)
                     ->where(function ($builder) use ($query): void {
-                        $like = '%'.$query.'%';
+                        $like = '%'.addcslashes($query, '%_\\').'%';
 
                         $builder->where('title', 'like', $like)
+                            ->orWhere('content', 'like', $like)
                             ->orWhere('summary', 'like', $like)
                             ->orWhere('author', 'like', $like)
-                            ->orWhere('source', 'like', $like);
+                            ->orWhere('source', 'like', $like)
+                            ->orWhere('extra_fields', 'like', $like);
                     }),
             )->paginate(12)
                 ->withQueryString();

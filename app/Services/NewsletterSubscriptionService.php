@@ -14,8 +14,8 @@ class NewsletterSubscriptionService
      *     fullName: string,
      *     phone: string,
      *     email: string,
-     *     company?: string|null,
-     *     jobTitle?: string|null,
+     *     company: string,
+     *     jobTitle: string,
      *     education?: string|null
      * }  $data
      */
@@ -31,9 +31,10 @@ class NewsletterSubscriptionService
             'subscribed_at' => now(),
         ]);
 
-        $recipient = config('newsletter.notification_to');
+        $recipient = app(SiteSettingsService::class)->getContactEmail()
+            ?: config('newsletter.notification_to');
 
-        if (filled($recipient)) {
+        if (filled($recipient) && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
             try {
                 Mail::to($recipient)->send(new NewsletterSubmissionMail($subscriber));
             } catch (\Throwable $exception) {
@@ -44,7 +45,7 @@ class NewsletterSubscriptionService
                 ]);
             }
         } else {
-            Log::warning('Newsletter submission stored but NEWSLETTER_TO is not configured.', [
+            Log::warning('Newsletter submission stored but no valid contact email is configured.', [
                 'subscriber_id' => $subscriber->id,
             ]);
         }

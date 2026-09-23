@@ -45,6 +45,17 @@ class SiteSettingsService
         return str_replace('{year}', (string) date('Y'), $html);
     }
 
+    public function getContactEmail(): ?string
+    {
+        $email = trim((string) Setting::get('contact_email', ''));
+
+        if ($email === '' || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return null;
+        }
+
+        return $email;
+    }
+
     /**
      * @return array<int, array{key: string, label: string, url: ?string, icon: string, type: string, qrcode: ?string}>
      */

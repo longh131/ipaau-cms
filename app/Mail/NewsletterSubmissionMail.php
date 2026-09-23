@@ -20,7 +20,7 @@ class NewsletterSubmissionMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '【'.config('app.name').'】新的邮件订阅 - '.$this->subscriber->name,
+            subject: '【'.config('app.name').'】新的评估意向 - '.$this->subscriber->name,
         );
     }
 

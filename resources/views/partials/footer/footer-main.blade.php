@@ -28,7 +28,7 @@
                 <li>
                   @if (($social['type'] ?? 'link') === 'qrcode')
                   <span
-                    class="footer-social-qrcode inline-block transition-all duration-500 {{ filled($social['qrcode']) ? 'cursor-pointer' : 'opacity-60' }}"
+                    class="footer-social-qrcode footer-social-qrcode--{{ $social['key'] }} inline-block transition-all duration-500 {{ filled($social['qrcode']) ? 'cursor-pointer' : 'opacity-60' }}"
                     title="{{ filled($social['qrcode']) ? $social['label'] : $social['label'].'（请在系统设置中上传二维码）' }}"
                     tabindex="{{ filled($social['qrcode']) ? '0' : '-1' }}"
                   >
@@ -39,7 +39,11 @@
                     />
                     @if (filled($social['qrcode']))
                     <span class="footer-social-qrcode-popup" role="tooltip">
-                      <img src="{{ $social['qrcode'] }}" alt="{{ $social['label'] }}二维码" />
+                      <img
+                        class="footer-social-qrcode-popup__image"
+                        src="{{ $social['qrcode'] }}"
+                        alt="{{ $social['label'] }}二维码"
+                      />
                     </span>
                     @endif
                     <span class="sr-only">{{ $social['label'] }}</span>

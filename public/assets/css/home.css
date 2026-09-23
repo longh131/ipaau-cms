@@ -4367,13 +4367,26 @@ iframe[data-processed=true]{
     opacity: 1;
     visibility: visible;
   }
-.footer-main .footer-social-qrcode-popup img {
+.footer-main .footer-social-qrcode-popup img,
+.footer-main .footer-social-qrcode-popup__image {
     display: block;
     width: 120px;
-    max-width: none;
     height: 120px;
+    max-width: none;
     object-fit: contain;
-  }
+}
+.footer-main .footer-social-qrcode--wechat .footer-social-qrcode-popup {
+    min-width: 0;
+}
+.footer-main .footer-social-qrcode--wechat .footer-social-qrcode-popup img,
+.footer-main .footer-social-qrcode--wechat .footer-social-qrcode-popup__image {
+    width: auto;
+    height: 120px;
+    max-width: none;
+    min-width: 0;
+    min-height: 120px;
+    object-fit: unset;
+}
 .footer-main .footer-nav-item {
     font-size: 14px;
     line-height: 22px;

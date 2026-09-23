@@ -1,0 +1,509 @@
+<style>
+  .dac-members-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem 2.5rem;
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    .dac-members-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .dac-members-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2.5rem;
+    }
+  }
+  .dac-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .dac-member__photo {
+    width: 99px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 1.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: oklch(0.9612 0 0);
+  }
+  .dac-member__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .dac-member__name {
+    margin: 0 0 1rem;
+  }
+  .dac-member__meta {
+    margin: 0;
+  }
+  .dac-section {
+    scroll-margin-top: 7rem;
+  }
+  .dac-nav h5 {
+    line-height: 1.8;
+  }
+</style>
+
+<section data-type="basicContentWithColumns" data-index="2" class="py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div class="column-wrapper grid items-stretch grid-cols-1 text-center">
+      <div class="column flex flex-col h-full pb-5 justify-center">
+        <div class="dac-nav w-full text-center" data-type="section-description" data-rte="true">
+          <h5 class="text-display-md lg:text-display-lg" style="text-align: center;"><a href="#NSWACT">新州/首都领地 (NSW/ACT)</a> | <a href="#QLD">昆士兰州 (QLD)</a> | <a href="#SANT">南澳/北领地 (SA/NT)</a> | <a href="#TAS">塔斯马尼亚州 (TAS)</a> | <a href="#VIC">维多利亚州 (VIC)</a> | <a href="#WA">西澳 (WA)</a> | <a href="#CHINA">中国大陆</a></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="NSWACT" data-type="featureBlock" data-index="3" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">新州/首都领地 (NSW/ACT)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-david-giacobbe.png" alt="大卫·贾科贝 (David Giacobbe)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">大卫·贾科贝 (David Giacobbe)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-leanne-hume.png" alt="利安妮·休姆 (Leanne Hume)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">利安妮·休姆 (Leanne Hume)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 副主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-aleksandra-serafimovska.jpg" alt="亚历山德拉·塞拉菲莫夫斯卡 (Aleksandra Serafimovska)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">亚历山德拉·塞拉菲莫夫斯卡 (Aleksandra Serafimovska)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-jacqui-winters.jpg" alt="杰奎·温特斯 (Jacqui Winters)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">杰奎·温特斯 (Jacqui Winters)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-donovan-buchanan.jpg" alt="多诺万·布坎南 (Donovan [Donnie] Buchanan)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">多诺万·布坎南 (Donovan [Donnie] Buchanan)</div>
+        <p class="dac-member__meta text-xl">AIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-sachida-nand.jpg" alt="萨奇达·南德 (Sachida Nand)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">萨奇达·南德 (Sachida Nand)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-todd-smith.png" alt="托德·史密斯 (Todd Smith)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">托德·史密斯 (Todd Smith)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-matt-attia.jpg" alt="马特·阿蒂亚 (Matt Attia)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">马特·阿蒂亚 (Matt Attia)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/nswact-abinash-dhungel.jpg" alt="阿比纳什·敦格尔 (Abinash Dhungel)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">阿比纳什·敦格尔 (Abinash Dhungel)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+        </div>
+        <div class="dac-member__name label-xl text-secondary">莱昂内尔·罗德里格斯 (Lionel Rodrigues)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="QLD" data-type="featureBlock" data-index="4" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">昆士兰州 (QLD)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-jane-purnell.png" alt="简·普内尔 (Jane Purnell)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">简·普内尔 (Jane Purnell)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-judy-white.png" alt="朱迪·怀特 (Judy White)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">朱迪·怀特 (Judy White)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 副主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-adam-thorpe.jpeg" alt="亚当·索普 (Adam Thorpe)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">亚当·索普 (Adam Thorpe)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-james-flaherty.jpg" alt="詹姆斯·弗莱厄蒂 (James Flaherty)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">詹姆斯·弗莱厄蒂 (James Flaherty)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-belinda-raso.png" alt="贝琳达·拉索 (Belinda Raso)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">贝琳达·拉索 (Belinda Raso)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-danh-nguyen.jpg" alt="阮丹 (Danh Nguyen)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">阮丹 (Danh Nguyen)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-daniel-hay.jpg" alt="丹尼尔·海伊 (Daniel Hay)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">丹尼尔·海伊 (Daniel Hay)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-kirsten-kolijn.jpg" alt="克尔斯滕·科利恩 (Kirsten Kolijn)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">克尔斯滕·科利恩 (Kirsten Kolijn)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/qld-sarah-mitchell.jpg" alt="萨拉·米切尔 (Sarah Mitchell)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">萨拉·米切尔 (Sarah Mitchell)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="SANT" data-type="featureBlock" data-index="5" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">南澳/北领地 (SA/NT)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-nathan-schwarz.png" alt="内森·施瓦茨 (Nathan Schwarz)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">内森·施瓦茨 (Nathan Schwarz)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-clint-hayward.jpg" alt="克林特·海沃德 (Clint Hayward)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">克林特·海沃德 (Clint Hayward)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-sam-sellahewa.jpg" alt="山姆·塞拉赫瓦 (Sam Sellahewa)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">山姆·塞拉赫瓦 (Sam Sellahewa)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-colin-southam.jpg" alt="科林·索瑟姆 (Colin Southam)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">科林·索瑟姆 (Colin Southam)</div>
+        <p class="dac-member__meta text-xl">AIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-kumar-krishna.jpg" alt="库马尔·克里希纳 (Kumar Krishna)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">库马尔·克里希纳 (Kumar Krishna)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/sant-richard-smith.jpg" alt="理查德·史密斯 (Richard Smith)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">理查德·史密斯 (Richard Smith)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="TAS" data-type="featureBlock" data-index="6" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">塔斯马尼亚州 (TAS)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-andrew-colrain.png" alt="安德鲁·科尔兰 (Andrew Colrain)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">安德鲁·科尔兰 (Andrew Colrain)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-albert-hou.png" alt="侯阿尔伯特 (Albert Hou)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">侯阿尔伯特 (Albert Hou)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA — 副主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-declan-sheehan.jpg" alt="德克兰·希恩 (Declan Sheehan)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">德克兰·希恩 (Declan Sheehan)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-scott-cure.jpg" alt="斯科特·库尔 (Scott [Robert] Cure)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">斯科特·库尔 (Scott [Robert] Cure)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-patrick-murphy.jpg" alt="帕特里克·墨菲 (Patrick Murphy)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">帕特里克·墨菲 (Patrick Murphy)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/tas-steve-pike.jpg" alt="史蒂夫·派克 (Steve Pike)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">史蒂夫·派克 (Steve Pike)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="VIC" data-type="featureBlock" data-index="7" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">维多利亚州 (VIC)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-donna-shaw.png" alt="唐娜·肖 (Donna Shaw)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">唐娜·肖 (Donna Shaw)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-adrian-hunter.png" alt="阿德里安·亨特 (Adrian Hunter)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">阿德里安·亨特 (Adrian Hunter)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA — 副主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-linda-brander.jpg" alt="琳达·布兰德 (Linda Brander)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">琳达·布兰德 (Linda Brander)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-martin-bailey.jpg" alt="马丁·贝利 (Martin Bailey)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">马丁·贝利 (Martin Bailey)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-tony-rabah.jpg" alt="托尼·拉巴 (Tony Rabah)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">托尼·拉巴 (Tony Rabah)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-matthew-moldrich.jpg" alt="马修·莫尔德里奇 (Matthew Moldrich)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">马修·莫尔德里奇 (Matthew Moldrich)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-michael-ganci.png" alt="迈克尔·甘奇 (Michael Ganci)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">迈克尔·甘奇 (Michael Ganci)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/vic-adrian-zuccarelli.jpg" alt="阿德里安·祖卡雷利 (Adrian Zuccarelli)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">阿德里安·祖卡雷利 (Adrian Zuccarelli)</div>
+        <p class="dac-member__meta text-xl">AIPA AFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="WA" data-type="featureBlock" data-index="8" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">西澳 (WA)</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-ian-casey.png" alt="伊恩·凯西 (Ian Casey)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">伊恩·凯西 (Ian Casey)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA — 主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-vince-femia.png" alt="文斯·费米亚 (Vince Femia)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">文斯·费米亚 (Vince Femia)</div>
+        <p class="dac-member__meta text-xl">AIPA AFA — 副主席</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-malav-oza.jpg" alt="马拉夫·奥扎 (Malav Oza)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">马拉夫·奥扎 (Malav Oza)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-joel-schreiber.jpg" alt="乔尔·施赖伯 (Joel Schreiber)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">乔尔·施赖伯 (Joel Schreiber)</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-andrew-erkins.jpg" alt="安德鲁·埃金斯 (Andrew Erkins)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">安德鲁·埃金斯 (Andrew Erkins)</div>
+        <p class="dac-member__meta text-xl">Affiliate</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-zoe-kosky.jpg" alt="佐伊·科斯基 (Zoe Kosky)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">佐伊·科斯基 (Zoe Kosky)</div>
+        <p class="dac-member__meta text-xl">AIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/wa-sally-hackett.jpg" alt="萨利·哈克特 (Sally Hackett)" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">萨利·哈克特 (Sally Hackett)</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="CHINA" data-type="featureBlock" data-index="9" class="dac-section py-12 bg-[color:var(--bg-color)]" style="--bg-color: transparent; --ipa-color-light: oklch(0.464 0 0); --ipa-color-dark: oklch(1 0 0); --light-or-dark: light; color: var(--ipa-color-light);">
+  <div class="inner container px-4 md:px-10 mx-auto flex flex-col gap-12">
+    <div data-type="section-title" class="text-center">
+      <h3 class="text-display-md lg:text-display-lg text-secondary" style="text-align: center;">中国大陆</h3>
+    </div>
+    <div class="dac-members-grid">
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-chen-haifang.jpg" alt="陈海防" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">陈海防</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 会长</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-zhang-qiaoliang.jpg" alt="张巧良" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">张巧良</div>
+        <p class="dac-member__meta text-xl">FIPA FFA — 副会长</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-chen-xiaoxin.jpg" alt="陈小辛" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">陈小辛</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-zhao-lu.jpg" alt="赵璐" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">赵璐</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-zheng-ping.jpg" alt="郑萍" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">郑萍</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-huang-hongzhi.jpg" alt="黄宏志" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">黄宏志</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-ling-zhongbao.jpg" alt="凌众保" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">凌众保</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-zhang-hui.jpg" alt="张辉" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">张辉</div>
+        <p class="dac-member__meta text-xl">MIPA AFA</p>
+      </article>
+      <article class="dac-member">
+        <div class="dac-member__photo">
+          <img src="/assets/img/dac/china-ge-ming.jpg" alt="葛明" width="99" height="99" loading="lazy" />
+        </div>
+        <div class="dac-member__name label-xl text-secondary">葛明</div>
+        <p class="dac-member__meta text-xl">FIPA FFA</p>
+      </article>
+    </div>
+  </div>
+</section>

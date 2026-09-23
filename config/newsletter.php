@@ -4,11 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Newsletter notification recipient
+    | Newsletter notification recipient (fallback)
     |--------------------------------------------------------------------------
     |
-    | New homepage subscription submissions are emailed to this address.
-    | Set NEWSLETTER_TO in .env (e.g. marketing@your-domain.com).
+    | Submissions are emailed to 系统设置 → 网站信息 → 联系邮箱.
+    | NEWSLETTER_TO is used only when that field is empty.
     |
     */
 

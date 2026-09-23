@@ -95,6 +95,16 @@ class MediaUrl
 
         $url = trim($url);
 
+        if (preg_match('#^https?://#i', $url)) {
+            $path = (string) (parse_url($url, PHP_URL_PATH) ?? '');
+            $host = strtolower((string) (parse_url($url, PHP_URL_HOST) ?? ''));
+            $appHost = strtolower((string) (parse_url((string) config('app.url'), PHP_URL_HOST) ?? ''));
+
+            if (! str_starts_with($path, '/storage/') && $host !== '' && $appHost !== '' && $host !== $appHost) {
+                return false;
+            }
+        }
+
         if (str_starts_with($url, '/storage/')) {
             return true;
         }

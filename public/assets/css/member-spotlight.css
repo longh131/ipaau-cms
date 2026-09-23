@@ -64,3 +64,8 @@
 .member-spotlight-member + .member-spotlight-member {
   margin-top: 0;
 }
+
+.member-interview-listing,
+.member-interview-member {
+  background-color: transparent;
+}

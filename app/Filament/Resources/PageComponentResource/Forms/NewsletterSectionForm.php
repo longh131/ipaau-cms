@@ -30,7 +30,7 @@ class NewsletterSectionForm
                             ->label('正文')
                             ->json()
                             ->toolbarButtons(RichContent::pageToolbar())
-                            ->helperText('左侧说明文字；支持标题、列表、链接等。右侧表单字段固定为：姓名、手机号、邮箱、公司、现任职务、第一高等学历。')
+                            ->helperText('左侧说明文字；支持标题、列表、链接等。右侧表单字段固定为：姓名、手机号、邮箱、公司、现任职务、从哪里知晓IPA？')
                     )->columnSpanFull(),
                     Forms\Components\TextInput::make('button_text')
                         ->label('提交按钮文字')

@@ -1,17 +1,19 @@
+@php
+    use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+    use App\Support\RichContent;
+
+    $isMemberSpotlightArticle = isset($category) && CategoryListTemplateRegistry::isMemberSpotlight($category);
+    $bodyHtml = RichContent::toHtml($article->content);
+@endphp
+
 @extends('layouts.app', [
-    'bodyClass' => 'cms-about-page cms-content-page cms-news-article-page',
+    'bodyClass' => 'cms-about-page cms-content-page cms-news-article-page'.($isMemberSpotlightArticle ? ' cms-member-spotlight-article-page' : ''),
     'headerBlobPartial' => 'blob-about',
 ])
 
 @section('title', $article->title)
 @section('canonical', route('article.show', $article->slug))
 @section('og_title', $article->title)
-
-@php
-    use App\Support\RichContent;
-
-    $bodyHtml = RichContent::toHtml($article->content);
-@endphp
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/about-ipa-pages.css') }}" />

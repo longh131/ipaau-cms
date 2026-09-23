@@ -1,7 +1,7 @@
 <x-mail::message>
-# 新的邮件订阅
+# 新的评估意向
 
-官网首页收到一条新的订阅提交：
+官网收到一条新的评估意向提交：
 
 <x-mail::table>
 | 字段 | 内容 |
@@ -11,7 +11,7 @@
 | 邮箱 | {{ $subscriber->email }} |
 | 公司 | {{ $subscriber->company ?: '—' }} |
 | 现任职务 | {{ $subscriber->job_title ?: '—' }} |
-| 第一高等学历 | {{ $subscriber->education ?: '—' }} |
+| 从哪里知晓IPA？ | {{ $subscriber->education ?: '—' }} |
 | 提交时间 | {{ $subscriber->subscribed_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '—' }} |
 </x-mail::table>
 

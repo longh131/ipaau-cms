@@ -192,7 +192,8 @@ class Settings extends Page implements HasForms
                                         ->columnSpanFull(),
                                     Forms\Components\TextInput::make('contact_email')
                                         ->label('联系邮箱')
-                                        ->email(),
+                                        ->email()
+                                        ->helperText('前台「提交评估意向」表单提交后将发送到此邮箱。'),
                                     Forms\Components\TextInput::make('contact_phone')
                                         ->label('联系电话'),
                                     Forms\Components\Textarea::make('contact_address')

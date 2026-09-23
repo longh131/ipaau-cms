@@ -22,6 +22,8 @@ class CategoryListTemplateRegistry
 
     public const TEMPLATE_MEMBER_SPOTLIGHT = 'member_spotlight';
 
+    public const TEMPLATE_MEMBER_INTERVIEW = 'member_interview';
+
     public const TEMPLATE_COURSE_TABLE = 'course_table';
 
     public const TEMPLATE_SPECIAL_COURSE_LIST = 'special_course_list';
@@ -49,6 +51,7 @@ class CategoryListTemplateRegistry
         self::TEMPLATE_VIDEO_LIST => '视频列表',
         self::TEMPLATE_TEAM_INTRO => '团队介绍',
         self::TEMPLATE_MEMBER_SPOTLIGHT => '会员风采',
+        self::TEMPLATE_MEMBER_INTERVIEW => '会员专访',
         self::TEMPLATE_COURSE_TABLE => '课程表格',
         self::TEMPLATE_SPECIAL_COURSE_LIST => '功能栏目页（课程汇总）',
         self::TEMPLATE_SPECIAL_CERTIFICATE_LOOKUP => '功能栏目页（证书查询）',
@@ -83,7 +86,7 @@ class CategoryListTemplateRegistry
     {
         return match (self::resolve($category)) {
             self::TEMPLATE_TOPICS_ARTICLE_LIST => self::TOPICS_ARTICLE_LIST_PER_PAGE,
-            self::TEMPLATE_MEMBER_SPOTLIGHT => MemberSpotlightTemplate::PER_PAGE,
+            self::TEMPLATE_MEMBER_SPOTLIGHT, self::TEMPLATE_MEMBER_INTERVIEW => MemberSpotlightTemplate::PER_PAGE,
             self::TEMPLATE_COURSE_TABLE, self::TEMPLATE_SPECIAL_COURSE_LIST => self::COURSE_TABLE_PER_PAGE,
             default => self::DEFAULT_PER_PAGE,
         };
@@ -110,6 +113,11 @@ class CategoryListTemplateRegistry
     public static function isMemberSpotlight(Category $category): bool
     {
         return self::resolve($category) === self::TEMPLATE_MEMBER_SPOTLIGHT;
+    }
+
+    public static function isMemberInterview(Category $category): bool
+    {
+        return self::resolve($category) === self::TEMPLATE_MEMBER_INTERVIEW;
     }
 
     public static function isEventsCpd(Category $category): bool
