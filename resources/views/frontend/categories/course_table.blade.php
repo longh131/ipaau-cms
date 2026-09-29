@@ -61,6 +61,8 @@
                     </nav>
                 @endif
             @endif
+
+            @include('frontend.partials.open-course-replay')
         </div>
     </section>
 

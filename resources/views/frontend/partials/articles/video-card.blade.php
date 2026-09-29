@@ -1,47 +1,49 @@
 @php
-    $imageUrl = \App\Support\CategoryListTemplate\VideoListTemplate::posterPublicUrlForArticle($article);
+    use App\Support\CategoryListTemplate\VideoListTemplate;
+
+    $playInModal = (bool) ($playInModal ?? false);
+    $imageUrl = VideoListTemplate::posterPublicUrlForArticle($article);
+    $videoUrl = $playInModal ? VideoListTemplate::videoPublicUrlForArticle($article) : null;
+    $videoMime = $playInModal ? VideoListTemplate::videoMimeType($videoUrl) : null;
     $colClass = match ($loop->index % 3) {
         0 => 'md:col-start-1',
         1 => 'md:col-start-3',
         default => 'md:col-start-5',
     };
-@endphp
-
-<a
-    href="{{ route('article.show', $article->slug) }}"
-    @class([
+    $cardClass = [
         'news-hero-card col-span-2 relative w-full pt-4 pb-8 rounded-2xl overflow-hidden news-card video-card',
         $colClass,
-    ])
-    data-title="{{ Str::lower($article->title) }}"
->
-    <div data-type="hero" class="h-full">
-        <div class="relative flex flex-col h-full">
-            @if($imageUrl)
-                <div class="relative mx-auto mb-5 aspect-video rounded-2xl overflow-hidden w-full">
-                    <img
-                        src="{{ $imageUrl }}"
-                        alt=""
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                    />
-                    <span class="video-card__play" aria-hidden="true"></span>
-                </div>
-            @else
-                <div class="video-card__placeholder mx-auto mb-5 aspect-video rounded-2xl w-full flex items-center justify-center" aria-hidden="true">
-                    <span class="video-card__play video-card__play--large"></span>
-                </div>
-            @endif
+        'video-card--modal' => $playInModal,
+    ];
+@endphp
 
-            @if(filled($article->published_at))
-                <div class="flags flex flex-row md:flex-col md:max-lg:items-start lg:flex-row gap-2 mb-2 items-center justify-start">
-                    <span class="text-md inline-block">{{ $article->published_at->format('d/m/Y') }}</span>
-                </div>
-            @endif
-
-            <div class="title line-clamp-2">
-                <h3 class="text-secondary text-xl font-medium">{{ $article->title }}</h3>
-            </div>
-        </div>
-    </div>
-</a>
+@if($playInModal)
+    <button
+        type="button"
+        @class($cardClass)
+        data-title="{{ Str::lower($article->title) }}"
+        data-video-modal-open
+        data-video-src="{{ $videoUrl ?? '' }}"
+        data-video-poster="{{ $imageUrl ?? '' }}"
+        data-video-title="{{ $article->title }}"
+        data-video-type="{{ $videoMime ?? 'video/mp4' }}"
+        @disabled(blank($videoUrl))
+        aria-label="播放 {{ $article->title }}"
+    >
+        @include('frontend.partials.articles.video-card-inner', [
+            'article' => $article,
+            'imageUrl' => $imageUrl,
+        ])
+    </button>
+@else
+    <a
+        href="{{ route('article.show', $article->slug) }}"
+        @class($cardClass)
+        data-title="{{ Str::lower($article->title) }}"
+    >
+        @include('frontend.partials.articles.video-card-inner', [
+            'article' => $article,
+            'imageUrl' => $imageUrl,
+        ])
+    </a>
+@endif

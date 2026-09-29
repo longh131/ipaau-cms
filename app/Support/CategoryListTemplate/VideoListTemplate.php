@@ -21,6 +21,12 @@ class VideoListTemplate
         self::RECAP_CATEGORY_ID,
     ];
 
+    public const OPEN_COURSE_SLUG = 'open-course';
+
+    public const OPEN_COURSE_REPLAY_SLUG = 'open-course-replay';
+
+    public const OPEN_COURSE_REPLAY_PREVIEW_LIMIT = 6;
+
     public static function isVideoCategory(?Category $category): bool
     {
         return $category !== null && CategoryListTemplateRegistry::isVideoList($category);
@@ -172,6 +178,58 @@ class VideoListTemplate
                 'label' => '视频文件名',
                 'show_in_list' => false,
             ],
+        ];
+    }
+
+    public static function isOpenCourseReplay(?Category $category): bool
+    {
+        return $category !== null && $category->slug === self::OPEN_COURSE_REPLAY_SLUG;
+    }
+
+    public static function playsInModal(?Category $category): bool
+    {
+        return self::isOpenCourseReplay($category);
+    }
+
+    public static function replayCategory(): ?Category
+    {
+        return Category::query()
+            ->where('slug', self::OPEN_COURSE_REPLAY_SLUG)
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * @return array{category: ?Category, articles: \Illuminate\Support\Collection<int, Article>, total: int, more_url: ?string}
+     */
+    public static function openCourseReplayPreview(): array
+    {
+        $category = self::replayCategory();
+
+        if ($category === null) {
+            return [
+                'category' => null,
+                'articles' => collect(),
+                'total' => 0,
+                'more_url' => null,
+            ];
+        }
+
+        $query = Article::query()
+            ->where('category_id', $category->id)
+            ->where('is_active', true);
+
+        $query = CategoryListTemplateRegistry::applyArticleOrdering($query, $category);
+        $total = (clone $query)->count();
+        $articles = $query->limit(self::OPEN_COURSE_REPLAY_PREVIEW_LIMIT)->get();
+
+        return [
+            'category' => $category,
+            'articles' => $articles,
+            'total' => $total,
+            'more_url' => $total > self::OPEN_COURSE_REPLAY_PREVIEW_LIMIT
+                ? route('category.show', $category->slug)
+                : null,
         ];
     }
 }

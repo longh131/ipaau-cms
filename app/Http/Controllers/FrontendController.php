@@ -147,6 +147,7 @@ class FrontendController extends Controller
             'initialVisible' => CategoryListTemplateRegistry::initialVisibleFor($category),
             'dateFrom' => $dateFrom,
             'dateTo' => $dateTo,
+            'playInModal' => \App\Support\CategoryListTemplate\VideoListTemplate::playsInModal($category),
         ]);
     }
 
@@ -165,6 +166,9 @@ class FrontendController extends Controller
             'courses' => $courses,
             'breadcrumbs' => BreadcrumbBuilder::forCategory($category),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
+            'openCourseReplay' => $category->slug === \App\Support\CategoryListTemplate\VideoListTemplate::OPEN_COURSE_SLUG
+                ? \App\Support\CategoryListTemplate\VideoListTemplate::openCourseReplayPreview()
+                : null,
         ]);
     }
 

@@ -62,7 +62,10 @@
             @else
                 <div class="grid grid-cols-1 md:grid-cols-6 items-stretch pt-4 lg:pt-8 gap-8 news-card-grid">
                     @foreach ($articles as $article)
-                        @include('frontend.partials.articles.video-card', ['article' => $article])
+                        @include('frontend.partials.articles.video-card', [
+                            'article' => $article,
+                            'playInModal' => $playInModal ?? false,
+                        ])
                     @endforeach
                 </div>
 
@@ -74,6 +77,10 @@
             @endif
         </div>
     </section>
+
+    @if($playInModal ?? false)
+        @include('frontend.partials.video-modal')
+    @endif
 @endsection
 
 @push('scripts')

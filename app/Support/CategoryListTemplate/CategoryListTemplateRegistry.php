@@ -91,6 +91,7 @@ class CategoryListTemplateRegistry
             self::TEMPLATE_TOPICS_ARTICLE_LIST => self::TOPICS_ARTICLE_LIST_PER_PAGE,
             self::TEMPLATE_MEMBER_SPOTLIGHT, self::TEMPLATE_MEMBER_INTERVIEW => MemberSpotlightTemplate::PER_PAGE,
             self::TEMPLATE_EVENTS_CPD, self::TEMPLATE_SIMPLE_TITLE_LIST, self::TEMPLATE_COURSE_TABLE, self::TEMPLATE_SPECIAL_COURSE_LIST => self::COURSE_TABLE_PER_PAGE,
+            self::TEMPLATE_VIDEO_LIST => VideoListTemplate::isOpenCourseReplay($category) ? 100 : self::DEFAULT_PER_PAGE,
             default => self::DEFAULT_PER_PAGE,
         };
     }
