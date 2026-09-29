@@ -480,6 +480,17 @@ body.cms-content-page:not(.cms-news-article-page):not(.cms-events-cpd-article-pa
   }
 }
 
+/* 合作伙伴：数字统计卡片标题比默认 text-sm / lg:text-base 大两号 */
+body.cms-page--partner-with-us [data-type="statsCards"] .stats-card > .text-warm-plum {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 1024px) {
+  body.cms-page--partner-with-us [data-type="statsCards"] .stats-card > .text-warm-plum {
+    font-size: 1.25rem;
+  }
+}
+
 .cms-body-block--testimonials > section,
 .cms-body-block--newsletter > section {
   padding-top: 0;

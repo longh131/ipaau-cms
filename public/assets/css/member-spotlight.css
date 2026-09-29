@@ -58,7 +58,7 @@
 .member-spotlight-member__link:hover,
 .member-spotlight-member__link:focus-visible {
   color: oklch(0.3152 0.1176 262.41);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .member-spotlight-member + .member-spotlight-member {

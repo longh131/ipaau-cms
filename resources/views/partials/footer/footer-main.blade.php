@@ -160,4 +160,5 @@
             </div>
           </div>
         </button>
+        @include('partials.footer.customer-service')
       </footer>

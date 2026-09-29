@@ -46,7 +46,7 @@
         data-type="articleContainer"
         class="news-section cms-news-article-body cms-video-article-body bg-[color:var(--bg-color)] py-12 lg:py-16"
         style="
-            --bg-color: #F2F2F2;
+            --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
             --ipa-color-dark: oklch(1 0 0);
             --light-or-dark: light;
@@ -59,8 +59,10 @@
                     <div class="cms-video-player-wrap">
                         <video
                             controls
-                            preload="metadata"
+                            autoplay
+                            muted
                             playsinline
+                            preload="auto"
                             class="cms-video-player w-full rounded-2xl"
                             @if(filled($posterUrl ?? null)) poster="{{ $posterUrl }}" @endif
                         >
@@ -74,3 +76,47 @@
         </div>
     </section>
 @endsection
+
+@if(filled($videoUrl ?? null))
+    @push('scripts')
+        <script>
+            (function () {
+                var video = document.querySelector('.cms-video-article-page .cms-video-player');
+                if (!video) {
+                    return;
+                }
+
+                var tryPlay = function (withSound) {
+                    if (withSound) {
+                        video.muted = false;
+                        video.volume = 1;
+                    } else {
+                        video.muted = true;
+                    }
+
+                    var playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        return playPromise.catch(function () {
+                            if (withSound) {
+                                return tryPlay(false);
+                            }
+                        });
+                    }
+                };
+
+                if (video.readyState >= 2) {
+                    tryPlay(true);
+                    return;
+                }
+
+                video.addEventListener('canplay', function onCanPlay() {
+                    video.removeEventListener('canplay', onCanPlay);
+                    tryPlay(true);
+                });
+
+                tryPlay(true);
+            })();
+        </script>
+    @endpush
+@endif
+

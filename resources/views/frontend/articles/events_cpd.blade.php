@@ -60,7 +60,7 @@
         data-type="articleContainer"
         class="news-section cms-news-article-body cms-events-cpd-article-body bg-[color:var(--bg-color)] py-12 lg:py-16"
         style="
-            --bg-color: #F2F2F2;
+            --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
             --ipa-color-dark: oklch(1 0 0);
             --light-or-dark: light;

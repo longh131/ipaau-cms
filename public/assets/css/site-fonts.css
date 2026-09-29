@@ -17,8 +17,8 @@
   --ipa-display-4xl: 4.75rem;
   --ipa-section-title-size: var(--ipa-display-lg);
   --ipa-section-title-size-lg: var(--ipa-display-xl);
-  --ipa-page-title-size: var(--ipa-display-2xl);
-  --ipa-page-title-size-lg: var(--ipa-display-3xl);
+  --ipa-page-title-size: var(--ipa-display-xl);
+  --ipa-page-title-size-lg: var(--ipa-display-2xl);
 
   /* 内页正文：18px @ 16px root */
   --ipa-body-text-size: 1.125rem;
@@ -385,7 +385,7 @@ body {
   margin: 0;
 }
 
-/* 内页 h1 主标题：比 h3 区块标题大两档（对齐首页 display-2xl / display-3xl 刻度） */
+/* 内页 h1 主标题：比 h3 区块标题大一档（display-xl / display-2xl；首页 Hero 不受此规则影响） */
 h1.cms-section-title {
   font-size: var(--ipa-page-title-size);
   line-height: 1.2;
@@ -1114,11 +1114,8 @@ body.cms-page--member-requirements.cms-about-page :is(
     .cms-card-list-curated__item
   ):not(.color):not([class*="text-gradient"]):not(:has(> span.color)) {
   color: var(--ipa-link-color);
-  text-decoration: underline;
-  text-decoration-thickness: var(--ipa-link-underline-thickness);
-  text-underline-offset: var(--ipa-link-underline-offset);
-  text-decoration-color: var(--ipa-link-color);
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 #root :is(
@@ -1148,7 +1145,6 @@ body.cms-page--member-requirements.cms-about-page :is(
     .cms-card-list-curated__item
   ):not(.color):not([class*="text-gradient"]):not(:has(> span.color)):hover {
   color: var(--ipa-link-hover-color);
-  text-decoration-color: var(--ipa-link-hover-color);
 }
 
 /* Filament RichEditor 文字颜色（span.color 通过 --color / --dark-color 变量存储） */
@@ -1300,4 +1296,27 @@ body.cms-page--member-requirements.cms-about-page :is(
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+/* 全站链接：去掉下划线（含 hover / 标题内链） */
+#root a,
+#root a:hover,
+#root a:focus,
+#root a:focus-visible,
+#root a :is(h1, h2, h3, h4, h5, h6, span, strong, em, p) {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+/* 文章页 H1：相对原 display-lg / xl 小一档 */
+h1.cms-news-article-title {
+  font-size: var(--ipa-display-md) !important;
+  line-height: 1.4 !important;
+}
+
+@media (min-width: 1024px) {
+  h1.cms-news-article-title {
+    font-size: var(--ipa-display-lg) !important;
+    line-height: 1.2 !important;
+  }
 }

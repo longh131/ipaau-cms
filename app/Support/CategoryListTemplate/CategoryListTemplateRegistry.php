@@ -10,6 +10,8 @@ class CategoryListTemplateRegistry
 {
     public const TEMPLATE_SIMPLE = 'simple';
 
+    public const TEMPLATE_SIMPLE_TITLE_LIST = 'simple_title_list';
+
     public const TEMPLATE_NEWS_CARDS = 'news_cards';
 
     public const TEMPLATE_TOPICS_ARTICLE_LIST = 'topics_article_list';
@@ -45,6 +47,7 @@ class CategoryListTemplateRegistry
     /** @var array<string, string> */
     public const OPTIONS = [
         self::TEMPLATE_SIMPLE => '简单列表',
+        self::TEMPLATE_SIMPLE_TITLE_LIST => '简单标题列表',
         self::TEMPLATE_NEWS_CARDS => '新闻卡片',
         self::TEMPLATE_TOPICS_ARTICLE_LIST => '列表（含：专业技术，数字咨询，会刊精选）',
         self::TEMPLATE_EVENTS_CPD => '活动与CPD',
@@ -87,7 +90,7 @@ class CategoryListTemplateRegistry
         return match (self::resolve($category)) {
             self::TEMPLATE_TOPICS_ARTICLE_LIST => self::TOPICS_ARTICLE_LIST_PER_PAGE,
             self::TEMPLATE_MEMBER_SPOTLIGHT, self::TEMPLATE_MEMBER_INTERVIEW => MemberSpotlightTemplate::PER_PAGE,
-            self::TEMPLATE_COURSE_TABLE, self::TEMPLATE_SPECIAL_COURSE_LIST => self::COURSE_TABLE_PER_PAGE,
+            self::TEMPLATE_EVENTS_CPD, self::TEMPLATE_SIMPLE_TITLE_LIST, self::TEMPLATE_COURSE_TABLE, self::TEMPLATE_SPECIAL_COURSE_LIST => self::COURSE_TABLE_PER_PAGE,
             default => self::DEFAULT_PER_PAGE,
         };
     }

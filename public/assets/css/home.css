@@ -981,16 +981,14 @@ h4.banner{
 }
 .umb-rte a,
   [data-rte=true] a{
-  text-decoration-line: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+  text-decoration-line: none;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
 .umb-rte a:hover,
   [data-rte=true] a:hover{
-  text-decoration-thickness: 4px;
+  text-decoration-line: none;
 }
 .umb-rte table img,
   [data-rte=true] table img {
@@ -4012,7 +4010,7 @@ section[data-type=testimonialCarousel] > .container.inner {
     font-style: normal;
 }
 [data-type=desktop-navigation] [data-level="0"] [data-type=megamenu-panel] [data-type=megamenu-container] > ul > li a:hover span {
-    text-decoration-line: underline;
+    text-decoration-line: none;
   }
 [data-type=desktop-navigation] [data-level="0"] [data-type=megamenu-panel] [data-type=megamenu-container] > ul > li a[data-children=true]{
   display: flex;

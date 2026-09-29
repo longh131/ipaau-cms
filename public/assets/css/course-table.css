@@ -103,8 +103,7 @@
 
 .cms-course-table__register-link:hover {
   color: #0d2c6c;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 
 .cms-course-table__register-closed {

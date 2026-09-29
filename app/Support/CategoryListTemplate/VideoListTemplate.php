@@ -55,6 +55,8 @@ class VideoListTemplate
         $filename = preg_replace('#^/assets/video/#', '', $filename) ?? $filename;
         $filename = preg_replace('#^assets/video/#', '', $filename) ?? $filename;
         $filename = ltrim($filename, '/');
+        $filename = VideoArticleContent::flattenVideoRootPath('assets/video/'.$filename);
+        $filename = preg_replace('#^assets/video/#', '', $filename) ?? $filename;
 
         return basename($filename);
     }
@@ -103,12 +105,15 @@ class VideoListTemplate
     public static function posterPublicUrlForArticle(Article $article): ?string
     {
         if (filled($article->cover_image)) {
-            return \App\Support\MediaUrl::resolve($article->cover_image);
+            $cover = VideoArticleContent::flattenVideoRootPath((string) $article->cover_image);
+
+            return \App\Support\MediaUrl::resolve($cover);
         }
 
         $bodyHtml = RichContent::toHtml($article->content);
+        $legacyPoster = VideoArticleContent::extractPosterUrl($bodyHtml);
 
-        return VideoArticleContent::extractPosterUrl($bodyHtml);
+        return filled($legacyPoster) ? VideoArticleContent::normalizePublicPath($legacyPoster) : null;
     }
 
     public static function videoMimeType(?string $publicUrl): string
@@ -139,8 +144,8 @@ class VideoListTemplate
         }
 
         if (filled($article->cover_image)) {
-            $cover = str_replace('\\', '/', (string) $article->cover_image);
-            $cover = preg_replace('#^assets/video/#', '', $cover) ?? $cover;
+            $cover = VideoArticleContent::flattenVideoRootPath(str_replace('\\', '/', (string) $article->cover_image));
+            $cover = preg_replace('#^/?assets/video/#', '', $cover) ?? $cover;
             $cover = ltrim($cover, '/');
 
             if ($cover !== '') {

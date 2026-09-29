@@ -1,5 +1,5 @@
 @php
-    $imageUrl = \App\Support\MediaUrl::resolve($article->cover_image ?? null);
+    $imageUrl = \App\Support\CategoryListTemplate\VideoListTemplate::posterPublicUrlForArticle($article);
     $colClass = match ($loop->index % 3) {
         0 => 'md:col-start-1',
         1 => 'md:col-start-3',

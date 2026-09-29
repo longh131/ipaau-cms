@@ -71,7 +71,7 @@
 .leadership-member__link:hover,
 .leadership-member__link:focus-visible {
   color: oklch(0.3152 0.1176 262.41);
-  text-decoration: underline;
+  text-decoration: none;
   outline: none;
 }
 

@@ -23,27 +23,7 @@ class VideoArticleContent
     public static function rewriteLegacyAssetPath(string $path): string
     {
         $path = trim(html_entity_decode($path, ENT_QUOTES | ENT_HTML5));
-        $path = ltrim(str_replace('\\', '/', $path), '/');
-
-        if (str_starts_with($path, 'assets/video/')) {
-            return $path;
-        }
-
-        if (str_starts_with($path, 'video/video_file/')) {
-            return 'assets/video/'.substr($path, strlen('video/video_file/'));
-        }
-
-        if (str_starts_with($path, 'video/')) {
-            return 'assets/video/'.substr($path, strlen('video/'));
-        }
-
-        if (str_starts_with($path, 'up/media/')) {
-            return 'assets/video/'.basename($path);
-        }
-
-        if (str_starts_with($path, 'video_file/')) {
-            return 'assets/video/'.substr($path, strlen('video_file/'));
-        }
+        $path = ltrim(str_replace('\\', '/', rawurldecode($path)), '/');
 
         return 'assets/video/'.basename($path);
     }
@@ -65,6 +45,8 @@ class VideoArticleContent
             return $path;
         }
 
+        $path = self::flattenVideoRootPath($path);
+
         if (str_starts_with($path, '/assets/')) {
             return $path;
         }
@@ -74,6 +56,40 @@ class VideoArticleContent
         }
 
         return self::PUBLIC_VIDEO_PREFIX.ltrim($path, '/');
+    }
+
+    /**
+     * 视频与封面统一落在 public/assets/video/ 根目录（去掉 IPA播报、IPA活动回顾、course 等子目录）。
+     */
+    public static function flattenVideoRootPath(string $path): string
+    {
+        $path = trim(html_entity_decode($path, ENT_QUOTES | ENT_HTML5));
+
+        if ($path === '') {
+            return '';
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        $leadingSlash = str_starts_with($path, '/');
+        $relative = ltrim(str_replace('\\', '/', rawurldecode($path)), '/');
+
+        if (preg_match('#^assets/video/.+/.+#u', $relative)) {
+            $relative = 'assets/video/'.rawurldecode(basename($relative));
+        }
+
+        return $leadingSlash ? '/'.$relative : $relative;
+    }
+
+    public static function flattenVideoPathsInText(string $text): string
+    {
+        $updated = preg_replace('#(/assets/video/)(?:[^/"\'\\s]+/)+#u', '$1', $text) ?? $text;
+        $updated = preg_replace('#(?<!/)(assets/video/)(?:[^/"\'\\s]+/)+#u', '$1', $updated) ?? $updated;
+        $updated = preg_replace('#(\\\\?/assets\\\\?/video\\\\?/)(?:[^"\'\\\\s]+\\\\?/)+#u', '$1', $updated) ?? $updated;
+
+        return $updated;
     }
 
     public static function titleFromFilename(string $filename): string

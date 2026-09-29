@@ -206,9 +206,8 @@ class ImportIpaVideosCommand extends Command
             return false;
         }
 
-        $relativeFolder = str_replace('\\', '/', $folder);
-        $videoStored = 'assets/video/'.$relativeFolder.'/'.$filename;
-        $coverStored = 'assets/video/'.$relativeFolder.'/'.pathinfo($filename, PATHINFO_FILENAME).'.jpg';
+        $videoStored = 'assets/video/'.$filename;
+        $coverStored = 'assets/video/'.pathinfo($filename, PATHINFO_FILENAME).'.jpg';
 
         if (! $this->option('dry-run')) {
             $this->generateThumbnail($filePath, dirname($filePath).'/'.pathinfo($filename, PATHINFO_FILENAME).'.jpg');
@@ -217,7 +216,7 @@ class ImportIpaVideosCommand extends Command
         return $this->upsertVideoArticle(
             categoryId: $categoryId,
             title: $title,
-            slugSeed: 'bak-'.$relativeFolder.'-'.$filename,
+            slugSeed: 'bak-'.$folder.'-'.$filename,
             videoStoredPath: $videoStored,
             coverStoredPath: $coverStored,
         );
@@ -294,7 +293,7 @@ class ImportIpaVideosCommand extends Command
             }
         }
 
-        return 'assets/video/course/'.basename($videoFile);
+        return 'assets/video/'.basename($videoFile);
     }
 
     private function defaultCoverPath(string $videoStoredPath): string

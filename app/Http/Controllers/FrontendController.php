@@ -103,12 +103,40 @@ class FrontendController extends Controller
             return $this->renderCourseCategory($category);
         }
 
-        $articles = CategoryListTemplateRegistry::applyArticleOrdering(
-            Article::query()
-                ->where('category_id', $category->id)
-                ->where('is_active', true),
-            $category,
-        )->paginate(CategoryListTemplateRegistry::perPageFor($category));
+        $articlesQuery = Article::query()
+            ->where('category_id', $category->id)
+            ->where('is_active', true);
+
+        $dateFrom = null;
+        $dateTo = null;
+
+        if (CategoryListTemplateRegistry::isEventsCpd($category)) {
+            $startDateKey = \App\Support\CategoryListTemplate\EventsCpdTemplate::startDateKey(
+                $category->article_extra_field_schema,
+            );
+            $dateFrom = \App\Support\CategoryListTemplate\EventsCpdTemplate::parseFilterDate(
+                request()->query('from'),
+            )?->format('Y-m-d');
+            $dateTo = \App\Support\CategoryListTemplate\EventsCpdTemplate::parseFilterDate(
+                request()->query('to'),
+            )?->format('Y-m-d');
+
+            $articlesQuery = \App\Support\CategoryListTemplate\EventsCpdTemplate::applyStartDateFilter(
+                $articlesQuery,
+                $startDateKey,
+                $dateFrom,
+                $dateTo,
+            );
+            $articlesQuery = \App\Support\CategoryListTemplate\EventsCpdTemplate::applyStartDateOrdering(
+                $articlesQuery,
+                $startDateKey,
+            );
+        } else {
+            $articlesQuery = CategoryListTemplateRegistry::applyArticleOrdering($articlesQuery, $category);
+        }
+
+        $articles = $articlesQuery->paginate(CategoryListTemplateRegistry::perPageFor($category))
+            ->withQueryString();
 
         return view(CategoryListTemplateRegistry::viewFor($category), [
             'category' => $category,
@@ -117,6 +145,8 @@ class FrontendController extends Controller
             'listFields' => \App\Support\ArticleExtraFields::listFields($category->article_extra_field_schema),
             'introductionHtml' => \App\Support\CategoryIntroduction::toHtml($category),
             'initialVisible' => CategoryListTemplateRegistry::initialVisibleFor($category),
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
         ]);
     }
 
@@ -307,14 +337,23 @@ class FrontendController extends Controller
             ]);
         }
 
+        $extraFieldItems = \App\Support\ArticleExtraFields::forFrontend(
+            $article->extra_fields,
+            $article->category?->article_extra_field_schema,
+        );
+
+        if ($category && CategoryListTemplateRegistry::isMemberSpotlight($category)) {
+            $extraFieldItems = array_values(array_filter(
+                $extraFieldItems,
+                fn (array $item): bool => ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\MemberSpotlightTemplate::POSITION_KEY,
+            ));
+        }
+
         return view('frontend.article', [
             'article' => $article,
             'category' => $article->category,
             'breadcrumbs' => BreadcrumbBuilder::forArticle($article),
-            'extraFieldItems' => \App\Support\ArticleExtraFields::forFrontend(
-                $article->extra_fields,
-                $article->category?->article_extra_field_schema,
-            ),
+            'extraFieldItems' => $extraFieldItems,
         ]);
     }
 

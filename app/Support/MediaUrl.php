@@ -66,6 +66,10 @@ class MediaUrl
 
         $path = ltrim($path, '/');
 
+        if (preg_match('#^assets/video/.+/.+#u', rawurldecode($path))) {
+            $path = 'assets/video/'.rawurldecode(basename(rawurldecode($path)));
+        }
+
         if (str_starts_with($path, 'storage/')) {
             $path = substr($path, 8);
         }

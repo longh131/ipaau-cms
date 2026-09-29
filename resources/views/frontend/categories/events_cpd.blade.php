@@ -47,7 +47,7 @@
 
     <section
         data-type="blogSection"
-        class="cms-page-content-section cms-news-list-section cms-topics-article-list-section pb-16"
+        class="cms-page-content-section cms-news-list-section cms-events-cpd-listing pb-16"
         style="
             --bg-color: transparent;
             --ipa-color-light: oklch(0.464 0 0);
@@ -57,28 +57,70 @@
         "
     >
         <div class="inner container px-4 md:px-10 mx-auto">
-            @if($articles->isEmpty())
-                <p class="text-center text-primary text-lg lg:text-xl">暂无内容。</p>
-            @else
-                <div class="grid grid-cols-1 md:grid-cols-6 items-stretch pt-4 lg:pt-8 gap-8 news-card-grid">
-                    @foreach ($articles as $article)
-                        @include('frontend.partials.articles.text-news-card', [
-                            'article' => $article,
-                            'listFields' => $listFields ?? [],
-                        ])
-                    @endforeach
-                </div>
+            <div class="cms-events-cpd-listing__layout">
+                <aside class="cms-events-cpd-filter" aria-label="按开课日期筛选">
+                    <h2 class="cms-events-cpd-filter__heading">按日期筛选</h2>
 
-                @if($articles->hasPages())
-                    <nav class="cms-category-pagination mt-12" aria-label="文章分页">
-                        {{ $articles->links('frontend.partials.pagination.default') }}
-                    </nav>
-                @endif
-            @endif
+                    <form
+                        method="get"
+                        action="{{ route('category.show', $category->slug) }}"
+                        class="cms-events-cpd-filter__form"
+                    >
+                        <label class="cms-events-cpd-filter__label" for="events-cpd-from">开始日期</label>
+                        <input
+                            id="events-cpd-from"
+                            class="cms-events-cpd-filter__input"
+                            type="date"
+                            name="from"
+                            value="{{ $dateFrom ?? '' }}"
+                        />
+
+                        <label class="cms-events-cpd-filter__label" for="events-cpd-to">截止日期</label>
+                        <input
+                            id="events-cpd-to"
+                            class="cms-events-cpd-filter__input"
+                            type="date"
+                            name="to"
+                            value="{{ $dateTo ?? '' }}"
+                        />
+
+                        <div class="cms-events-cpd-filter__actions">
+                            <button type="submit" class="cms-events-cpd-filter__submit">确定</button>
+                            <a
+                                href="{{ route('category.show', $category->slug) }}"
+                                class="cms-events-cpd-filter__clear"
+                            >清除</a>
+                        </div>
+                    </form>
+                </aside>
+
+                <div class="cms-events-cpd-results">
+                    @if($articles->isEmpty())
+                        <p class="cms-events-cpd-results__empty">
+                            @if(filled($dateFrom ?? null) || filled($dateTo ?? null))
+                                该日期范围内暂无活动。
+                            @else
+                                暂无内容。
+                            @endif
+                        </p>
+                    @else
+                        <div class="cms-events-cpd-results__list">
+                            @foreach ($articles as $article)
+                                @include('frontend.partials.articles.events-cpd-list-item', [
+                                    'article' => $article,
+                                    'category' => $category,
+                                ])
+                            @endforeach
+                        </div>
+
+                        @if($articles->hasPages())
+                            <nav class="cms-category-pagination mt-12" aria-label="文章分页">
+                                {{ $articles->links('frontend.partials.pagination.default') }}
+                            </nav>
+                        @endif
+                    @endif
+                </div>
+            </div>
         </div>
     </section>
 @endsection
-
-@push('scripts')
-    <script src="{{ asset('assets/js/news-pages.js') }}" defer></script>
-@endpush
