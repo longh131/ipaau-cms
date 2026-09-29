@@ -186,11 +186,6 @@ class VideoListTemplate
         return $category !== null && $category->slug === self::OPEN_COURSE_REPLAY_SLUG;
     }
 
-    public static function playsInModal(?Category $category): bool
-    {
-        return self::isOpenCourseReplay($category);
-    }
-
     public static function replayCategory(): ?Category
     {
         return Category::query()

@@ -28,6 +28,7 @@ class CreateArticle extends CreateRecord
             'published_at' => now(),
             'is_active' => true,
             'sort_order' => $this->estimatedArticleSortOrder,
+            'extra_fields' => [],
         ];
 
         $categoryId = request()->integer('category_id');

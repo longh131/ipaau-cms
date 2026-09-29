@@ -184,6 +184,8 @@ class ArticleExtraFields
             ) {
                 $component
                     ->required()
+                    ->dehydrated(true)
+                    ->live(onBlur: true)
                     ->helperText('填写 public/assets/video/ 目录下的视频文件名，例如：9. 2025年度回顾.mp4');
             }
 

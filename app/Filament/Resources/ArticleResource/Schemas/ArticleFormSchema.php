@@ -183,7 +183,8 @@ class ArticleFormSchema
                 return $components;
             })
             ->statePath('extra_fields')
-            ->key(fn (Get $get): string => 'article-extra-fields-'.($fixedCategoryId ?? $get('category_id') ?? 'none'))
+            ->dehydrated(true)
+            ->key('article-extra-fields')
             ->columnSpanFull();
     }
 }

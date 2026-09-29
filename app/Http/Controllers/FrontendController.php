@@ -147,7 +147,6 @@ class FrontendController extends Controller
             'initialVisible' => CategoryListTemplateRegistry::initialVisibleFor($category),
             'dateFrom' => $dateFrom,
             'dateTo' => $dateTo,
-            'playInModal' => \App\Support\CategoryListTemplate\VideoListTemplate::playsInModal($category),
         ]);
     }
 

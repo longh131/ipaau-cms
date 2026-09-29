@@ -14,10 +14,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-6 items-stretch pt-8 gap-8 news-card-grid">
             @foreach ($replayArticles as $article)
-                @include('frontend.partials.articles.video-card', [
-                    'article' => $article,
-                    'playInModal' => true,
-                ])
+                @include('frontend.partials.articles.video-card', ['article' => $article])
             @endforeach
         </div>
 
@@ -34,6 +31,4 @@
             </div>
         @endif
     </section>
-
-    @include('frontend.partials.video-modal')
 @endif
