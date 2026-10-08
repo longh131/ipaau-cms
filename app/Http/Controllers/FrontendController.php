@@ -127,10 +127,7 @@ class FrontendController extends Controller
                 $dateFrom,
                 $dateTo,
             );
-            $articlesQuery = \App\Support\CategoryListTemplate\EventsCpdTemplate::applyStartDateOrdering(
-                $articlesQuery,
-                $startDateKey,
-            );
+            $articlesQuery = CategoryListTemplateRegistry::applyArticleOrdering($articlesQuery, $category);
         } else {
             $articlesQuery = CategoryListTemplateRegistry::applyArticleOrdering($articlesQuery, $category);
         }
@@ -319,7 +316,8 @@ class FrontendController extends Controller
                         $article->extra_fields,
                         $article->category?->article_extra_field_schema,
                     ),
-                    fn (array $item): bool => ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::EVENT_NAME_KEY,
+                    fn (array $item): bool => ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::EVENT_NAME_KEY
+                        && ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::REGISTRATION_DEADLINE_KEY,
                 )),
                 'registrationUrl' => \App\Support\CategoryListTemplate\EventsCpdTemplate::registrationUrl(
                     $article->extra_fields,

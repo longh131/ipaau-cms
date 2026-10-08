@@ -32,6 +32,6 @@ class EditArticle extends EditRecord
      */
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        return ArticleResource::normalizeArticleData($data);
+        return ArticleResource::normalizeArticleData($data, $this->record->extra_fields);
     }
 }

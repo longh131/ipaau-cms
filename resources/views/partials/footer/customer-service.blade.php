@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/customer-service.css') }}" />
 
 <div
-    class="cms-cs-widget"
+    class="cms-cs-widget is-open is-visible"
     data-cs-widget
     data-cs-scroll-threshold="80"
 >
@@ -17,12 +17,12 @@
         class="cms-cs-widget__launcher"
         data-cs-open
         aria-label="打开网站问题反馈"
-        aria-expanded="false"
+        aria-expanded="true"
     >
         <img src="{{ $csCollapsedImage }}" alt="网站问题反馈" width="72" height="72" />
     </button>
 
-    <div class="cms-cs-widget__panel" data-cs-panel hidden>
+    <div class="cms-cs-widget__panel" data-cs-panel>
         <button
             type="button"
             class="cms-cs-widget__collapse"
@@ -96,6 +96,6 @@
 
     window.addEventListener('scroll', syncVisibility, { passive: true });
     window.addEventListener('resize', syncVisibility);
-    syncVisibility();
+    setOpen(true);
 })();
 </script>

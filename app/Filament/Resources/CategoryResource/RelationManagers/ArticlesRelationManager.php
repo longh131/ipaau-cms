@@ -102,8 +102,8 @@ class ArticlesRelationManager extends RelationManager
             ->actions([
                 Actions\EditAction::make()
                     ->label('编辑')
-                    ->mutateFormDataUsing(function (array $data): array {
-                        return static::normalizeExtraFields($data, $this->getOwnerRecord());
+                    ->mutateFormDataUsing(function (array $data, Article $record): array {
+                        return static::normalizeExtraFields($data, $this->getOwnerRecord(), $record->extra_fields);
                     }),
                 Actions\DeleteAction::make()
                     ->label('删除'),
@@ -120,12 +120,10 @@ class ArticlesRelationManager extends RelationManager
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    protected static function normalizeExtraFields(array $data, Category $category): array
+    protected static function normalizeExtraFields(array $data, Category $category, ?array $existingExtraFields = null): array
     {
-        $schema = ArticleExtraFields::normalizeSchema($category->article_extra_field_schema);
-        $data['extra_fields'] = ArticleExtraFields::normalizeValuesForStorage($data['extra_fields'] ?? [], $schema);
         $data['category_id'] = $category->getKey();
 
-        return $data;
+        return ArticleResource::normalizeArticleData($data, $existingExtraFields);
     }
 }

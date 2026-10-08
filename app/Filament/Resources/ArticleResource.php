@@ -131,12 +131,30 @@ class ArticleResource extends Resource
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    public static function normalizeArticleData(array $data): array
+    public static function normalizeArticleData(array $data, ?array $existingExtraFields = null): array
     {
         $categoryId = $data['category_id'] ?? null;
         $category = $categoryId ? Category::query()->find($categoryId) : null;
         $schema = ArticleExtraFields::normalizeSchema($category?->article_extra_field_schema);
         $data['extra_fields'] = ArticleExtraFields::normalizeValuesForStorage($data['extra_fields'] ?? [], $schema);
+
+        if (is_array($existingExtraFields) && $category !== null && CategoryListTemplateRegistry::isEventsCpd($category)) {
+            $extraFields = is_array($data['extra_fields']) ? $data['extra_fields'] : [];
+
+            foreach ($schema as $field) {
+                if (! \App\Support\CategoryListTemplate\EventsCpdTemplate::isHiddenExtraField($field)) {
+                    continue;
+                }
+
+                $key = $field['key'];
+
+                if (! array_key_exists($key, $extraFields) && array_key_exists($key, $existingExtraFields)) {
+                    $extraFields[$key] = $existingExtraFields[$key];
+                }
+            }
+
+            $data['extra_fields'] = $extraFields;
+        }
 
         if ($category !== null && CategoryListTemplateRegistry::isVideoList($category)) {
             $extraFields = is_array($data['extra_fields']) ? $data['extra_fields'] : [];

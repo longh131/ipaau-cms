@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Category;
 use App\Support\CategoryListTemplate\CategoryListTemplateRegistry;
+use App\Support\CategoryListTemplate\EventsCpdTemplate;
 use App\Support\CategoryListTemplate\VideoListTemplate;
 use Filament\Forms;
 use Filament\Schemas\Components\Utilities\Get;
@@ -174,6 +175,10 @@ class ArticleExtraFields
         $components = [];
 
         foreach ($schema as $field) {
+            if ($category !== null && CategoryListTemplateRegistry::isEventsCpd($category) && EventsCpdTemplate::isHiddenExtraField($field)) {
+                continue;
+            }
+
             $component = self::formComponent($field);
 
             if (
@@ -207,29 +212,40 @@ class ArticleExtraFields
             'textarea' => Forms\Components\Textarea::make($key)
                 ->label($label)
                 ->rows(3)
+                ->dehydrated(true)
                 ->columnSpanFull(),
             'url' => Forms\Components\TextInput::make($key)
                 ->label($label)
                 ->url()
                 ->maxLength(2048)
+                ->dehydrated(true)
                 ->columnSpanFull(),
             'image' => Forms\Components\TextInput::make($key)
                 ->label($label)
                 ->helperText('相对路径（如 assets/img/...）或完整 URL')
                 ->maxLength(2048)
+                ->dehydrated(true)
                 ->columnSpanFull(),
             'select' => Forms\Components\Select::make($key)
                 ->label($label)
                 ->options($field['options'] ?? [])
                 ->searchable()
+                ->dehydrated(true)
+                ->live()
                 ->columnSpanFull(),
             'date' => Forms\Components\DatePicker::make($key)
                 ->label($label)
                 ->native(false)
+                ->format('Y-m-d')
+                ->displayFormat('Y-m-d')
+                ->dehydrated(true)
+                ->live()
+                ->closeOnDateSelection()
                 ->columnSpanFull(),
             default => Forms\Components\TextInput::make($key)
                 ->label($label)
                 ->maxLength(500)
+                ->dehydrated(true)
                 ->columnSpanFull(),
         };
     }
@@ -252,8 +268,20 @@ class ArticleExtraFields
 
             $value = $extraFields[$key];
 
+            if (($field['type'] ?? 'text') === 'date') {
+                $value = self::normalizeDateValue($value);
+
+                if ($value === null) {
+                    continue;
+                }
+
+                $normalized[$key] = $value;
+
+                continue;
+            }
+
             if ($value instanceof \DateTimeInterface) {
-                $value = $value->format(($field['type'] ?? 'text') === 'date' ? 'Y-m-d' : 'Y-m-d H:i:s');
+                $value = $value->format('Y-m-d H:i:s');
             }
 
             if (is_string($value)) {
@@ -264,18 +292,50 @@ class ArticleExtraFields
                 continue;
             }
 
-            if (($field['type'] ?? 'text') === 'date' && is_string($value)) {
-                try {
-                    $value = \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
-                } catch (\Throwable) {
-                    continue;
-                }
-            }
-
             $normalized[$key] = $value;
         }
 
         return $normalized;
+    }
+
+    public static function normalizeDateValue(mixed $value): ?string
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
+        }
+
+        if (is_array($value)) {
+            if (isset($value['year'], $value['month'], $value['day'])) {
+                return sprintf(
+                    '%04d-%02d-%02d',
+                    (int) $value['year'],
+                    (int) $value['month'],
+                    (int) $value['day'],
+                );
+            }
+
+            if (isset($value['date'])) {
+                return self::normalizeDateValue($value['date']);
+            }
+
+            return null;
+        }
+
+        if (! is_string($value) && ! is_numeric($value)) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        try {
+            return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**
@@ -290,6 +350,10 @@ class ArticleExtraFields
         $items = [];
 
         foreach ($schema as $field) {
+            if (EventsCpdTemplate::isHiddenExtraField($field)) {
+                continue;
+            }
+
             $value = $extraFields[$field['key']] ?? null;
 
             if ($value === null || $value === '') {
@@ -390,7 +454,7 @@ class ArticleExtraFields
     {
         return array_values(array_filter(
             self::normalizeSchema($schema),
-            fn (array $field): bool => $field['show_in_list'],
+            fn (array $field): bool => $field['show_in_list'] && ! EventsCpdTemplate::isHiddenExtraField($field),
         ));
     }
 
@@ -450,12 +514,8 @@ class ArticleExtraFields
             return (string) ($options[$stringValue] ?? $stringValue);
         }
 
-        if (($field['type'] ?? 'text') === 'date' && is_string($value)) {
-            try {
-                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d');
-            } catch (\Throwable) {
-                return (string) $value;
-            }
+        if (($field['type'] ?? 'text') === 'date') {
+            return self::normalizeDateValue($value) ?? (is_scalar($value) ? (string) $value : '');
         }
 
         return is_scalar($value) ? (string) $value : '';

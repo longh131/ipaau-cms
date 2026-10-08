@@ -8,6 +8,8 @@ class EventsCpdTemplate
 
     public const START_DATE_KEY = 'course_start_date';
 
+    public const REGISTRATION_DEADLINE_KEY = 'registration_deadline';
+
     /** @var array<int, string> */
     private const START_DATE_KEY_ALIASES = [
         'course_start_date',
@@ -85,17 +87,33 @@ class EventsCpdTemplate
     public static function startDate(?array $extraFields, ?array $schema = null): ?\Illuminate\Support\Carbon
     {
         $key = self::startDateKey($schema);
-        $raw = is_array($extraFields) ? trim((string) ($extraFields[$key] ?? '')) : '';
+        $raw = is_array($extraFields) ? ($extraFields[$key] ?? null) : null;
+        $normalized = \App\Support\ArticleExtraFields::normalizeDateValue($raw);
 
-        if ($raw === '') {
+        if ($normalized === null) {
             return null;
         }
 
         try {
-            return \Illuminate\Support\Carbon::parse($raw)->startOfDay();
+            return \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $normalized)?->startOfDay();
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * @param  array{key?: string, label?: string}|null  $field
+     */
+    public static function isHiddenExtraField(?array $field): bool
+    {
+        if (! is_array($field)) {
+            return false;
+        }
+
+        $key = (string) ($field['key'] ?? '');
+        $label = (string) ($field['label'] ?? '');
+
+        return $key === self::REGISTRATION_DEADLINE_KEY || str_contains($label, '截止报名');
     }
 
     /**
