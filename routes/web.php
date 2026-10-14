@@ -25,6 +25,7 @@ Route::post('/category/{slug}/certificate-lookup', [\App\Http\Controllers\Certif
     ->name('category.certificate-lookup');
 Route::get('/article/{slug}', [FrontendController::class, 'render'])->name('article.show');
 Route::get('/courses/{course}/register', [\App\Http\Controllers\CourseRegistrationController::class, 'redirect'])
+    ->whereNumber('course')
     ->name('courses.register');
 
 Route::prefix('member')->name('member.')->group(function (): void {

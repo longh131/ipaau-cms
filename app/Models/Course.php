@@ -125,13 +125,30 @@ class Course extends Model
 
     public function resolvedRegistrationUrl(): ?string
     {
-        $courseUrl = trim((string) ($this->registration_url ?? ''));
+        $courseUrl = self::normalizeExternalUrl($this->registration_url);
 
-        if ($courseUrl !== '') {
+        if ($courseUrl !== null) {
             return $courseUrl;
         }
 
-        return app(SiteSettingsService::class)->getEventsCpdRegistrationUrl();
+        return self::normalizeExternalUrl(
+            app(SiteSettingsService::class)->getEventsCpdRegistrationUrl(),
+        );
+    }
+
+    public static function normalizeExternalUrl(mixed $value): ?string
+    {
+        $url = trim((string) ($value ?? ''));
+
+        if ($url === '') {
+            return null;
+        }
+
+        if (preg_match('#^[a-z][a-z0-9+\-.]*://#i', $url)) {
+            return $url;
+        }
+
+        return 'https://'.ltrim($url, '/');
     }
 
     public function registrationStatusLabel(): string

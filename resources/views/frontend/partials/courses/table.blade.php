@@ -41,17 +41,23 @@
                         {{ $course->formattedCpdCredits() ?? '—' }}
                     </td>
                     <td class="cms-course-table__status" data-label="报名">
+                        @php
+                            $listingUrl = isset($category) ? url()->full() : url()->current();
+                            $registrationUrl = $course->resolvedRegistrationUrl();
+                        @endphp
                         @if($course->isRegistrationOpen())
-                            @if(session()->has('ipa_member_id') && $course->canRegisterOnline())
+                            @if(session()->has('ipa_member_id') && filled($registrationUrl))
                                 <a
-                                    href="{{ route('courses.register', $course) }}"
+                                    href="{{ $registrationUrl }}"
                                     class="cms-course-table__register-link"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     {{ $course->registrationStatusLabel() }}
                                 </a>
                             @elseif(! session()->has('ipa_member_id'))
                                 <a
-                                    href="{{ route('member.login', ['redirect' => route('courses.register', $course)]) }}"
+                                    href="{{ route('member.login', ['redirect' => $listingUrl]) }}"
                                     class="cms-course-table__register-link"
                                 >
                                     请登录报名

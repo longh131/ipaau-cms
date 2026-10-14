@@ -67,6 +67,7 @@ class CourseResource extends Resource
                 Forms\Components\TextInput::make('registration_url')
                     ->label('报名链接')
                     ->maxLength(2048)
+                    ->helperText('填写后报名将跳转到此地址；留空则使用系统设置「活动与CPD」中的默认报名链接')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('city')
                     ->label('举办城市')

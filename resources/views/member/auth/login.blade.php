@@ -18,6 +18,12 @@
 
             <form method="POST" action="{{ route('member.verify') }}" class="member-login-form" id="member-login-form">
                 @csrf
+                @php
+                    $loginRedirect = request()->query('redirect', session('url.intended'));
+                @endphp
+                @if(filled($loginRedirect))
+                    <input type="hidden" name="redirect" value="{{ $loginRedirect }}">
+                @endif
 
                 <label class="member-field" for="mobile">
                     <span class="member-field__label">手机号</span>

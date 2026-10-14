@@ -14,18 +14,21 @@ class AuthController extends Controller
 {
     public function showLogin(Request $request): View|RedirectResponse
     {
-        if (session()->has('ipa_member_id')) {
-            if (! IpaMember::query()->whereKey(session('ipa_member_id'))->exists()) {
-                session()->forget('ipa_member_id');
-            } else {
-                return redirect()->route('member.dashboard');
-            }
-        }
+        $intended = null;
 
         if ($request->filled('redirect')
             && $this->isSafeRedirect($request->query('redirect'))
             && ! $this->isLoginUrl($request->query('redirect'))) {
-            session(['url.intended' => $request->query('redirect')]);
+            $intended = $request->query('redirect');
+            session(['url.intended' => $intended]);
+        }
+
+        if (session()->has('ipa_member_id')) {
+            if (! IpaMember::query()->whereKey(session('ipa_member_id'))->exists()) {
+                session()->forget('ipa_member_id');
+            } else {
+                return redirect()->to($intended ?: route('member.dashboard'));
+            }
         }
 
         return view('member.auth.login');
@@ -65,7 +68,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $request->session()->put('ipa_member_id', $member->id);
 
-        $intended = $request->session()->pull('url.intended');
+        $intended = $request->input('redirect', $request->session()->pull('url.intended'));
 
         if (filled($intended)
             && $this->isSafeRedirect($intended)
@@ -125,7 +128,20 @@ class AuthController extends Controller
             return false;
         }
 
-        return str_starts_with($url, url('/'));
+        $url = trim($url);
+
+        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+            return true;
+        }
+
+        $parts = parse_url($url);
+        $app = parse_url(rtrim((string) config('app.url'), '/').'/');
+
+        if (! is_array($parts) || ! is_array($app) || blank($parts['host'] ?? null) || blank($app['host'] ?? null)) {
+            return str_starts_with($url, url('/'));
+        }
+
+        return strcasecmp((string) $parts['host'], (string) $app['host']) === 0;
     }
 
     private function isLoginUrl(string $url): bool
