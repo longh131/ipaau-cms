@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/site-fonts.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/member-portal.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/member-account-nav.css') }}" />
     @stack('styles')
     <script src="{{ asset('assets/menu.js') }}" defer></script>
 </head>

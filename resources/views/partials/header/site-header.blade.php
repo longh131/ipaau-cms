@@ -28,17 +28,7 @@
         @include('partials.header.search-bar')
 
         <div class="flex items-center gap-4 mr-4 xl:ml-4 xl:mr-0">
-            <a
-                href="{{ route('member.login') }}"
-                class="cta group font-medium uppercase border-2 border-link bg-transparent text-link hover:bg-link-hover hover:text-white focus-visible:bg-link-hover focus-visible:text-white focus-visible:border-link-focused focus-visible:outline-[4px] focus-visible:outline-link-focused focus-visible:outline focus-visible:ring-transparent focus-visible:no-underline disabled:bg-disabled disabled:border-grey disabled:text-grey disabled:hover:no-underline disabled:cursor-not-allowed flex transition-all duration-300 border uppercase text-lg hover:underline focus-visible:underline p-[9px] rounded-full"
-                tabindex="0"
-            >
-                <div class="flex flex-wrap items-center w-full">
-                    <div class="cta-content flex flex-nowrap items-center justify-center w-full uppercase">
-                        Sign In
-                    </div>
-                </div>
-            </a>
+            @include('partials.header.member-account-nav')
         </div>
 
         <div data-type="mobileNavTrigger" class="peer/menutrigger self-center inactive xl:hidden ml-3">

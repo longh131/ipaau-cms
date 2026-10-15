@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/fonts.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/site-fonts.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/member-account-nav.css') }}" />
     @stack('styles')
     @hasSection('json_ld')
         @yield('json_ld')
