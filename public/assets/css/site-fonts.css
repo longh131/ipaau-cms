@@ -1185,6 +1185,17 @@ body.cms-page--member-requirements.cms-about-page :is(
   margin-right: auto;
 }
 
+/* 首页数据统计卡片标题，与合作伙伴页数字统计标题同字号 */
+body.home-page [data-type="statsCards"] .stats-card > .text-warm-plum {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 1024px) {
+  body.home-page [data-type="statsCards"] .stats-card > .text-warm-plum {
+    font-size: 1.25rem;
+  }
+}
+
 [data-type="statsCards"] .stats-card__number {
   font-size: var(--ipa-display-xl);
   line-height: 2;

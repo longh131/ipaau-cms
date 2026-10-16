@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Page;
 use App\Filament\RichEditor\Plugins\ClearFormattingPlugin;
 use App\Filament\RichEditor\Plugins\ImageFloatPlugin;
 use App\Filament\RichEditor\Plugins\InlineStylePlugin;
@@ -72,6 +73,16 @@ class AppServiceProvider extends ServiceProvider
                         ->iconAlias('forms:components.rich-editor.toolbar.clear-format'),
                 ])
                 ->enableToolbarButtons(['source-ai']);
+        });
+
+        View::composer('frontend.pages.*', function ($view): void {
+            $page = $view->getData()['page'] ?? null;
+
+            if (! $page instanceof Page || blank($page->meta_description)) {
+                return;
+            }
+
+            $view->getFactory()->startSection('meta_description', trim(strip_tags((string) $page->meta_description)));
         });
 
         View::composer(['layouts.app', 'partials.header.site-header'], function ($view) {

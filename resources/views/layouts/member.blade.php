@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>@yield('title', '会员中心') - IPA</title>
+    @include('partials.seo-head')
     <link rel="icon" type="image/png" href="{{ asset('assets/img/monogram_ipa.png') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/fonts.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}" />

@@ -1,8 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.app', ['bodyClass' => 'home-page'])
 
-@section('title', 'Institute of Public Accountants')
 @section('canonical', url('/'))
-@section('og_title', 'Your hub for accounting | Institute Public Accountants')
 
 @section('json_ld')
     <script type="application/ld+json">

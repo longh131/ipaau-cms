@@ -268,13 +268,16 @@ class Settings extends Page implements HasForms
                                 ->schema([
                                     Forms\Components\TextInput::make('seo_title')
                                         ->label('SEO 标题')
+                                        ->helperText('首页标题使用此项。其他页面为「SEO 标题-栏目名称」。')
                                         ->columnSpanFull(),
                                     Forms\Components\Textarea::make('seo_description')
                                         ->label('SEO 描述')
                                         ->rows(3)
+                                        ->helperText('输出到各页面的 description。单页若填写了 SEO 描述，则优先使用单页描述。')
                                         ->columnSpanFull(),
                                     Forms\Components\TextInput::make('seo_keywords')
                                         ->label('SEO 关键词')
+                                        ->helperText('输出到各页面的 keywords。')
                                         ->columnSpanFull(),
                                 ]),
                             Section::make('站点维护')

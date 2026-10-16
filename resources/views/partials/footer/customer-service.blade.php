@@ -2,7 +2,7 @@
 @php
     $csCollapsedImage = asset('assets/img/customer-service-down.png');
     $csExpandedImage = asset('assets/img/customer-service-up.jpg');
-    $csFormUrl = 'https://forms.cloud.microsoft/r/C1dLktYKEX';
+    $csFormUrl = 'https://work.weixin.qq.com/kfid/kfc0f51336642d947f9';
 @endphp
 
 <link rel="stylesheet" href="{{ asset('assets/css/customer-service.css') }}" />

@@ -45,6 +45,43 @@ class SiteSettingsService
         return str_replace('{year}', (string) date('Y'), $html);
     }
 
+    public function getSeoTitle(): string
+    {
+        return $this->plainSetting('seo_title');
+    }
+
+    public function getSeoDescription(): string
+    {
+        return $this->plainSetting('seo_description');
+    }
+
+    public function getSeoKeywords(): string
+    {
+        return $this->plainSetting('seo_keywords');
+    }
+
+    public function metaText(mixed $value): string
+    {
+        return $this->plainText($value);
+    }
+
+    public function documentTitle(?string $pageTitle = null): string
+    {
+        $siteTitle = $this->getSeoTitle();
+
+        if ($siteTitle === '') {
+            $siteTitle = 'Institute of Public Accountants';
+        }
+
+        $pageTitle = $this->plainText($pageTitle);
+
+        if ($pageTitle === '' || $pageTitle === $siteTitle) {
+            return $siteTitle;
+        }
+
+        return $siteTitle.'-'.$pageTitle;
+    }
+
     public function getContactEmail(): ?string
     {
         $email = trim((string) Setting::get('contact_email', ''));
@@ -137,6 +174,25 @@ class SiteSettingsService
         $url = trim((string) Setting::get('events_cpd_registration_url', ''));
 
         return filled($url) ? $url : null;
+    }
+
+    private function plainSetting(string $key): string
+    {
+        $value = Setting::get($key, '');
+
+        if (is_array($value)) {
+            $value = implode(' ', array_filter($value, 'is_scalar'));
+        }
+
+        return $this->plainText($value);
+    }
+
+    private function plainText(mixed $value): string
+    {
+        $text = trim(strip_tags((string) $value));
+        $text = preg_replace('/\s+/u', ' ', $text) ?? $text;
+
+        return trim($text);
     }
 
     private function toBoolean(mixed $value, bool $default = false): bool

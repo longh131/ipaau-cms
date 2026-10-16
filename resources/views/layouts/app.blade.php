@@ -4,12 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>@yield('title', 'Institute of Public Accountants')</title>
+    @include('partials.seo-head')
     @hasSection('canonical')
         <link rel="canonical" href="@yield('canonical')" />
-    @endif
-    @hasSection('og_title')
-        <meta property="og:title" content="@yield('og_title')" />
     @endif
     <link rel="icon" type="image/png" href="{{ asset('assets/img/monogram_ipa.png') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/fonts.css') }}" />
