@@ -161,4 +161,5 @@
           </div>
         </button>
         @include('partials.footer.customer-service')
+        @include('partials.footer.analytics')
       </footer>
