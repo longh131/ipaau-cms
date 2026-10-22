@@ -110,6 +110,7 @@ class BolueSsoService
         for ($attempt = 1; $attempt <= $retries; $attempt++) {
             try {
                 $response = Http::timeout($timeout)
+                    ->withOptions($this->httpOptions())
                     ->acceptJson()
                     ->asJson()
                     ->post($url, $payload);
@@ -135,6 +136,28 @@ class BolueSsoService
         }
 
         throw $lastException ?? new RuntimeException('Bolue API request failed.');
+    }
+
+    /**
+     * 生产环境的 php.ini 经常没有 curl.cainfo，HTTPS 会直接失败并显示「系统繁忙」。
+     *
+     * @return array<string, mixed>
+     */
+    private function httpOptions(): array
+    {
+        $options = [
+            'curl' => [
+                CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+            ],
+        ];
+
+        $caBundle = base_path('resources/certs/cacert.pem');
+
+        if (is_file($caBundle)) {
+            $options['verify'] = $caBundle;
+        }
+
+        return $options;
     }
 
     private function extractAuthCode(string $responseBody): ?string
