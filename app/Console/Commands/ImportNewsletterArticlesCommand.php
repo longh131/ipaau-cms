@@ -80,11 +80,11 @@ class ImportNewsletterArticlesCommand extends Command
                     $localFile,
                     strlen(rtrim($newsletterRoot, '/\\')) + 1
                 )), '/');
-                $redirectUrl = url(NewsletterHtml::publicAssetUrl($publicDir, $relativeAsset));
+                $redirectUrl = NewsletterHtml::publicAssetUrl($publicDir, $relativeAsset);
                 $htmlImported++;
             } else {
                 $relativeAsset = ltrim(str_replace('\\', '/', substr($localFile, strlen(rtrim($newsletterRoot, '/\\')) + 1)), '/');
-                $redirectUrl = url(NewsletterHtml::publicAssetUrl($publicDir, $relativeAsset));
+                $redirectUrl = NewsletterHtml::publicAssetUrl($publicDir, $relativeAsset);
                 $content = '<p><a href="'.e($redirectUrl).'" target="_blank" rel="noopener">点击查看或下载该期电子通讯（'.strtoupper($entry['extension']).'）</a></p>';
                 $fileImported++;
             }

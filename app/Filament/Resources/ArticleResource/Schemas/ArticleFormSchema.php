@@ -87,8 +87,28 @@ class ArticleFormSchema
             self::extraFieldsSection($fixedCategoryId),
             Forms\Components\TextInput::make('redirect_url')
                 ->label('跳转链接')
-                ->placeholder('如果填写了链接，点击文章时将跳转到外部链接')
-                ->url(),
+                ->placeholder('站内路径（如 /assets/newsletter/2026/202604.html）或完整网址')
+                ->rules([
+                    function (): \Closure {
+                        return function (string $attribute, mixed $value, \Closure $fail): void {
+                            if (! filled($value)) {
+                                return;
+                            }
+
+                            $value = trim((string) $value);
+
+                            if (str_starts_with($value, '/') && ! str_starts_with($value, '//')) {
+                                return;
+                            }
+
+                            if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
+                                return;
+                            }
+
+                            $fail('跳转链接需为以 / 开头的站内路径，或完整网址。');
+                        };
+                    },
+                ]),
             Forms\Components\Textarea::make('summary')
                 ->label('文章摘要')
                 ->rows(3)

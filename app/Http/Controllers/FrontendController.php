@@ -283,17 +283,17 @@ class FrontendController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        if (filled($article->redirect_url)) {
-            return redirect()->away($article->redirect_url);
-        }
-
-        $article->increment('view_count');
-
         $category = $article->category;
 
         if ($redirect = MemberCategoryAccess::guard(request(), $category)) {
             return $redirect;
         }
+
+        if (filled($article->redirect_url)) {
+            return redirect()->away($article->redirect_url);
+        }
+
+        $article->increment('view_count');
 
         if ($category && CategoryListTemplateRegistry::isTeamIntro($category)) {
             return view('frontend.articles.team_intro', [

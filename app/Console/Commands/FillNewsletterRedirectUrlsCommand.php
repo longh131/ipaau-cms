@@ -76,7 +76,7 @@ class FillNewsletterRedirectUrlsCommand extends Command
                 continue;
             }
 
-            $redirectUrl = url(NewsletterHtml::publicAssetUrl($publicDir, $publicRelative));
+            $redirectUrl = NewsletterHtml::publicAssetUrl($publicDir, $publicRelative);
 
             if ($dryRun) {
                 $updated++;
