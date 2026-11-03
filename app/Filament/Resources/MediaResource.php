@@ -13,6 +13,10 @@ use Filament\Support\Icons\Heroicon;
 
 class MediaResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'media.manage';
+
     protected static ?string $model = Media::class;
 
     protected static ?string $navigationLabel = '媒体库';

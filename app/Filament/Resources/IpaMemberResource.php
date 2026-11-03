@@ -14,6 +14,10 @@ use Filament\Tables\Table;
 
 class IpaMemberResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = IpaMember::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Identification;

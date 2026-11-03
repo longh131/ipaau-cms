@@ -18,6 +18,10 @@ use Filament\Tables\Table;
 
 class CourseResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = Course::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::AcademicCap;

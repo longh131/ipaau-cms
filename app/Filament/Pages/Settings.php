@@ -23,6 +23,13 @@ class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof \App\Models\User && $user->hasPermission('settings.manage');
+    }
+
     protected static ?string $title = '系统设置';
 
     protected static ?string $navigationLabel = '系统设置';

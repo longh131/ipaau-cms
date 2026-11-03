@@ -11,6 +11,10 @@ use Filament\Support\Icons\Heroicon;
 
 class ActivityLogResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'users.manage';
+
     protected static ?string $model = ActivityLog::class;
 
     protected static ?string $navigationLabel = '操作日志';

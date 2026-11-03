@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class MenuItemResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'menu.manage';
+
     protected static ?string $model = MenuItem::class;
 
     protected static ?string $navigationLabel = '菜单项';

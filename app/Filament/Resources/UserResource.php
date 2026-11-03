@@ -13,7 +13,11 @@ use Filament\Support\Icons\Heroicon;
 
 class UserResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
     protected static ?string $model = User::class;
+
+    protected static string $adminPermission = 'users.manage';
 
     protected static ?string $navigationLabel = '用户管理';
 
@@ -36,7 +40,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->label('邮箱')
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => '该邮箱已被占用，请更换。',
+                    ]),
                 Forms\Components\TextInput::make('password')
                     ->label('密码')
                     ->password()
@@ -45,7 +53,10 @@ class UserResource extends Resource
                 Forms\Components\CheckboxList::make('roles')
                     ->label('角色')
                     ->relationship('roles', 'display_name')
-                    ->columns(2),
+                    ->columns(2)
+                    ->required()
+                    ->minItems(1)
+                    ->helperText('至少选择一个角色，权限按角色生效。'),
             ]);
     }
 

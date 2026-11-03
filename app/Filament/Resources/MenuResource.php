@@ -13,6 +13,10 @@ use Filament\Support\Icons\Heroicon;
 
 class MenuResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'menu.manage';
+
     protected static ?string $model = Menu::class;
 
     protected static ?string $navigationLabel = '菜单管理';

@@ -20,6 +20,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ArticleResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = Article::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::DocumentText;

@@ -34,4 +34,24 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'user_roles');
     }
+
+    public function isSuperAdmin(): bool
+    {
+        $this->loadMissing('roles');
+
+        return $this->roles->contains(fn (Role $role): bool => $role->name === 'super_admin');
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        $this->loadMissing('roles.permissions');
+
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->roles
+            ->flatMap(fn (Role $role) => $role->permissions)
+            ->contains(fn (Permission $item): bool => $item->name === $permission);
+    }
 }

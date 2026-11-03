@@ -23,6 +23,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'category.manage';
+
     protected static ?string $model = Category::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Folder;

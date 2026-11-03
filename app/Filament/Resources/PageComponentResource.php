@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PageComponentResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'home.manage';
+
     protected static ?string $model = PageComponent::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::HomeModern;

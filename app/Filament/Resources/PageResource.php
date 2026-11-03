@@ -22,6 +22,10 @@ use Filament\Tables\Table;
 
 class PageResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = Page::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::DocumentText;

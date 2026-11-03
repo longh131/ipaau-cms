@@ -13,6 +13,10 @@ use Filament\Tables\Table;
 
 class FormResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = Form::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::ClipboardDocumentList;

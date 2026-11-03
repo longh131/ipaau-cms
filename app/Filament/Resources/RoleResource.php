@@ -14,6 +14,10 @@ use Filament\Support\Icons\Heroicon;
 
 class RoleResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermission = 'roles.manage';
+
     protected static ?string $model = Role::class;
 
     protected static ?string $navigationLabel = '角色管理';

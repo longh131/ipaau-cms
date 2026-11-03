@@ -12,6 +12,13 @@ use Filament\Support\Icons\Heroicon;
 
 class ManageContentTypes extends Page
 {
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof \App\Models\User && $user->hasPermission('settings.manage');
+    }
+
     protected static ?string $title = '类型管理';
 
     protected static ?string $navigationLabel = '类型管理';

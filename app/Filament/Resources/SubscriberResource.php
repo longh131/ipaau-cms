@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberResource extends Resource
 {
+    use \App\Filament\Concerns\AuthorizesAdminAccess;
+
+    protected static string $adminPermissionPrefix = 'content';
+
     protected static ?string $model = Subscriber::class;
 
     protected static \BackedEnum|string|null $navigationIcon = Heroicon::Envelope;
