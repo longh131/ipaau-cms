@@ -22,6 +22,7 @@ class SearchController extends Controller
                 Article::query()
                     ->with('category')
                     ->where('is_active', true)
+                    ->whereHas('category', fn ($builder) => $builder->where('is_active', true))
                     ->where(function ($builder) use ($query): void {
                         $like = '%'.addcslashes($query, '%_\\').'%';
 

@@ -281,6 +281,7 @@ class FrontendController extends Controller
             ->with('category')
             ->where('slug', $slug)
             ->where('is_active', true)
+            ->whereHas('category', fn ($builder) => $builder->where('is_active', true))
             ->firstOrFail();
 
         $category = $article->category;
