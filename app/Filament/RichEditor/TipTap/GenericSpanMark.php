@@ -23,6 +23,11 @@ class GenericSpanMark extends Mark
                         return false;
                     }
 
+                    // Filament 文字颜色（span.color）交给 textColor 标记处理，否则会丢失 data-color。
+                    if (in_array('color', preg_split('/\s+/', trim((string) $class)) ?: [], true)) {
+                        return false;
+                    }
+
                     return array_filter([
                         'style' => $style ?: null,
                         'class' => $class ?: null,

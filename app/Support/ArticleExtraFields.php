@@ -251,6 +251,30 @@ class ArticleExtraFields
     }
 
     /**
+     * 表单状态里的 extra_fields 不能是空数组：前端会把 [] 当作 JS 数组，
+     * 之后写入的 event_name 等字符串键在提交时会丢失。这里补齐栏目配置的键（值为 null），
+     * 让它始终以对象形式传到浏览器；保存时 normalizeValuesForStorage 会丢弃 null。
+     *
+     * @return array<string, mixed>
+     */
+    public static function stateWithKeys(mixed $categoryId, mixed $existing): array
+    {
+        $state = is_array($existing) ? $existing : [];
+
+        if (blank($categoryId)) {
+            return $state;
+        }
+
+        $category = Category::query()->find($categoryId);
+
+        foreach (self::normalizeSchema($category?->article_extra_field_schema) as $field) {
+            $state[$field['key']] ??= null;
+        }
+
+        return $state;
+    }
+
+    /**
      * @param  array<string, mixed>|null  $extraFields
      * @param  array<int, array{key: string, label: string, type: string, show_in_list: bool}>  $schema
      * @return array<string, mixed>

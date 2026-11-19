@@ -50,14 +50,50 @@ export default () => {
         },
     }
 
+    // 图片宽高由 width/height 属性生成（Filament 会输出 `style: width: N`），
+    // 这里剔除全局 style 中的 width/height，避免旧值残留压住新宽度、并在每次保存时重复叠加。
+    const stripSizeFromStyle = (style) => {
+        if (!style) {
+            return null
+        }
+
+        const rest = style
+            .split(';')
+            .map((declaration) => declaration.trim())
+            .filter((declaration) => declaration !== '' && !/^(width|height)\s*:/i.test(declaration))
+
+        return rest.length ? `${rest.join('; ')};` : null
+    }
+
+    const imageStyleAttribute = {
+        default: null,
+        parseHTML: (element) => stripSizeFromStyle(element.getAttribute('style')),
+        renderHTML: (attributes) => {
+            const style = stripSizeFromStyle(attributes.style)
+
+            if (!style) {
+                return {}
+            }
+
+            return { style }
+        },
+    }
+
     const inlineStyleOnNodes = Extension.create({
         name: 'inlineStyleOnNodes',
         addGlobalAttributes() {
             return [
                 {
-                    types: styledNodeTypes,
+                    types: styledNodeTypes.filter((type) => type !== 'image'),
                     attributes: {
                         style: styleAttribute,
+                        class: classAttribute,
+                    },
+                },
+                {
+                    types: ['image'],
+                    attributes: {
+                        style: imageStyleAttribute,
                         class: classAttribute,
                     },
                 },
@@ -105,6 +141,11 @@ export default () => {
                         const className = element.getAttribute('class')
 
                         if (!style && !className) {
+                            return false
+                        }
+
+                        // Filament 文字颜色（span.color）交给 textColor 标记处理，否则会丢失 data-color。
+                        if (element.classList.contains('color')) {
                             return false
                         }
 

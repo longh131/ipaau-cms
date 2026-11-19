@@ -268,7 +268,9 @@ class RichContent
         }
 
         if (is_string($state) && static::looksLikeHtml($state)) {
-            return static::normalizeHtmlLineBreaks(MediaUrl::normalizeRichContentHtml($state));
+            return static::normalizeHtmlLineBreaks(
+                MediaUrl::normalizeRichContentHtml(static::resolveTextColorVariables($state))
+            );
         }
 
         if (is_string($state)) {
@@ -322,6 +324,45 @@ class RichContent
                     ->toHtml()
             )
         );
+    }
+
+    /**
+     * 文章正文以 HTML 字符串保存，Filament 保存时不带文字颜色配置，
+     * 会写成 `--color: brand-blue`（色名而非色值），前台 `color: var(--color)` 无效。
+     * 这里按 data-color 把色名替换为配置里的真实色值。
+     */
+    protected static function resolveTextColorVariables(string $html): string
+    {
+        if (! str_contains($html, 'data-color=')) {
+            return $html;
+        }
+
+        $colors = static::textColors();
+
+        return preg_replace_callback(
+            '/<span\b[^>]*\bdata-color="([^"]+)"[^>]*>/i',
+            function (array $matches) use ($colors): string {
+                $name = $matches[1];
+                $config = $colors[$name] ?? null;
+
+                if (! $config instanceof TextColor) {
+                    return $matches[0];
+                }
+
+                return preg_replace(
+                    [
+                        '/--color:\s*'.preg_quote($name, '/').'(?=\s*[;"\'])/',
+                        '/--dark-color:\s*'.preg_quote($name, '/').'(?=\s*[;"\'])/',
+                    ],
+                    [
+                        '--color: '.$config->getColor(),
+                        '--dark-color: '.$config->getDarkColor(),
+                    ],
+                    $matches[0],
+                ) ?? $matches[0];
+            },
+            $html,
+        ) ?? $html;
     }
 
     protected static function plainTextToHtml(string $text): string

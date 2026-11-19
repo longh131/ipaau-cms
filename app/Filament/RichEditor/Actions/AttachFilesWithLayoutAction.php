@@ -171,12 +171,15 @@ class AttachFilesWithLayoutAction
                     $id ??= $arguments['id'] ?? null;
                     $src ??= $arguments['src'];
 
+                    // 用 insertContent 替换当前选中的图片节点（而不是 updateAttributes）：
+                    // Filament 的图片缩放 NodeView 不会响应 width 属性的后续变化，
+                    // 只有重新创建节点，编辑器里的宽度才会立即更新。
                     $component->runCommands(
                         [
-                            EditorCommand::make('updateAttributes', arguments: [
-                                'image',
-                                static::imageAttributes($data['alt'] ?? null, $id, $src, $float, $width),
-                            ]),
+                            EditorCommand::make('insertContent', arguments: [[
+                                'type' => 'image',
+                                'attrs' => static::imageAttributes($data['alt'] ?? null, $id, $src, $float, $width),
+                            ]]),
                         ],
                         editorSelection: $arguments['editorSelection'],
                     );

@@ -83,7 +83,10 @@ class ArticleFormSchema
                 ->default($fixedCategoryId)
                 ->disabled($fixedCategoryId !== null)
                 ->dehydrated(true)
-                ->live(),
+                ->live()
+                ->afterStateUpdated(function (Get $get, Set $set): void {
+                    $set('extra_fields', ArticleExtraFields::stateWithKeys($get('category_id'), $get('extra_fields')));
+                }),
             self::extraFieldsSection($fixedCategoryId),
             Forms\Components\TextInput::make('redirect_url')
                 ->label('跳转链接')
@@ -203,6 +206,9 @@ class ArticleFormSchema
                 return $components;
             })
             ->statePath('extra_fields')
+            ->afterStateHydrated(function (Section $component, Get $get, mixed $state) use ($fixedCategoryId): void {
+                $component->state(ArticleExtraFields::stateWithKeys($fixedCategoryId ?? $get('category_id'), $state));
+            })
             ->dehydrated(true)
             ->key('article-extra-fields')
             ->columnSpanFull();
