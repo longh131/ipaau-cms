@@ -41,7 +41,9 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            // 使用相对路径，避免 www / php 等多域名访问后台时，
+            // FilePond 按 APP_URL 跨域拉封面导致永远 Waiting for size。
+            'url' => rtrim(env('FILESYSTEM_PUBLIC_URL', '/storage'), '/'),
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
