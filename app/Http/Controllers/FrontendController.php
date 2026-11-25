@@ -318,6 +318,7 @@ class FrontendController extends Controller
                         $article->category?->article_extra_field_schema,
                     ),
                     fn (array $item): bool => ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::EVENT_NAME_KEY
+                        && ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::START_DATE_KEY
                         && ($item['key'] ?? '') !== \App\Support\CategoryListTemplate\EventsCpdTemplate::REGISTRATION_DEADLINE_KEY,
                 )),
                 'registrationUrl' => \App\Support\CategoryListTemplate\EventsCpdTemplate::registrationUrl(
