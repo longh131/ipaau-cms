@@ -8,8 +8,10 @@ use App\Http\Controllers\Member\CpdRecordsController;
 use App\Http\Controllers\Member\PortalController as MemberPortalController;
 use App\Http\Controllers\NewsletterSubscriptionController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SitemapController;
 
 Route::get('/', [FrontendController::class, 'home'])->name('home');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::post('/newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])
     ->middleware('throttle:6,1')
     ->name('newsletter.subscribe');
